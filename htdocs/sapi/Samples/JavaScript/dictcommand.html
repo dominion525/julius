@@ -1,0 +1,115 @@
+<HTML>
+	<HEAD>
+		<TITLE>JavaScript Recognition</TITLE>
+		<SCRIPT LANGUAGE="JavaScript">
+<!--
+var Recog = new ActiveXObject("Sapi.SpSharedRecognizer");
+var Ctxt = Recog.CreateRecoContext();
+Ctxt.EventInterests = 2+4+16+32+512;	// SRESoundStart SRESoundEnd SRERecognition SREHypothesis SREFalseRecognition
+var GramDict = Ctxt.CreateGrammar(0);
+var GramCommand = Ctxt.CreateGrammar(1);
+GramDict.DictationLoad();
+GramDict.DictationSetState(0);
+
+//-->
+		</SCRIPT>
+		<script id="clientEventHandlersJS" language="javascript">
+<!--
+
+function Checkbox_Dictation_onclick() {
+	if (document.mainform.Checkbox_Dictation.checked)
+	{
+		GramDict.DictationSetState(1);
+	} else {
+		GramDict.DictationSetState(0);
+	}
+}
+
+function Checkbox_Command_onclick() {
+	if (document.mainform.Checkbox_Command.checked)
+	{
+		GramCommand.CmdLoadFromFile(document.mainform.File_Command.value, 1);
+		GramCommand.CmdSetRuleState(document.mainform.Text_Rule_Command.value, 1);
+	} else {
+		GramCommand.CmdSetRuleState(document.mainform.Text_Rule_Command.value, 0);
+	}
+}
+//-->
+		</script>
+	</HEAD>
+	<BODY>
+		<H1>JavaScript による音声認識サンプル</H1>
+		<FORM NAME="mainform">
+			<P><FONT face="MS UI Gothic">状態: <INPUT id="Text_State" type="text"></FONT></P>
+			<P>
+				<INPUT id="Checkbox_Dictation" type="checkbox" onclick="return Checkbox_Dictation_onclick()">
+				ディクテーション:<BR>
+				<INPUT ID="Text_Dictation" size="71"></P>
+			</INPUT>
+			<P>
+				<INPUT id="Checkbox_Command" type="checkbox" onclick="return Checkbox_Command_onclick()">
+				コマンド文法ファイル: <INPUT id="File_Command" type="file" size="9" name="File1"><BR>
+				アクティブにするルール: <INPUT id="Text_Rule_Command" type="text"><BR>
+				<INPUT id="Text_Command" size="69" DESIGNTIMEDRAGDROP="340"><FONT face="MS UI Gothic"><BR>
+				</FONT><FONT face="MS UI Gothic">プロパティ一覧:<BR>
+				</FONT><TEXTAREA id="Textarea_Prop_Command" rows="5" cols="41">
+				</TEXTAREA>
+			</P>
+		</FORM>
+		<SCRIPT>
+
+function DispProp(P, pre, TA)
+{
+	if (P != null)
+	{
+		for (var i=0;i<P.Count;i++)
+		{
+			TA.value += pre + P.Item(i).Name + ":" + P.Item(i).Value + "\n";
+			if (P.Item(i).Children != null)
+				DispProp(P.Item(i).Children, pre + "  ", TA);
+		}
+	}
+}
+
+function Ctxt::SoundStart(StreamNum, StreamPos)
+{
+	document.mainform.Text_State.value = "音声開始";
+}
+
+function Ctxt::SoundEnd(StreamNum, StreamPos)
+{
+	document.mainform.Text_State.value = "音声終了";
+}
+
+function Ctxt::FalseRecognition(StreamNum, StreamPos, Result)
+{
+	document.mainform.Text_State.value = "認識失敗";
+}
+
+// 認識完了時のイベントハンドラ
+function Ctxt::Recognition(StreamNum, StreamPos, RecogType, Result)
+{
+	if (Result.PhraseInfo.GrammarId == 0) // 文法によって表示場所を変える
+	{
+		mainform.Text_Dictation.value = Result.PhraseInfo.GetText();
+	} else {
+		mainform.Text_Command.value = Result.PhraseInfo.GetText();
+		// プロパティの表示
+		mainform.Textarea_Prop_Command.value = "";
+		DispProp(Result.PhraseInfo.Properties, "", mainform.Textarea_Prop_Command);
+	}
+}
+
+// 仮説生成時のイベントハンドラ
+function Ctxt::Hypothesis(StreamNum, StreamPos, Result)
+{
+	if (Result.PhraseInfo.GrammarId == 0) // 文法によって表示場所を変える
+	{
+		mainform.Text_Dictation.value = "Hypo:" + Result.PhraseInfo.GetText();
+	} else {
+		mainform.Text_Command.value = "Hypo:" +  Result.PhraseInfo.GetText();
+	}
+}
+		</SCRIPT>
+	</BODY>
+</HTML>

@@ -1,0 +1,400 @@
+<h2>History</h2>
+
+<h3 class="headers"><span>2008/3/12(Wed.) </span></h3>
+
+<p>◆<b>Julius-4.0.1リリース</b></p>
+
+<p>[<a 
+        href="http://sourceforge.jp/projects/julius/document/julius_4.0.1_-_Notes/"
+        target="_blank">リリースノート</a>|<a href="http://sourceforge.jp/projects/julius/document/julius_4.0.1_-_Changes/">ChangeLog</a>].</p>
+
+<ul>
+<li> 4.0のバグ修正
+<li> Linuxの音声入力でALSAを標準で用いるように変更
+</ul>
+最新版のページからダウンロードできます．
+
+
+<h3 class="headers"><span>2008/1/23(Wed.) </span></h3>
+
+<p>◆<b>新フォーラム設置</b></p>
+
+<p>[<a
+        href="http://julius.sourceforge.jp/forum/"
+        target="_blank">ユーザフォーラム</a>]</p>
+
+新たにフォーラムを設置しました．質問・議論などあればなんでもこちらへどうぞ．（なお，旧掲示板は一定期間後に閉鎖します）
+
+<h3 class="headers"><span>2008/1/17(Thu.) </span></h3>
+
+<p>◆<b>ディクテーション実行キットが更新されました．</b></p>
+
+<h3 class="headers"><span>2007/12/19(Wed.) </span></h3>
+
+<p>◆<b>Julius-4.0  リリース</b></p>
+
+<p>[<a
+        href="http://sourceforge.jp/projects/julius/document/julius_4.0_-_Notes/"
+        target="_blank">リリースノート</a>].</p>
+
+Julius-4.0 は，拡張性や柔軟性の確保を目指し，大幅な刷新が行われました．
+Juliusの内部データ構造の大幅な見直しおよびモジュール化を行った結果，エ
+ンジン本体のライブラリ化やマルチデコーディングなど多くの先進的機能を実
+現しました．主な新機能は以下のとおりです（全てではありません）．
+
+<ul>
+<li> エンジン本体のライブラリ化 "JuliusLib" 
+<li> 複数モデルを用いたマルチデコーディングの対応
+<li> Julius / Julian の一本化
+<li> 言語モデルや認識処理の動的追加・削除が可能
+<li> 4-gram 以上の長さのN-gramの対応
+<li> ユーザ定義言語関数の組込み
+<li> Confusion network 出力
+<li> 音声区間検出 (VAD) の強化（GMM・デコーダベース）
+<li> ツールの機能追加・新ツール追加・メモリ管理改善等
+</ul>
+
+<p>上位互換性を確保しており，Julius-3.x と同様に使うことが出来ます．
+認識の精度および速度は，現段階では前バージョン (3.5.3) とほぼ
+同じです．以下のドキュメントも合わせて御覧下さい．</p>
+
+<ul>
+<li><a href="WhatsNew-4.0-ja.pdf">Rev.4.0 の新機能 </a>
+<li><a href="http://www.sp.nitech.ac.jp/~ri/julius-dev/doxygen/julius/4.0/ja/group__jfunc.html">JuliusLib API リファレンス</a>
+<li><a href="http://www.sp.nitech.ac.jp/~ri/julius-dev/doxygen/julius/4.0/ja/callback_8h.html">JuliusLib コールバック一覧 </a>
+<li><a href="Julius-manual.pdf">Juliusコマンドマニュアル</a>
+<li><a href="Jconf-manual.pdf">jconf設定ファイルマニュアル</a>
+</ul>
+
+<p>なお，Julius-4の開発版 CVS レポジトリは新たに <code>julius4</code> と
+なりましたのでおしらせします（<code>julius</code>には旧 3.x が入っていま
+す）．</p>
+
+<h3 class="headers"><span>2007/01/10(Wed.) </span></h3>
+
+<p>◆<b>Julius website リニューアル</b></p>
+
+
+<h3 class="headers"><span>2006/12/29(Fri.) </span></h3>
+
+<p>◆<b>Julius-3.5.3 リリース</b></p>
+
+<p>[<a
+        href="http://sourceforge.jp/projects/julius/document/julius_3.5.3_-_Notes/"
+        target="_blank">リリースノート</a>｜<a
+        href="http://sourceforge.jp/projects/julius/document/julius__3.5.3_-_Changes/"
+        target="_blank">ChangeLog</a>]．</p>
+
+<ul>
+<li>高速化：コード最適化により 1.1倍〜1.5倍程度高速になった
+<li>音響分析条件の HTK Config 読み込み，バイナリHMMへの埋め込み対応
+<li>文法最適化ツール：dfa_minimize, dfa_determinize
+<li>単語グラフの拡張
+<li>バグ修正・コードの改善
+
+</ul>p
+
+<p><a href="newjulius.html">最新版のページ</a>からソースコードおよび
+Linux/Windows用の実行バイナリがダウンロードできます．</p>
+
+
+<p>◆HTKの文法を Julian の形式に自動変換するツールキット <a
+href="http://prdownloads.sourceforge.jp/julius/23332/slf2dfa-1.0.tar.gz">slf2dfa-1.0</a>を公開しました．HTKで用いられている認識制約用のラティス(SLF形式)と辞書を，Julian
+用の DFA と辞書に変換できます．詳しくはアーカイブ内のドキュメン
+トをご覧下さい．</p>
+
+<p>
+◆<a href="http://julius.sourceforge.jp/documents.html#manual">マ
+ニュアルおよびソース資料の内容</a>を，最新版の 3.5.3 に合わせて
+更新しました．</p>
+
+
+<h3 class="headers"><span>2006/07/31(Mon.)</span></h3>
+
+<p>◆<b>Julius-3.5.2 リリース</b></p>
+
+[<a
+href="http://sourceforge.jp/projects/julius/document/julius_3.5.2_-_Notes/"
+target="_blank">リリースノート</a>｜<a
+href="http://sourceforge.jp/projects/julius/document/julius_3.5.2_-_Changes/"
+target="_blank">ChangeLog</a>］．
+
+<ul>
+  <li>Windows でのマイク入力認識の速度改善
+  <li>単語グラフ出力の精度改善
+  <li>第1パスで単語グラフを出力可能に
+  <li>その他バグ修正
+</ul>
+
+<a href="newjulius.html">最新版のページ</a>からソースコードおよび
+Linux/Windows用の実行バイナリがダウンロードできます．
+
+</p>◆ドキュメント「<a href="doc/install-mingw.html">MinGWでのコンパ
+イル方法</a>」を更新</p>
+
+
+
+<h3 class="headers"><span>2006/03/31(Fri.)</span></h3>
+
+<p>◆<b>Julius-3.5.1 リリース</b></p>
+rev.3.5.1 では，音響モデルの特徴量サポート拡大およびMAP-CMNによ
+        るマイク入力の改善が行われました［<a
+        href="http://sourceforge.jp/projects/julius/document/julius_3.5.1_-_Notes/"
+        target="_blank">リリースノート</a>｜<a
+        href="http://sourceforge.jp/projects/julius/document/julius_3.5.1_-_Changes/"
+        target="_blank">ChangeLog</a>］．
+<ul>
+  <li>MFCC計算のサポート拡大
+  <ul>
+
+    <li>二次差分係数(Accel: _A)，任意の型指定(_0, _E, _N, _D,
+    _A, _N)の組み合わせ，任意の次元数の音響モデルでの音声入力認識をサポー
+ト
+    <li><a href="doc/param.html">細かい特徴量抽出パラメータの指定</a>に対応
+  </ul>
+  <li>MAP-CMN によるリアルタイム入力の精度改善
+  <li>モジュールモードの安定化
+  <li>細かいバグ修正
+</ul>
+<a href="newjulius.html">最新版のページ</a>からソースコードおよび
+Linux/Windows用の実行バイナリがダウンロードできます．
+<p>◆ドキュメントに「<a href="doc/param.html">MFCCパラメータの設定
+</a>」を追加</p>
+
+<p>◆ドキュメントの「<a href="doc/format.html">使用可能なファイル形
+式とモデル形式</a>」において，音響モデルを学習する際の特徴量につ
+いて記述を追加</p>
+
+<p>◆「<a href="refman/">マニュアル</a>」および「<a
+href="http://www.sp.nitech.ac.jp/~ri/julius-dev/doxygen/"
+target="_blank">ソースドキュメントブラウザ</a>」を 3.5.1 に合わ
+せて更新</p>
+
+
+<h3 class="headers"><span>2006/05/22(Tue.)</span></h3>
+
+<p>◆SPAMよけのため，掲示板を 新しく入れ替えました．投稿時にはガー
+ドキーの入力が必要です．</p>
+
+
+<h3 class="headers"><span>2006/03/31(Fri.)</span></h3>
+
+<p>◆Julius-3.5.1 をリリースしました．</p>
+
+
+
+<h3 class="headers"><span>2006/03/31(Fri.)</span></h3>
+
+<p>◆Julius-3.5.1 をリリースしました．</p>
+
+<p>rev.3.5.1 では，音響モデルの特徴量サポート拡大およびMAP-CMNによ
+るマイク入力の改善が行われました [<a
+href="http://sourceforge.jp/projects/julius/document/julius_3.5.1_-_Notes/"
+target="_blank">リリースノート</a>｜<a
+href="http://sourceforge.jp/projects/julius/document/julius_3.5.1_-_Changes/"
+target="_blank">ChangeLog</a>]．</p>
+
+<ul>
+ <li>MFCC計算のサポート拡大
+<ul>
+ <li>二次差分係数(Accel: _A)，任意の型指定(_0, _E, _N, _D, _A,
+_N)の組み合わせ，任意の次元数の音響モデルでの音声入力認識をサポー
+ト
+ <li><a href="doc/param.html">細かい特徴量抽出パラメータの指定
+</a>に対応
+
+</ul>
+ <li>MAP-CMN によるリアルタイム入力の精度改善
+ <li>モジュールモードの安定化
+ <li>細かいバグ修正
+</ul>
+
+<p>◆ドキュメントに「<a href="doc/param.html">MFCCパラメータの設定
+</a>」を追加．</p>
+
+<p>◆ドキュメントの「<a href="doc/format.html">使用可能なファイル形
+式とモデル形式</a>」において，音響モデルを学習する際の特徴量につ
+いて記述を追加．</p>
+
+<p>◆「<a href="refman/">マニュアル</a>」および「<a
+href="http://www.sp.nitech.ac.jp/~ri/julius-dev/doxygen/"
+target="_blank">ソースドキュメントブラウザ</a>」を 3.5.1 に合わ
+せて更新．</p>
+
+
+<h3 class="headers">2005/11/11(Fri.)</span></h3>
+
+<p>◆Julius-3.5 をリリースしました．</p>
+
+<p>Julius-3.5 は，音声インタフェースのためのいくつかの重要な新機能の追加，
+性能改善，バグ修正およびコードのブラッシュアップ，プログラム中の
+コメントの大幅な追加が行われた，大幅なアップデートです．
+主な<a
+href="https://sourceforge.jp/docman2/ViewDocument.php?group_id=232&document_content_id=36115"
+target="_blank">更新点</a>は以下の通りです．</p>
+
+<ul>
+ <li>多くのバグ修正
+ <li>使用メモリ量の削減
+ <li><a href="doc/graphout.html">単語グラフ出力</a>のサポート
+ <li><a href="doc/gmm.html">GMM による環境音識別・不要入力棄却</a>のサポート
+ <li>Windows コンソール版の改善 (<a href="doc/install-mingw.html">mingw対応</a>，文字コード変換等)
+ <li><a
+href="http://www.sp.nitech.ac.jp/~ri/julius-dev/doxygen/julius"
+target="_blank">ソースのドキュメンテーション</a>
+ <li>ソースの統合（Linux版，Windows版，マルチパス版が1つに）
+</ul>
+
+<p>◆開発中の最新ソースコードを，<a href="http://sourceforge.jp/cvs/?group_id=232"
+target="_blank">CVS</a>で公開しております．</p>
+
+<p>◆<a href="juliuskit.html">ディクテーション実行キット</a>
+のv3.1をリリース．Julius-3.5 に対応しました．</p>
+
+<h3 class="headers"><span>2005/09/30(Fri.)</span></h3>
+
+<p>◆ドキュメントの大幅な拡充．</p>
+<p>ソースに付属のドキュメントをWebに移動し，関連ドキュメントを
+大幅に追加しました．また，各ツールのオンラインマニュアルや，
+Juliusのソースの詳細なオンラインドキュメントを作成しました．
+<a href="documents.html">ドキュメントのページ</a>からどうぞ．</p>
+
+<p>◆<a href="julicus.html">カスタム実行キットダウンロードサイト
+</a>を追加．</p>
+
+<p>◆<a href="contrib/index.html">派生版Julius</a>のページを追加．</p>
+<p>◆東工大で公開されているマルチバンド版 Julius を追加．</p>
+<p>◆サイトのレイアウトを変更．</p>
+<p>◆Julianセグメンテーションキットのリンクが壊れていたのを修正．</p>
+
+
+<h3 class="headers"><span>2005/08/09(Tue.)</span></h3>
+
+<p>◆ダウンロードのページに
+「Juliusカスタマイズ機能付き
+実行キットダウンロード」の紹介と
+<a href="http://htk.ar.media.kyoto-u.ac.jp/julicus/">そのサイト
+</a>へのリンクを追加．音響モデルや言語モデルを含めて，
+Julius/JulianのカスタマイズをGUIメニューで行った上で，パッ
+ケージを作成し，ダウンロードできます．<a href="download.html">ダウンロードのページ</a>よりどうぞ．
+
+
+<h3 class="headers">2005/08/02(Tue.)</span></h3>
+
+<p>◆<a href="juliankit.html">Julian記述文法音声認識キット</a>を
+更新．サンプル文法を追加．</p>
+
+<p>◆<a href="grammar.html">認識用文法の書き方</a>のページに
+サンプル文法を追加．</p>
+
+
+<h3 class="headers">2005/07/12(Tue.)</span></h3>
+
+<p>◆オリジナルから派生した様々な改造版の Julius を紹介する，
+<a href="contrib/index.html">改造版Julius</a>のページを新
+設．東工大で開発された，マルチバンド版 Julius へのリンクを追加．</p>
+
+
+<h3 class="headers"><span>2005/03/02(Wed.)</span></h3>
+
+<p>◆<a href="paper/JSAI05.pdf">連続音声認識ソフトウェアJulius</a> (PDF, 9ページ)</p>
+<blockquote>
+研究・開発に役立つオープンソースソフトを紹介する人工知能学会学会
+誌のシリーズ特集「<a
+href="http://www.ai-gakkai.or.jp/jsai/journal/toolbox/">
+研究のツールボックス</a>」Vol.20, No.1 に掲載された，
+Julius の紹介とチュートリアルです．Juliusの概要をひとと
+おり知りたい方，これから Julius を使った音声認識を初めたい方にお薦めです．
+</blockquote>
+
+<p>◆<a href="documents.html">ドキュメント</a>のページを新設．</p>
+
+
+<h3 class="headers">2004/11/02(Tue.)</span></h3>
+
+<p>◆<a href="juliankit.html">Julian記述文法音声認識キット</a>を新たに作成しました！
+記述文法Julianを使った音声認識を初めてみたい方は，まずはこちらをどうぞ．</p>
+
+
+<h3 class="headers">2004/08/11(Wed.)</span></h3>
+
+<p>◆Juliusディクテーション実行キットをv3.0に更新しました．</p>
+<ul>
+ <li>言語モデルを 6万語に拡張
+ <li>新たにWindows版を提供 
+</ul>
+
+
+<h3 class="headers"><span>2004/05/25(Tue.)</span></h3>
+
+<p>◆認識用文法の書き方に改行コードに関する記述を追加．</p>
+<p>◆サンプル文法の漢字/改行コードを統一．</p>
+
+
+<h3 class="headers"><span>2004/05/07(Fri.)</span></h3>
+
+<p>◆Julius-3.4.2 をリリース．</p>
+<p>◆ディクテーション実行キットを最新版に合わせて v2.2 に更新しまし
+た．</p>
+<p>◆認識用文法の書き方を新規作成しました．</p>
+<p>◆サイトの構成を変更しました．</p>
+
+<h3 class="headers"><span>2004/03/05(Thu.)</span></h3>
+
+<p>Julianのフリー化に伴い，Julian を用いたセグメンテーションキット
+を新たに作成しました．ダウンロードのJulius応用キットのページからどうぞ．</p>
+
+
+<h3 class="headers">2004/02/26(Thu.)</span></h3>
+
+<p>Julius 3.4.1 をリリースしました。認識アルゴリズムの改善やバイナ
+リHMMのサポート，ネットワーク入出力に関するバグ修正などが行われました．</p>
+
+
+<h3 class="headers">2004/02/05(Thu.)</span></h3>
+
+<p>Julius for Microsoft SAPI が 2.3 にバージョンアップしました．</p>
+
+
+<h3 class="headers">2003/11/21(Fri.)</span></h3>
+
+<p>孤立単語認識キットをJulian-3.4をベースに全面更新しました！自作の
+ 辞書で単語認識を動かしてみたい方は試してみてください．ダウンロードのJulius応用キットのページからどうぞ．</p>
+
+<h3 class="headers">2003/10/21(Tue.)</span></h3>
+
+<p>Julius 3.4 をリリースしました。Julianの統合・動作の安定・ライセン
+ スの完全フリー化など大幅に改善されました．</p>
+
+
+<h3 class="headers">2003/06/02(Tue.)</span></h3>
+
+<p>Julius 3.3p4 をリリースしました．</p>
+
+
+<h3 class="headers">2003/01/13(Wed.)</span></h3>
+
+<p>Julius 3.3p3 をリリースしました．</p>
+
+
+<h3 class="headers">2002/10/16(Wed.)</span></h3>
+
+<p>English Page Open!</p>
+<p>Julius 3.3p1 をリリースしました．</span></h3>
+
+
+<h3 class="headers">2002/10/03(Thu.)</span></h3>
+
+<p>内容を多少修正しました．</p>
+
+
+<h3 class="headers">2002/10/01(Tue.)</span></h3>
+<p>Julius開発サイト．付属ドキュメントへのリンクを張りました．
+</p>
+
+<p>内容を3.3のものに修正．</p>
+
+
+<h3 class="headers">2002/09/27(Fri.)</span></h3>
+
+<p>JuliusのHPを設置しました．</p>

@@ -1,0 +1,65 @@
+<h2>コンパイル・インストール手順 (MinGW)</h2>
+
+Julius は rev.3.5 より，Windowsにおけるフリーの開発環境である<a href="http://www.mingw.org" target="_top">MinGW - Minimalist GNU for Windows </a>でのコンパイルに対応しています．MinGW でコンパイルされた実行バイナリは，MinGW がインストールされていない環境でも動作します．
+
+<p>ここでは MinGW および対応シェル環境である MSYS を用いた，Windows用の Julius/Julian のコンパイル手順について解説します．MinGWについてもっと知りたい方は，以下のリンクを参考にしてください．</p>
+
+<ul>
+<li><a href="http://www.mingw.org" target="_top">MinGW - Minimalist GNU for Windows</a>
+<li><a href="http://www.sixnine.net/cygwin/translation/mingw-doc/mingwfaq.html" target="_top">MinGWについて頻繁に尋ねられる質問と回答(MinGW FAQ)</a>
+</ul>
+
+<h3>MinGWのインストール</h3>
+
+必要なものは以下の通りです．どれもなるべく最新のものがよいでしょう．
+
+<ul>
+<li> MinGW --- コアツール
+<li> MSYS --- シェル環境
+<li> msys-DTK --- 開発支援ツール (perl 等)
+</ul>
+
+下記のリンクも参考にして，インストールしてください．
+
+<ul>
+<li><a href="http://www.mingw.org" target="_top">MinGW - Minimalist GNU for Windows</a>
+<li><a href="http://www2.atwiki.jp/ccw/pages/5.html" target="_top">C-Compiler Wiki - MinGW/インストール</a>
+</ul>
+
+<h3>ライブラリのインストール</h3>
+
+文法コンパイラのコアである<code>mkfa</code>をコンパイルするには flex ライブラリ
+が必要です．MinGW にはデフォルトでインストールされていないので，別途インストールする必要があります．
+<p>また，.gz ファイルを読み込むには zlib ライブラリが必要です．</p>
+
+<p>どちらもソースを入手してコンパイルするのがよいですが，ここで
+は配布されているパッケージからコピーする方法を示します．以下の手
+順で行います．</p>
+
+
+<ol>
+<li><a href="http://gnuwin32.sourceforge.net/" target="_top">GnuWin32</a>の<a href="http://gnuwin32.sourceforge.net/packages/flex.htm" target="_top">Flex</a> のページへ行く．
+<li>Download のところにある「Developer files」の Zip アーカイブをダウンロードする．
+<li>アーカイブを展開したディレクトリの "lib" フォルダ内にある <code>libfl.a</code>を，MSYS の <code>/mingw/lib</code> ディレクトリにコピーする．
+<li>zlib に関しても同様に，<a href="http://gnuwin32.sourceforge.net/packages/zlib.htm" target="_top">Zlib</a>のページの Developer files から libz.a を /mingw/lib, zlib.h を /mingw/include にコピーする．
+</ol>
+
+
+最終的に，以下のファイルがあれば OK です．
+
+<ul>
+<li><code>/mingw/lib/libfl.a</code>
+<li><code>/mingw/lib/libz.a</code>
+<li><code>/mingw/include/zlib.h</code>
+</ul>
+
+<h3>コンパイル</h3>
+
+コンパイルの方法は，<a href="install.html">Unix の場合</a>と全く同じです．<code>configure</code>スクリプトも動作します．MinGW環境では，マイクAPIとして portaudio，文字セット変換方法として win32 + libjcode が自動的に選択されます．
+
+<!-- 本文終了 -->
+<hr>
+<div align="right">
+$Id: install-mingw.html,v 1.1.1.1 2007/01/10 08:01:57 kudravka_ Exp $
+</div>
+</body></html>

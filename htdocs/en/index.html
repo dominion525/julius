@@ -1,0 +1,713 @@
+<a name="top"><h1>Open-Source Large Vocabulary CSR Engine Julius</h1></a>
+
+<a name="whats_new"><h3>What's New?</h3></a>
+
+<u><b>update: 2006.12.29: Julius rev.3.5.3 released.</b></u><br>
+update: 2006.07.31: Julius rev.3.5.2 released.<br>
+update: 2006.03.31: Julius rev.3.5.1 released.<br>
+update: 2005.11.22: Added link to development site.<br>
+update: 2005.11.11: Julius rev.3.5 released.<br>
+update: 2004.5.7: Julius rev.3.4.2 released.<br>
+update: 2004.3.5: Forced alignment tool using Julian is now released.<br>
+update: 2004.3.1: Julius rev.3.4.1, Julius for SAPI ver.2.3 released.
+
+<!-- --------------------------------------------------------------- -->
+
+<hr>
+<a name="about_julius"><h2>About Julius</h2></a>
+
+<b>"Julius"</b> is a high-performance, two-pass large vocabulary
+continuous speech recognition (LVCSR) decoder software for
+speech-related researchers and developers.  Based on word 3-gram and
+context-dependent HMM, it can perform almost real-time decoding on
+most current PCs in 20k word dictation task.  Major search techniques
+are fully incorporated such as tree lexicon, N-gram factoring,
+cross-word context dependency handling, enveloped beam search,
+Gaussian pruning, Gaussian selection, etc.  Besides search efficiency,
+it is also modularized carefully to be independent from model
+structures, and various HMM types are supported such as shared-state
+triphones and tied-mixture models, with any number of mixtures,
+states, or phones.
+Standard formats are adopted to cope with other free modeling toolkit
+such as HTK, CMU-Cam SLM toolkit, etc.  
+<p>
+It also can be compiled as a grammar based recognizer <b>"Julian"</b>, that
+supports multiple grammar recognition, dynamic grammar switching.
+<!-- <p>
+Julius has many functions for speech recognition system: full MFCC
+support, MAP-CMN, spectral subtraction, low-latency audio buffering,
+GMM-based input rejection, successive decoding, etc.
+-->
+<p>
+The main platform is Linux and other Unix workstations, and also works
+on Windows (SAPI/console).  Julius is distributed with open license together
+with source codes, and has been used by many researchers and
+developers in Japan.
+<p>
+Julius has been developed as a research software for Japanese LVCSR
+since 1997, and the work was continued under IPA Japanese dictation
+toolkit project (1997-2000), <a
+href="http://www.lang.astem.or.jp/CSRC/">Continuous Speech Recognition
+Consortium, Japan (CSRC)</a> (2000-2003) and currently <a
+href="http://www.astem.or.jp/istc/index_e.html">Interactive Speech Technology
+Consortium (ISTC)</a>.
+</p>
+<p>
+
+<!-- --------------------------------------------------------------- -->
+<a name="feature"><h3>Features</h3></a>
+
+<ul>
+<li>An open-source software (see <a href="http://julius.sourceforge.jp/LICENSE.txt">terms and conditions of license</a> (Japanese and English translation)).
+</li><li>Real-time hi-speed and accurate recognition based on 2-pass strategy.
+</li><li>Low memory requirement: less than 32MBytes required for work area (&lt;64MBytes for 20k-word dictationwith on-memory 3-gram LM).
+</li><li>Language and unit-dependent: Any LM in ARPA standard format and AM in HTK ascii hmmdefs format can be used.
+</li><li>Highly configurable: can set various search parameters. Also
+alternate decoding algorithm (1-best/word-pair approx., word
+trellis/word graph intermediates, etc.) can be chosen.
+</li><li>Full source code documentation and manual in Engligh / Japanese.
+</li><li>Supported features:
+  <ul>
+  <li>Live microphone and network input
+  </li><li>GMM-based input rejection
+  </li><li>Successive decoding, delimiting input by short pause
+  </li><li>N-best output
+  </li><li>Word graph output
+  </li><li>Forced alignment on word, phoneme, and state level
+  </li><li>Confidence scoring
+  </li><li>Server mode and control API
+  </li><li>Many search parameters for tuning its performance
+  </li><li>Character code conversion for result output.
+  </li></ul>
+</li></ul>
+
+<!-- --------------------------------------------------------------- -->
+
+<a name="contact"><h3>Contact</h3></a>
+
+For any question, comments and bug reports, please e-mail to
+<a href="mailto:julius-info%20at%20lists.sourceforge.jp">julius-info at lists.sourceforge.jp</a>.
+<p>
+The chief developer and maintainer of Julius (Unix) is 
+<a href="http://www.sp.nitech.ac.jp/%7Eri/">LEE Akinobu</a>
+(<a href="mailto:ri%20at%20nitech.ac.jp">ri at nitech.ac.jp</a>).
+</p><p>
+Work has been done at:
+<pre>
+Copyright (c) 1991-2006 <a href="http://www.ar.media.kyoto-u.ac.jp/EN/">Kawahara Lab., Kyoto University</a>
+Copyright (c) 2000-2005 <a href="http://spalab.naist.jp/index.html.en">Shikano Lab., Nara Institute of Science and Technology</a>
+Copyright (c) 2005-2006 <a href="http://www.sp.nitech.ac.jp/">Julius project team, Nagoya Institute of Technology</a>
+</pre>
+</p>
+
+
+<!-- --------------------------------------------------------------- -->
+<hr>
+<a name="download_julius"><h2>Download Julius</h2></a>
+
+<font color="red">
+Note: you should prepare a language model and an acoustic model </font> to run a speech recognition wit Julius, See <a href="#about_models">About Models</a> below.  
+<p>
+The current version is 3.5.3, released on Dec 29, 2006.
+The major changes from previous version are listed below.
+
+<ul>
+<li>Speed up by code optimization.
+</li><li>Support reading an HTK Config file directly by "-htkconf".
+</li><li>Embedding analysis condition parameters into binary AM by "mkbinhmm".
+</li><li>New grammar-related tools: "dfa_minimize", "dfa_determinize".
+</li><li>New HTK-to-Julian automatic grammar convertion tool "slf2dfa".
+</li><li>Misc. refinements
+<ul>
+<li>Support generating separate candidates of different phone context in word graph output.
+</li><li>Preliminary support for emulating energy normalization on live input.
+</li></ul>
+</li><li>Many bug fixes and code improvements.
+</li></ul>
+
+Also see <a href="http://sourceforge.jp/projects/julius/document/julius_3.5.3_-_Notes/en/">Release Notes</a> and <a href="http://sourceforge.jp/projects/julius/document/julius_3.5.3_-_Changes/en/">Change Log</a>.  The full list of updates can be seen in "00readme.txt", "Release.txt", "Sample.jconf" and manuals included in the archive.  
+
+<a name="get_current_ver"><h3>Get current version</h3>
+<ul>
+<li>Source tarball
+<ul>
+<li>Julius/Julian: <a href="http://prdownloads.sourceforge.jp/julius/23331/julius-3.5.3.tar.gz" target="_blank">julius-3.5.3.tar.gz</a> (1.3MB)
+</li><li>HTK-to-Julian grammar converter: <a href="http://prdownloads.sourceforge.jp/julius/23332/slf2dfa-1.0.tar.gz" target="_blank">slg2dfa-1.0.tar.gz</a>
+</li></ul>
+
+<li>Pre-compiled binaries
+<ul>
+<li>Linux: <a href="http://prdownloads.sourceforge.jp/julius/23331/julius-3.5.3-linuxbin.tar.gz" target="_blank">julius-3.5.3-linuxbin.tar.gz</a> (1.2MB)
+</li><li>Win32: <a href="http://prdownloads.sourceforge.jp/julius/23331/julius-3.5.3-win32bin.zip" target="_blank">julius-3.5.3-win32bin.zip</a>(2.4MB)
+</li></ul>
+</ul>
+You can get older archives from <a href="http://sourceforge.jp/projects/julius/">Development site</a>.
+
+<a name="get_by_cvs"><h3>Get the latest codes via CVS</h3></a>
+
+You can get the current snapshot of source tree via anonymous CVS:
+<pre>cvs -z3 -d:pserver:anonymous@cvs.sourceforge.jp:/cvsroot/julius co julius
+</pre>
+
+You can also receive code update notices at <a
+href="http://lists.sourceforge.jp/mailman/listinfo/julius-cvs">julius-cvs@lists.sourceforge.jp</a>.
+Messages will be sent each time the source has been changed on
+the CVS.
+Anyone can join the ML from 
+<a
+href="http://lists.sourceforge.jp/mailman/listinfo/julius-cvs">julius-cvs@lists.sourceforge.jp
+management page</a>.
+
+<!-- --------------------------------------------------------------- -->
+<a name="sapi"><h3>Get Julius for Windows SAPI</h3></a>
+
+Julius for SAPI is MS Windows version of Julius/Julian which implements
+Microsoft(R) Speech API (SAPI) 5.1.
+You can use this version of Julius as a SAPI Voice Recognizer in
+applications created for SAPI (e.g. Office XP).
+<p>
+The recent version is fully SAPI-5.1 compliant, and it also supports
+SALT extension.
+</p><p>
+Julius for SAPI assumes that the user language and the application's
+grammar is in Japanese.  So it is a little troublesome in case of the
+other languages because Julius for SAPI does not know the
+pronunciation of the words in a grammar.  If you define pronunciations
+to each of these, it may work, but we have not tried it.
+</p><p>
+Please read following documents for detail.
+</p><ul>
+<li><a href="http://julius.sourceforge.jp/sapi/Docs/00readme-sapi.html">Julius for SAPI README</a> (Japanese)
+</li><li><a href="http://julius.sourceforge.jp/sapi/Docs/develop.html">Julius for SAPI Documents for Developers</a> (Japanese)
+</li></ul>
+Download: you should install both of them. (last updated: 2004/02/05 for ver. 2.3)
+<ul>
+<li><a href="http://julius.sourceforge.jp/sapi/installer/2_3/Julius_SAPI_2_3.msi">Julius for Windows SAPI ver. 2.3</a> (installer)
+</li><li><a href="http://julius.sourceforge.jp/sapi/installer/Julius_SAPI_StandardModels.msi">Japanese
+standard language model and acoustic model installer</a>
+</li><li>Sample programs:
+<ul>
+<li><a href="http://julius.sourceforge.jp/sapi/Samples/JavaScript/">JavaScript</a>
+</li><li><a href="http://julius.sourceforge.jp/sapi/Samples/mfc.zip">Win32 Application (C++, Microsoft Visual C++ 7.0)</a>
+</li><li><a href="http://julius.sourceforge.jp/sapi/Samples/GUIsample.ZIP">Win32 Application (C++, OpenGL, Robot manipulation, executable binaries and part of sources).</a>
+</li><li><a href="http://julius.sourceforge.jp/sapi/Samples/SALT/">SALT (for Microsoft .NET Speech SDK 1.0 beta2)</a>
+</li><li><a href="http://julius.sourceforge.jp/sapi/Samples/SALT_dnetssdk10b3/">SALT (for Microsoft .NET Speech SDK 1.0 beta3)</a>
+</li></ul>
+</li></ul>
+
+
+<!-- --------------------------------------------------------------- -->
+<hr>
+<a name="about_models"><h2>About Models</h2></a>
+
+Since Julius itself is a language-independent decoding program, you
+can make a recognizer of a language if given an appropriate language
+model and acoustic model for the target language. The recognition accuracy
+largely depends on the models.
+<p>
+Julius adopts
+acoustic models in HTK ascii format, pronunciation dictionary in
+almost HTK format, and word 3-gram language models in ARPA standard
+format (forward 2-gram and reverse 3-gram trained from same corpus).
+</p>
+<p>
+We had already examined English dictations with Julius, and another
+researcher has reported that Julius has also worked well in English,
+Slovenian (see pp.681--684 of Proc. ICSLP2002), French, Thai language,
+and many other Languages.</p>
+<p>Here you can get Japanese and English free language/acoustic models. </p>
+<ul>
+<li>Japanese 
+  <ul>
+  <li><a href="../archive/japanese-models.tar.gz">Japanese
+    language model (20k-word trained by newspaper article) and acoustic
+    models (Phonetic tied-mixture triphone / monophone)</a>
+  </ul>
+<p>More various types of Japanese N-gram LM and 
+acoustic models are available at <a href="http://www.lang.astem.or.jp/CSRC/">CSRC</a>.  For more detail,
+please contact <a href="mailto:csrc@astem.or.jp">csrc@astem.or.jp</a>.</p>
+<li>English<br>
+  <ul>
+  <li>We currently have a sample English acoustic model trained from the WSJ
+database.  According to the license of the database, this model
+<font color=red>*cannot*</font> be used to develop or test products for commercialization,
+nor can they use it in any commercial product or for any commercial
+purpose.  Also, the performance is not so good. Please
+ <a  href="mailto:julius-info@sourceforge.jp">contact to us</a>
+for further information.
+ <li>The <a href="http://www.voxforge.org/">VoxForge-project</a> is
+ working on the creation of an open-source acoustic model for the
+ English language.
+  </ul>
+</ul>
+
+<p>
+If you have any language or acoustic model that can be distributed as a freeware, would you please <a href="mailto:julius-info%20at%20lists.sourceforge.jp">contact us</a>?
+We want to run dictation kit on various languages other than Japanese,
+and share them freely to provide a free speech recognition system
+available for various languages.</p>
+
+
+<!-- --------------------------------------------------------------- -->
+<hr>
+<a name="documents_and_notes"><h2>Documents and Notes</h2></a>
+
+<a name="documentation"><h3>Documentation</h3></a>
+
+<a href="http://julius.sourceforge.jp/">The main site</a> is in Japanese,
+but we have English documentations below.  Please read the Julius book first.
+<ul>
+<li><a href="http://julius.sourceforge.jp/book/Julius-3.2-book-e.pdf">Julius book for rev.3.2</a>:
+An assemble of documents of Julius.
+<p>
+</p></li><li><a href="http://julius.sourceforge.jp/refman/">Recent online manuals</a>
+</li><li><a href="http://www.sp.nitech.ac.jp/%7Eri/julius-dev/doxygen/">full source code browser with comments</a> generated by Doxygen.
+</li><li><a href="grammar.html">The format of recognition grammar for Julian</a>
+</li></ul>
+
+<a name="variants"><h3>Compile-time variants</h3></a>
+
+
+<p>The default configuration of Julius is fine-tuned to do N-gram
+based recognition with balance both speed and accuracy. However,
+Julius has lots of compile-time options and runtime options to
+select/modify each algorithm in detail.</p>
+
+<p>Those variants of Julius can be compiled from the source codes by
+setting several options to the "configure" script before compilation.
+The variants are described below.</p>
+
+<h4>Standard setup --- more accurate but time-consuming algorithm</h4>
+
+<p>By default, the recognition algorithm of Julius is optimized for real-time
+recognition. The set of algorithms chosen for that purpose
+is named "fast". However, you can choose another set of algorithm to
+put weight on accuarcy rather than speed, by specifying
+"--enable-setup=standard" at "configure" script. The set is named
+"standard".</p>
+
+<p>Specifying the option may improve recognition accuracy for about
+1% to 2% (and slightly more, depending on conditions), at a cost of
+computation time up for about 20%. If you want to evaluate language or
+acoustic model for research purpose, you should define this and also
+set wider beam width for both 1st and 2nd pass to avoid search
+error.</p>
+
+<h4>Julian --- grammar-based recognizer</h4>
+
+<p>"Julian", a
+grammar-driven recognizer, can be compiled by specifying configure
+option "--enable-julian". The grammar format is original, and grammar
+compilation tools are also included in "gramtools/". See
+"gramtools/00readme.txt" and <a href="grammar.html">"How to write a grammar for Julian"</a> for details.</p>
+
+<p>Most of the run-time options are common with Julius. Please see
+"Sample-julian.jconf" and manuals for a complete list of options.</p>
+
+<h4>Multi-path version --- extended support for AM</h4>
+
+<p>To make decoding faster, the default Julius has several limitations in the HMM
+state transition: it allows only one transition from start node and to
+end node within a model.</p>
+
+<p>Thus, it does not support a multi-path model that has several
+phoneme models in parallel, or a skip transition that has direct
+transition from start node to end node to allow skipping of 
+all the output state.</p>
+
+<p>You can compile a Julius with "--enable-multipath" to overcome
+these limitations and allow arbitrary transitions. The compiled one is
+called "multi-path" version, and it can handle ANY arbitrary
+transition, but the decoding speed
+is slightly slower than the normal version.</p>
+
+<h4>Other variants and functions</h4>
+
+<p>Many algorithms can be
+switched on or off by the configure options. Please do
+"./julius/configure --help" and "./libsent/condifure --help" to get a
+complete list of options for configure.</p>
+
+<!-- --------------------------------------------------------------- -->
+<a name="grammar"><h3>How to write a grammar for Julian</h3></a>
+
+<p>The format of recognition grammar for Julian is briefly described <a href="http://julius.sourceforge.jp/en/grammar.html">here</a>.</p>
+
+<!-- --------------------------------------------------------------- -->
+
+<a name="references"><h3>References</h3></a>
+
+<ul>
+<li><a href="http://sourceforge.jp/projects/julius/">Development
+site</a> (older versions here)</li>
+<li><a href="index.php?q=documents.html">All documents</a> (most
+up-to-date but in Japanese)</li>
+<li>Papers: (each link refers to its PDF reprints)
+
+<ul>
+<li>A. Lee, T. Kawahara and K. Shikano.
+<a href="http://julius.sourceforge.jp/paper/ri-eurospeech2001.pdf">
+"Julius --- an open source real-time large vocabulary recognition
+engine." </a> In Proc. European Conference on Speech Communication and
+Technology (EUROSPEECH), pp. 1691--1694, 2001.</li>
+
+<li>T. Kawahara, A. Lee, T. Kobayashi, K. Takeda, N. Minematsu,
+S. Sagayama, K. Itou, A. Ito, M. Yamamoto, A. Yamada, T. Utsuro and
+K. Shikano.
+<a href="http://julius.sourceforge.jp/paper/icslp00-6.pdf">
+"Free software toolkit for Japanese large vocabulary continuous speech
+recognition." </a> In Proc. Int'l Conf. on Spoken Language Processing
+(ICSLP) , Vol. 4, pp. 476--479, 2000.</li>
+
+</ul>
+</li>
+</ul>
+
+<!-- --------------------------------------------------------------- -->
+
+<hr>
+<a name="changelog"><h2>ChangeLog</h2></a>
+
+<u>3.5.3</u> (2006.12.29)
+<pre>  o  Improved Performance:
+     - acoustic computation optimized: now becomes 20%-40% faster!
+     - optimize memory access: re-use work area of deleted hypothesis
+       in the 2nd pass.
+     - some memory allocation improvement on dictionary and word trellis.
+
+  o  New Grammar Tools:
+     - "dfa_minimize", "dfa_determinize" will minimize/determinize DFA.
+        mkdfa.pl now calls dfa_mimize in it.
+     - "slf2dfa": a toolkit to convert HTK slf to Julian dfa (separate kit)
+
+  o  Embedding HTK Acoustic Parameters:
+     - add option to load HTK Config file to set correct acoustic parameter
+       configuration at recognition time. 
+     - the acoustic parameter configuration can be embedded into
+       header of a binary HMM file.
+
+  o  Improved Word Graph:
+     - add an option to completely separate graph words: words with
+       different phone contexts can be output separatedly by
+       "-graphrange -1".
+
+  o  Support for online energy normalization:
+     - Preliminary support for live recognition using acoustic model with
+       energy normalization. (approximate with maximum energy of last input)
+
+  o  Code refinements:
+     - re-organize libsent/src/wav2mfcc.
+     - modularize acoustic parameter (Value) handling.
+     - output compile-time configuration of libsent with "--setting" option.
+     - Doxygen 1.5.0 support.
+     - "julius-info@lists.sourceforge.jp" becomes the official contact address.
+     - fixed typo on copyright notice.
+
+  o  Fixed bugs:
+     - sometimes unable to read a binary LM on "--enable-words-int".
+     - memory leaks around option handling, global variables and local buffers.
+     - segmentation fault on very long input.
+     - doublely counted initial state of DFA.
+     - mkdfa.pl: unable to find mkfa on some OS.
+     - adintool: makes empty output file on termination.
+     - adintool: miss last inputs when killed.
+     - other small changes.
+</pre>
+<u>3.5.2</u> (2006.07.31)
+<pre>  o  Speed-up and improvement on Windows console:
+     - Support DirectSound for better input handling
+     - Support input threading utilizing callback API on portaudio.
+     - Support newest MinGW (tested on 5.0.2)
+
+  o  More accurate word graph output:
+     - Add option to cut the resulting graph by its depth
+       (option -graphcut, and enabled by default!)
+     - Set limit for post-processing loop to avoid infinite loop
+       (option -graphboundloop, and set by default)
+     - Refine graph generation algorithm concerning dynamic word merging
+       and search termination on the second pass.
+
+  o  Add capability to output word graph instead of trellis on 1st pass:
+     - 1st pass generates word graph instead of word trellis as
+       intermediate result by specifying "--enable-word-graph".
+       In that case, the 2nd pass will be restricted on the graph, not
+       on the whole trellis.
+     - With "--enable-word-graph" and "--enable-wpair" option, the
+       first pass of Julius can perform 1-pass graph generation based
+       on 2-gram with basically the same algorithm as other popular
+       word graph based decoders.
+
+  o  Bug fixes:
+     - configure script did not work on Solaris 8/9
+     - "-gprune none" did not work on tied-mixture AM
+     - Incorrect error message for AM with duration header other than "NULLD"
+     - Always warns about zero frame stripping upon MFCC
+
+  o  Imprementation improvements:
+     - bmalloc2-based AM memory management
+</pre>
+<u>3.5.1</u> (2006.03.31)
+<pre>  o  Wider MFCC types support:
+     - Added extraction of acceleration coefficients (_A).  Now you
+       can recognize waveform or microphone input with AM trained with _A.
+     - Support all MFCC qualifiers (_0, _E, _N, _D, _A, _N, _Z) and their
+       combination 
+     - Support for any vector lenth (will be guessed from AM header)
+     - New option: "-accwin"
+     - New option "-zmeanframe": frame-wise DC offset removal, like HTK
+     - New options to specify detailed analysis parameters (see manual):
+          -preemph, -fbank, -ceplif, -rawe / -norawe, 
+          -enormal / -noenormal, -escale, -silfloor
+
+  o Improved microphone / network recognition by MAP-CMN:
+     - New option "-cmnmapweight" to change MAP weight
+     - Option "-cmnload" can be used to specify the initial cepstral
+       mean at startup
+     - Cepstral mean of last 5 second input is used as an initial mean
+       for each input.  You can inhibit updating of the initial mean
+       and keep the value loaded by "-cmnload" by option "-cmnnoupdate".
+
+  o Module issue:
+     - Julius now outputs "<startproc>" when recognition starts, and
+       "<stopproc>" after recognition stopped by module command.
+       Use this for safer server-client synchronization.
+     - now can specify grammar name from client by specifying a name
+       after a command like "ADDGRAM name" or "CHANGEGRAM name".
+
+  o Bug fixes:
+     - Sometimes segfault on pause/resume command on module mode while input.
+     - Can not read N-gram with tuples &gt; 2^24.
+     - Can not read HMM with 3-state (1 output state) model on multi-path.
+     - Sometimes omit the last transition definition in DFA file.
+     - Sometimes fails to compile the gramtools on MacOSX.
+</stopproc></startproc></pre>
+<u>3.5</u> (2005.11.11)
+<pre>  o  New features:
+     - Input verification / rejection using GMM (-gmm, -gmmnum, -gmmreject)
+     - Word graph output (--enable-graphout, --enable-graphout-nbest)
+     - Pruning on 2nd pass based on local posterior CM (--enable-cmthres)
+     - Multiple/per-grammar recognition (-gram, -gramlist, -multigramout) 
+     - Can specify multiple grammars at startup: "-gram prefix1,prefix2,..."
+       or "-gramlist listfile" where listfile contains list of prefixes.
+     - General output character set conversion "-charconv from to"
+       based on iconv (Linux) or Win32API+libjcode (Windows)
+
+  o  Improved audio inputs on Linux:
+     - ALSA-1.x support. (--with-mictype=alsa)
+     - EsounD daemon input support. (--with-mictype=esd)
+     - Fixed some bugs on USB audio input.
+     - Audio capturing device can be specified via env. "AUDIODEV".
+     - Extra microphone API support using portaudio and spLib API.
+
+  o  Performance improvements:
+     - Reduced memory size for beam operation on the 1st pass.
+     - Slightly optimized tree lexicon by removing redundant data.
+     - Reduced size of word N-gram index (reduced from 32 bit to 24 bit).
+
+  o  Fixed bugs:
+     - Not working spectral subtraction.
+     - Memory leak when stack exhausted ("stack empty") on 2nd pass.
+     - Segmentation fault on a very short input of 1 to 4 frames.
+     - AM trained with no CMN cannot be used with waveform/mic input.
+     - Wrong short-pause word handling on successive decoding mode.
+       (--enable-sp-segment)
+     - No output of "maxcodebooksize" at startup.
+     - No output of the number of sentences found when stack exhausted.
+     - No output of "-separatescore" on module mode.
+     - Beam width does not adjusted when grammar has been changed and 
+       full beam options (-b 0) is specified in Julian.
+     - Wrong update of category-aware cross-word triphones when
+       dynamically switching grammar on Julian.
+     - No output of grammar to stdout on multiple grammar mode.
+     - Unable to send/receive audio data between different endian machines.
+     - (Linux) crash when compiled with icc.
+     - (Linux) some strange behavior on USB audio.
+     - (Windows) confuse with CR/LF newline inputs in several text inputs.
+     - (Windows) mkdfa.pl could not work on cygwin.
+     - (Windows) sometimes fails to read a file when not using zlib.
+     - (Windows) wrong file suffix when recording with "-record" (.raw-&gt;.wav)
+
+  o  Unified source code:
+     - Linux and Windows version are integrated into one source.
+     - Multi-path version has been integrated with the normal version
+       into one source.  The multi-path version of Julius/Julian, that
+       allows any transitions of HMMs including model skip transition,
+       can be compiled by "--enable-multipath" option.  The part of
+       source codes for the multi-path version can be identified 
+       by the definition "MULTIPATH_VERSION".
+
+  o  Other improvements:
+     - Now can be compiled on MinGW/MSYS on Windows
+     - Totally rewritten comments in entire source in Doxygen format.
+       You can generate fully browsable source documents in English.
+       Try "make doxygen" at the top directory (you need doxygen installed)
+     - Install additional executables of julius/julian with version and setting
+       names like "julius-3.5-fast" when "make install" is invoked.
+     - Updated LICENSE.txt with English translation for reference.
+
+  o  Changed behaviors:
+     - Binary N-gram file format has been changed for smaller size.
+       The old files can still be read directly by julius, in which
+       case on-line conversion will be performed at startup.
+       You can convert the old files (3.4.2 and earlier) to the new
+       format with the new mkbingram by involing the command below:
+	       "mkbingram -d oldbinary newbinary"
+       Please note that since mkbingram now output the new format
+       file, it can not be read by older Julius.
+       The binary N-gram file version can be detected by the first 17
+       bytes of the file: old format should be "julius_bingram_v3" and
+       new format should be "julius_bingram_v4".
+     - Byte order of audio stream via tcpip fixed to LITTLE ENDIAN.
+     - Now use built-in zlib by default for compressed files.  This may
+       make the engine startup slower, and if you prefer, you can still
+       use the previous method using external gzip command by specifying
+       "--disable-zlib".
+     - (Windows) Changed the compilation procedure on VC++.  You can build
+       Julian by only specifying "-DBUILD_JULIAN" at compiler option,
+       and do not need to alter "julius.h".
+</pre>
+<u>3.4.2</u> (2004.05.07)
+<pre>- New option "-rejectshort msec" to reject short input.
+- More stable PAUSE/RESUME on module mode with adinnet input.
+- Bug fixes:
+  - Memory leak on very short input.
+  - Missing Nth result when small vocabulary is used.
+  - Hang up of "generate" on small grammar.
+- Cosmetic changes:
+  - Cleanup codes to confirm for 'gcc -Wall'.
+  - Update of config.guess and config.sub.
+  - Update of copyright to 2004.
+</pre>
+<u>3.4.1</u> (2004.02.25)
+<pre>- Search algorithm is slightly modified to make search more stable at
+  of 2nd pass.  These modification are enabled by default, and
+  MAY IMPROVE THE RECOGNITION ACCURACY as compared with older versions.
+  - fixed overcounting of LM score for the expanded word.
+  - new inter-word triphone approximation (-iwcd1 best #) on 1st
+    pass.  This new algorithm now becomes default.
+- Newly supports binary HMM (original format, not compatible with HTK).
+  A tool "mkbinhmm" converts a hmmdefs(ascii) file to the binary format.
+- MFCC computation becomes faster by sin/cos table lookup.
+- Bugs below have been fixed:
+  - (-input adinnet) recognition does not start immediately after speech
+		     inputs begin when using adinnet client.
+  - (-input adinnet) together with module mode, speech input cannot
+		     stop by pause/terminate command.
+  - (-input adinnet) unneccesary fork when connecting with adinnet client.
+  - (-input rawfile) error in reading wave files created by Windows
+                     sound recorder.
+  - (CMN) CMN was applied any time even when acoustic models does not want.
+  - (AM) numerous messages in case of missing triphone errors at startup.
+  - (adintool) immediately exit after single file input.
+  - (sp-segment) fixed many bugs relating short pause word and LM
+  - (sp-segment) wow it works with microphone input.
+  - (-[wps]align) memory leak on continuous input.
+- Add option to remove DC offset from speech input (option -zmean).
+- (-module) new output message:
+  '&lt;INPUTPARAM FRAMES="input_frame_length" MSEC="length_in_msec"&gt;'
+- Optional feature "Search Space Visualization" is added (--enable-visualize)
+- HTML documentations greatly revised in doc.
+
+New argument: "-iwcd1 best #" "-zmean"
+New configure option: "--disable-lmfix", "--enable-visualize"
+</pre>
+<u>3.4</u> (2003.10.01)
+<pre>- Confidence measure support
+  - New parameter "-cmalpha" as smoothing coef.
+  - New command "-outcode C" to output CM in module output
+  - Can be disabled by configure option "--disbale-cm"
+  - Can use an alternate CM algorithm by configure option "--enable-cm-nbest"
+- Class N-gram support
+  - Can be disabled by configure option "--disable-class-ngram"
+  - Factoring basis changed from N-gram entry to dictionary word
+- WAV format recording in "adinrec", "adintool" and "-record" option
+- Modified output message
+    startup messages,
+    engine configuration message in --version and --help,
+- Fixes:
+    some outputs in module mode,
+    bug in only several frame input (realtime-1stpass.c),
+    long silence at end of segmented speech
+    miscompilation with NetAudio,
+    word size check in binary N-gram,
+    bug in acoustic computation (gprune_none.c).
+    "-version" -&gt; "-setting", "-hipass" -&gt; "-hifreq", "-lopass" -&gt; "-lofreq"
+</pre>
+<u>3.3p4</u> (2003.05.06)
+<pre>- Fixes around audio input:
+  - Fix segfault/hangup when microphone input runs for a long period.
+  - Fix client hangup when input speech is too long in module mode.
+    (now send an buffer overflow message to the client instead of hangup)
+  - Fix audio buffering for very short input (&lt;1000 samples).
+  - Fix blocking in tcpip adin.
+- Some cosmetic changes (jcontrol, LOG_TEN, etc.)
+</pre>
+<u>3.3p3</u> (2003.01.10)
+<pre>- New inter-word short pause handling:
+  - [Julius] New option added for short pause handling.  Specifying
+    "-iwspword" adds a short-pause word entry, namely "<unk> [sp] sp sp",
+    to the dictionary.  The entry content to be changed by using "-iwspentry".
+  - [multi-path] Supports inter-word context-free short pause handling.
+    "-iwsp" option automatically appends a skippable short pause model at
+    every word end.  The added model will also be ignored in context
+    modeling.  The short pause model to be appended by "-iwsp" can be
+    specified by "-spmodel" options.  See documents for details.
+- Fixes for audio input:
+   - Input delay improved: the initial response to mic input now
+     becomes much faster than previous versions (200ms -&gt; 50ms approx.).
+   - Would not block when other process is using the audio device, but
+     just output error and exit.
+   - Update support for libsndfile-1.0.x.
+   - Update support for ALSA-0.9.x 
+     (to use this, add "--with-mictype=alsa" to configure option.)
+</unk></pre>
+<u>patch for libsndfile-1.0.x</u> (2002.11.19)
+<pre>- This patch fixes compilation error with libsndfile &gt; 1.0.x.
+</pre>
+<u>3.3p2</u> (2002.11.18)
+<pre>- Newly supports model-skip transition.  From this version, you can
+  use "any" type of state transition in HTK format for acoustic model.
+  (see Bugs above for limitation).
+- add new feature: "-record dir" records speech inputs sucessively
+  into the specified directory.
+- fix segfault on Solaris with "-input mfcfile".
+- fix adin-cut bug when using module mode and adinnet together.
+- fix output flush after last recognition output.
+</pre>
+<u>3.3p1</u> (2002.10.15)
+<pre>Fixed the following bugs:
+- Fixed incorrect default value of language weights for second pass (-lmp2).
+- Fixed sometimes read failure of dictionary file.
+- Fixed wrong output of "-separatescore" together with monophone
+model.
+
+</pre>
+<u>3.3</u> (2002.09.12)
+<pre>The updates and new features from rev.3.2 is as shown below.
+
+- New features added:
+	- Server module mode - control Julius (input on/off, grammar switching)
+	  from other client process via network.
+	- Online grammar changing and multi-grammar recognition supported.
+- Noise robustness:
+	- Spectral subtraction incorporated.
+- Support more variety of acoustic models:
+	- "multi-path version" is available that allows any transition
+	   including loop, skip and parallel transition.
+- A little improvement of recognition performance by bug fixes
+- Other minor extensions (CMN parameter saving, etc.)
+- Many bug fixes
+
+English documents are available in
+  o online manuals (will be installed by default), and
+  o Translated full documentation in PDF format: Julius-3.2-book-e.pdf.
+We are sorry that current release contains only documents for old rev.3.2.
+We are now working to update it to catch up with the current rev.3.3 version.
+</pre>
+
+<hr>
+
+<div align="right">
+$Id: index.html,v 1.7 2007/08/03 11:17:23 forsteri Exp $
+</div>
+

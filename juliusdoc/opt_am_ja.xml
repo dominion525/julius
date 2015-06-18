@@ -1,0 +1,700 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<refsect2 id='opt_am'>
+<title>
+  音響モデルおよび特徴量抽出 (<option>-AM</option>) (<option>-AM_GMM</option>)
+</title>
+<refsect3 id='opt_am_model'><title>音響HMM関連</title>
+<variablelist>
+  <varlistentry>
+    <term>
+      <option>
+	-h
+      </option>
+      <replaceable>hmmdef_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	使用するHMM定義ファイル．HTK の ASCII 形式ファイル，あるいは
+	Julius バイナリ形式のファイルのどちらかを指定する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-hlist
+      </option>
+      <replaceable>hmmlist_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	HMMlistファイルを指定する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-tmix
+      </option>
+      <replaceable>number</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Gaussianpruning の計算状態数を指定する．小さ
+	いほど計算が速くなるが，音響尤度の誤差が大きくなる．See also
+	<option>-gprune</option>.  (default: 2)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-spmodel
+      </option>
+      <replaceable>name</replaceable>
+    </term>
+    <listitem>
+      <para>
+	文中のショートポーズに対応する音韻HMMの名前を指定する．このポーズ
+	モデル名は，<option>-iwsp</option>, <option>-spsegment</option>,
+	<option>-pausemodels</option>に関係する．また，文法使用時に
+	スキップ可能なポーズ単語エントリの識別にも用いられる．
+	(default: "sp")
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-multipath
+      </option>
+      <option>
+	-nomultipath
+      </option>
+    </term>
+    <listitem>
+      <para>
+	状態間遷移を拡張するマルチパスモードを有効にする．オプション指
+	定がない場合，Julius は音響モデルの遷移をチェックし，必要であ
+	れば自動的にマルチパスモードを有効にする．このオプションは，ユー
+	ザが明示的にモードを指定したい場合に使用する．
+      </para>
+      <para>
+	この機能は 3.x ではコンパイル時オプションであったが，4.0 より
+	実行時オプションとなった．(rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gprune
+      </option>
+      <literal>
+	{safe|heuristic|beam|none|default}
+      </literal>
+    </term>
+    <listitem>
+      <para>
+	使用する Gaussian pruning アルゴリズムを選択する．
+	<literal>none</literal>を指定すると Gaussian pruning を無効化
+	しすべてのガウス分布について厳密に計算する．
+	<literal>safe</literal> は上位 N 個を計算する． 
+	<literal>heuristic</literal> と <literal>beam</literal> はsafe 
+	に比べてより積極的な枝刈りを行うため計算量削減の効果が大きいが，
+	認識精度の低下を招く可能性がある．<literal>default</literal>が
+	指定された場合，デフォルトの手法を使う．(default: tied-mixture
+	model の場合，standard 設定では<literal>safe</literal>，fast設
+	定では<literal>beam</literal>．tied-mixture でない場合 
+	<literal>none</literal>).
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-iwcd1
+      </option>
+      <literal>
+	{max|avg|best number}
+      </literal>
+    </term>
+    <listitem>
+      <para>
+	第1パスの単語間トライフォン計算法を指定する．
+	<literal>max</literal> 指定時，同じコンテキストのトライフォン集合の
+	全尤度の最大値を近似尤度として用いる．<literal>avg</literal> は
+	全尤度の平均値を用いる．<literal>best number</literal> は上位 N 個の
+	トライフォンの平均値を用いる．
+	デフォルトは，一緒に使用される言語モデルに依存する．N-gram使用
+	時には <literal>best 3</literal>，文法使用時は
+	<literal>avg</literal>となる．もしこの音響モデルが異なるタイプの
+	複数の言語モデルで共有される場合は，後に定義されたほうのデフォルトが
+	デフォルト値として用いられる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-iwsppenalty
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	<option>-iwsp</option>によって末尾に付加される単語末ショートポー
+	ズの挿入ペナルティ．ここで指定した値が，通常単語の末尾から単語
+	末ショートポーズへの遷移に追加される．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gshmm
+      </option>
+      <replaceable>hmmdef_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Gaussian Mixture Selection 用のモノフォン音響モデルを指定する．
+	GMS用モノフォンは通常のモノフォンから 
+	<command>mkgshmm</command> によって生成できる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gsnum
+      </option>
+      <replaceable>number</replaceable>
+    </term>
+    <listitem>
+      <para>
+	GMS 使用時，対応するトライフォンを詳細計算するモノフォンの
+	状態の数を指定する． (default: 24)
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+</refsect3>
+<refsect3 id='opt_analysis'>
+<title>
+  特徴量抽出パラメータ
+</title>
+<variablelist>
+  <varlistentry>
+    <term>
+      <option>
+	-smpPeriod
+      </option>
+      <replaceable>period</replaceable>
+    </term>
+    <listitem>
+      <para>
+	音声のサンプリング周期を指定する．単位は，100ナノ秒の単位で指
+	定する．サンプリング周期は <option>-smpFreq</option> でも指定
+	可能．(default: 625)
+      </para>
+      <para>
+	このオプションは HTK の
+	<literal>SOURCERATE</literal>
+	に対応する．同じ値が指定できる．
+      </para>
+      <para>
+	複数の音響モデルを用いる場合，全インスタンスで共通の値を指定する必要
+	がある．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-smpFreq
+      </option>
+      <replaceable>Hz</replaceable>
+    </term>
+    <listitem>
+      <para>
+	音声のサンプリング周波数 (Hz) を指定する．(default: 16,000)
+      </para>
+      <para>
+	複数の音響モデルを用いる場合，全インスタンスで共通の値を指定する必要
+	がある．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-fsize
+      </option>
+      <replaceable>sample_num</replaceable>
+    </term>
+    <listitem>
+      <para>
+	窓サイズをサンプル数で指定 (default: 400)．
+      </para>
+      <para>
+	このオプションは HTK の
+	<literal>WINDOWSIZE</literal>
+	に対応する．ただし値はHTKと異なり，(HTKの値 / smpPeriod) となる．
+      </para>
+      <para>
+	複数の音響モデルを用いる場合，全インスタンスで共通の値を指定する必要
+	がある．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-fshift
+      </option>
+      <replaceable>sample_num</replaceable>
+    </term>
+    <listitem>
+      <para>
+	フレームシフト幅をサンプル数で指定 (default: 160)．
+      </para>
+      <para>
+	このオプションは HTK の
+	<literal>TARGETRATE</literal>	に対応する．ただし値はHTKと異なり，(HTKの値 / smpPeriod) となる．
+      </para>
+      <para>
+	複数の音響モデルを用いる場合，全インスタンスで共通の値を指定する必要
+	がある．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-preemph
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	プリエンファシス係数 (default: 0.97)
+      </para>
+      <para>
+	このオプションは HTK の
+	<literal>PREEMCOEF</literal>
+	に対応する．同じ値が指定できる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-fbank
+      </option>
+      <replaceable>num</replaceable>
+    </term>
+    <listitem>
+      <para>
+	フィルタバンクチャンネル数．(default: 24)
+      </para>
+      <para>
+	このオプションは HTK の
+	<literal>NUMCHANS</literal>
+	に対応する．同じ値が指定できる．指定しないときのデフォルト値が
+	HTKと異なっていることに注意（HTKでは22）．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-ceplif
+      </option>
+      <replaceable>num</replaceable>
+    </term>
+    <listitem>
+      <para>
+	ケプストラムのリフタリング係数. (default: 22)
+      </para>
+      <para>
+	このオプションは HTK の
+	<literal>CEPLIFTER</literal>
+	に対応する．同じ値が指定できる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-rawe
+      </option>
+    </term>
+    <term>
+      <option>
+	-norawe
+      </option>
+    </term>
+    <listitem>
+      <para>
+	エネルギー項の値として，プリエンファシス前の raw energy を使用
+	する / しない (default: disabled=使用しない)
+      </para>
+      <para>
+	このオプションは HTK の
+	<literal>RAWENERGY</literal>
+	に対応する．
+	指定しないときのデフォルトがHTKと異なっていることに注意（HTKで
+	はenabled)．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-enormal
+      </option>
+    </term>
+    <term>
+      <option>
+	-noenormal
+      </option>
+    </term>
+    <listitem>
+      <para>
+	エネルギー項の値として，発話全体の平均で正規化した正規化エネルギー
+	を用いるかどうかを指定する．(default: -noenormal)
+      </para>
+      <para>
+	このオプションは HTK の
+	<literal>ENORMALISE</literal>
+	に対応する．
+	指定しないときのデフォルトがHTKと異なっていることに注意（HTKで
+	はenabled)．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-escale
+      </option>
+      <replaceable>float_scale</replaceable>
+    </term>
+    <listitem>
+      <para>
+	エネルギー正規化時の，対数エネルギー項のスケーリング係数．
+	(default: 1.0)
+      </para>
+      <para>
+	このオプションは HTK の
+	<literal>ESCALE</literal>
+	に対応する．デフォルト値がHTKと異なっていることに注意（HTKでは 0.1）．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-silfloor
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	エネルギー正規化時の，無音部のエネルギーのフロアリング値．
+	(default: 50.0)
+      </para>
+      <para>
+	このオプションは HTK の
+	<literal>SILFLOOR</literal>
+	に対応する．同じ値が指定できる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-delwin
+      </option>
+      <replaceable>frame</replaceable>
+    </term>
+    <listitem>
+      <para>
+	一次差分計算用のウィンドウフレーム幅．(default: 2)
+      </para>
+      <para>
+	このオプションは HTK の
+	<literal>DELTAWINDOW</literal>
+	に対応する．同じ値が指定できる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-accwin
+      </option>
+      <replaceable>frame</replaceable>
+    </term>
+    <listitem>
+      <para>
+	二次差分計算用のウィンドウフレーム幅．(default: 2)
+      </para>
+      <para>
+	このオプションは HTK の
+	<literal>ACCWINDOW</literal>
+	に対応する．同じ値が指定できる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-hifreq
+      </option>
+      <replaceable>Hz</replaceable>
+    </term>
+    <listitem>
+      <para>
+	MFCCのフィルタバンク計算時におけるバンド制限を有効化する．この
+	オプションではカットオフ周波数の上限値を指定する．
+	-1 を指定することで無効化できる．(default: -1)
+      </para>
+      <para>
+	このオプションは HTK の
+	<literal>HIFREQ</literal>
+	に対応する．同じ値が指定できる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-lofreq
+      </option>
+      <replaceable>Hz</replaceable>
+    </term>
+    <listitem>
+      <para>
+	MFCCのフィルタバンク計算時におけるバンド制限を有効化する．この
+	オプションではカットオフ周波数の下限値を指定する．
+	-1 を指定することで無効化できる．(default: -1)
+      </para>
+      <para>
+	このオプションは HTK の
+	<literal>LOFREQ</literal>
+	に対応する．同じ値が指定できる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-zmeanframe
+      </option>
+    </term>
+    <term>
+      <option>
+	-nozmeanframe
+      </option>
+    </term>
+    <listitem>
+      <para>
+	窓単位の直流成分除去を有効化／無効化する．
+	(default: disabled)
+      </para>
+      <para>
+	このオプションは HTK の
+	<literal>ZMEANSOURCE</literal>
+	に対応する．<option>-zmean</option> も参照のこと．
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_cmn'><title>実時間ケプストラム平均正規化</title>
+<variablelist>
+  <varlistentry>
+    <term>
+      <option>
+	-cmnload
+      </option>
+      <replaceable>file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	起動時にケプストラム平均ベクトルを
+	<replaceable>file</replaceable>から読み込む．ファイルは 
+	<option>-cmnsave</option> で保存されたファイルを指定する．これ
+	は MAP-CMN において，起動後最初の発話においてケプストラム平均
+	の初期値として用いられる．通常，2発話目以降は初期値は，直前の
+	入力の平均に更新されるが，<option>-cmnnoupdate</option>を指定
+	された場合，常にこのファイルの値が各発話の初期値として用いられ
+	る．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-cmnsave
+      </option>
+      <replaceable>file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	認識中に計算したケプストラム平均ベクトルを 
+	<replaceable>file</replaceable>へ保存する．すでにファイルがあ
+	る場合は上書きされる．この保存は音声入力が行われるたびに上書きで
+	行われる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-cmnupdate
+      </option>
+      <option>
+	-cmnnoupdate
+      </option>
+    </term>
+    <listitem>
+      <para>
+	実時間認識時，初期ケプストラム平均を入力ごとに更新するかどうか
+	を指定する．通常は有効 (<option>-cmnupdate</option>) であり，
+	過去5秒間の入力の平均を初期値として更新する．
+	<option>-cmnnoupdate</option> が指定された場合，更新は行われず，
+	初期値は起動時の値に固定される．<option>-cmnload</option> で初期値
+	を指定することで，常に同じ初期値を使うようにすることができる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-cmnmapweight
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	MAP-CMN の初期ケプストラム平均への重みを指定する．値が大きいほ
+	ど初期値に長時間依存し，小さいほど早く現入力のケプストラム平均
+	を用いるようになる．(default: 100.0)
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_ss'><title>スペクトルサブトラクション</title>
+<variablelist>
+  <varlistentry>
+    <term>
+      <option>
+	-sscalc
+      </option>
+    </term>
+    <listitem>
+      <para>
+	入力先頭の無音部を用いて，入力全体に対してスペクトルサブトラク
+	ションを行う．先頭部の長さは<option>-sscalclen</option>で指定する．
+	ファイル入力に対してのみ有効である．<option>-ssload</option> と
+	同時に指定できない．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-sscalclen
+      </option>
+      <replaceable>msec</replaceable>
+    </term>
+    <listitem>
+      <para>
+	<option>-sscalc</option>オプション指定時，各ファイルにおいて
+	ノイズスペクトルの推定に用いる長さをミリ秒で指定する．(default: 300)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-ssload
+      </option>
+      <replaceable>file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	ノイズスペクトルを<replaceable>file</replaceable>から読み込ん
+	でスペクトルサブトラクションを行う．
+	<replaceable>file</replaceable>はあらかじめ 
+	<command>mkss</command>で作成する．マイク入力・ネットワーク入
+	力などのオンライン入力でも適用できる．<option>-sscalc</option>と
+	同時に指定できない．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-ssalpha
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	<command>-sscalc</command>および<command>-ssload</command>用の
+	減算係数を指定する．この値が大きいほど強くスペクトル減算を行うが，
+	減算後の信号の歪も大きくなる．(default: 2.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-ssfloor
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	スペクトルサブトラクションのフロアリング係数を指定する．スペク
+	トル減算時，計算の結果パワースペクトルが負となってしまう帯域に
+	対しては，原信号にこの係数を乗じたスペクトルが割り当てられる．
+	 (default: 0.5)
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_am_misc'><title>その他の音響モデル関連オプション</title>
+<variablelist>
+  <varlistentry>
+    <term>
+      <option>
+	-htkconf
+      </option>
+      <replaceable>file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	HTK Config ファイルを解析して，対応する特徴量抽出オプションを 
+	Julius に自動設定する．<replaceable>file</replaceable> は HTK 
+	で音響モデル学習時に使用した Config ファイルを指定する．なお，
+	Julius と HTK ではパラメータのデフォルト値が一部異なるが，
+	このオプションを使用する場合，デフォルト値も HTK のデフォルト
+	に切替えれられる．
+      </para>
+    </listitem>
+  </varlistentry>
+</variablelist>
+</refsect3>
+
+</refsect2>

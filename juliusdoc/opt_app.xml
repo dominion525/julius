@@ -1,0 +1,166 @@
+<refsect2 id='opt_app'>
+<title>
+  Julius application option
+</title>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-outfile
+      </option>
+    </term>
+    <listitem>
+      <para>
+	On file input, this option write the recognition result of each file
+	to a separate file.  The output file of an input file will be the same
+	name but the suffix will be changed to ".out".  (rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-separatescore
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Output the language and acoustic scores separately.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-callbackdebug
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Print the callback names at each call for debug.  (rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-charconv
+      </option>
+      <replaceable>from</replaceable>
+      <replaceable>to</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Print with character set conversion.
+	<replaceable>from</replaceable> is the source character set
+	used in the language model, and <replaceable>to</replaceable>
+	is the target character set you want to get.
+      </para>
+      <para>
+	On Linux, the arguments should be a code name.  You can obtain
+	the list of available code names by invoking the command
+	"iconv --list".  On Windows, the arguments should be a code
+	name or codepage number.  Code name should be one of "ansi",
+	"mac", "oem", "utf-7", "utf-8", "sjis", "euc".  Or you can
+	specify any codepage number supported at your
+	environment.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nocharconv
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Disable character conversion.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-module
+      </option>
+      <literal>[port]</literal>
+    </term>
+    <listitem>
+      <para>
+	Run Julius on "Server Module Mode".  After startup, Julius
+	waits for tcp/ip connection from client.  Once connection is
+	established, Julius start communication with the client to
+	process incoming commands from the client, or to output
+	recognition results, input trigger information and other
+	system status to the client.  The default port number is
+	10500.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-record
+      </option>
+      <replaceable>dir</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Auto-save all input speech data into the specified directory.
+	Each segmented inputs are recorded each by one.  The file name
+	of the recorded data is generated from system time when the
+	input ends, in a style of
+	<literal>YYYY.MMDD.HHMMSS.wav</literal>.  File format is 16bit
+	monoral <acronym>WAV</acronym>.  Invalid for mfcfile input.
+      </para>
+      <para>
+	With input rejection by <option>-rejectshort</option>, the
+	rejected input will also be recorded even if they are
+	rejected.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-logfile
+      </option>
+      <replaceable>file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Save all log output to a file instead of standard output.  (Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nolog
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Disable all log output.  (Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-help
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Output help message and exit.
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+
+</refsect2>

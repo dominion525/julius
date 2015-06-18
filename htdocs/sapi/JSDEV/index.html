@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=EUC-JP">
+<title>
+Julius for SAPI 開発キット
+</title>
+</head>
+<body>
+<h1>Julius for SAPI 開発キット</h1>
+
+<h2>ダウンロード</h2>
+
+<a href="Julius_SAPI_2_2_Develop.zip">ver 2.2 開発キット</a>
+
+<h2>使用方法</h2>
+
+次のものを用意します。
+<ul>
+<li>Visual Studio .NET
+<li>Speech SDK 5.1
+<li>Julius for SAPI 開発キット
+<li>zlib 1.1.4
+</ul>
+
+<p>
+Julius for SAPI 開発キットを展開し、JuliusSAPI_Develop 以下に zlib-1.1.4 という
+ディレクトリで zlib 1.1.4 を展開し、JuliusSAPI.sln を、VisualStudio .NET で開きます。
+パッケージに含まれていないプロジェクトもソリューションに登録されていますので、
+プロジェクトがない旨のダイアログが表示されますが、無視して OK を押します。
+<p>
+Visual Studio .NET の設定で、Speech SDK 5.1 のインクルードファイルとライブラリファイル
+を正しく指定します。
+<p>
+構成を ReleaseMinDependency にして、JuliusSAPI をコンパイルします。
+</body>
+</html>

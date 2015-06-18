@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<refsect2 id='opt_lm'>
+<title>
+  言語モデル (<option>-LM</option>)
+</title>
+
+<refsect3 id='opt_ngram'><title>N-gram</title>
+
+<para>
+  N-gramを指定した場合，その言語処理インスタンスはN-gramに基づく認識を
+  行う．認識のためには，単語N-gramおよび認識用辞書を指定する．
+</para>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-d
+      </option>
+      <replaceable>bingram_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	使用するN-gramをバイナリファイル形式で指定する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nlr
+      </option>
+      <replaceable>arpa_ngram_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	前向き (left-to-right) のN-gram 言語モデルを指定する．
+	<replaceable>arpa_ngram_file</replaceable> はARPA標準形式のファ
+	イルである必要がある．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nrl
+      </option>
+      <replaceable>arpa_ngram_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	後ろ向き (right-to-left) のN-gram 言語モデルを指定する．
+	<replaceable>arpa_ngram_file</replaceable> はARPA標準形式のファ
+	イルである必要がある．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-v
+      </option>
+      <replaceable>dict_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	N-gram，または文法用の単語辞書ファイルを指定する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-silhead
+      </option>
+      <replaceable>word_string</replaceable>
+      <option>
+	-siltail
+      </option>
+      <replaceable>word_string</replaceable>
+    </term>
+    <listitem>
+      <para>
+	音声入力両端の無音区間に相当する「無音単語」エントリを指定する．
+	単語の読み（N-gramエントリ名），あるいは"#"+単語番号（辞書ファ
+	イルの行番号-1）で指定する．デフォルトはそれぞれ "&lt;s&gt;",
+	"&lt;/s&gt;" である．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-iwspword
+      </option>
+    </term>
+    <listitem>
+      <para>
+	ポーズに対応する無音単語を辞書に追加する．追加される単語の内容は
+	オプション<option>-iwspentry</option>で変更できる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-iwspentry
+      </option>
+      <replaceable>word_entry_string</replaceable>
+    </term>
+    <listitem>
+      <para>
+	<option>-iwspword</option>指定時に追加される単語エントリの内容
+	を指定する．辞書エントリと同じ形式で指定する．(default: "&lt;UNK&gt; [sp] sp sp")
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-sepnum
+      </option>
+      <replaceable>number</replaceable>
+    </term>
+    <listitem>
+      <para>
+	木構造化辞書の構築時に線形登録する単語数を指定する．(default: 150)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+
+</refsect3>
+
+
+<refsect3 id='opt_grammar'><title>文法</title>
+
+<para>
+<option>-gram</option>や<option>-gramlist</option>で文法を複数回指定す
+ることで，一つのインスタンス内で複数の文法を用いることができる．
+（旧Juliusのオプション <option>-dfa</option>, <option>-v</option> の
+組合せは単一の文法のみ指定可能である）
+</para>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-gram
+      </option>
+      <literal>
+	gramprefix1[,gramprefix2[,gramprefix3,...]]	
+      </literal>
+    </term>
+    <listitem>
+      <para>
+	認識に使用する文法を指定する．文法はファイル（辞書および構文制約
+	有限オートマトン）のプレフィックスで指定する．すなわち，ある認
+	識用文法が<filename>dir/foo.dict</filename>と
+	<filename>dir/foo.dfa</filename> としてあるとき，
+	<literal>dir/foo</literal>のように拡張子を省いた名前で指定する．
+	文法はコンマで区切って複数指定することができる．また繰り返し
+	使用することでも複数指定できる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gramlist
+      </option>
+      <replaceable>list_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	認識に使用する文法のリストをファイルで指定する．
+	<replaceable>list_file</replaceable>には，
+	<option>-gram</option> と同様の文法プレフィックスを1行に１つず
+	つ記述する．また，このオプションを繰り返し使用することで，複数
+	のリストファイルを指定できる．なお，リスト内で文法を相対パスで
+	指定した場合，それは，そのリストファイルからの相対パスとして解
+	釈されることに注意が必要である．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-dfa
+      </option>
+      <replaceable>dfa_file</replaceable>
+      <option>
+	-v
+      </option>
+      <replaceable>dict_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	認識に使用する文法の構文制約オートマトンと辞書をそれぞれ指定する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nogram
+      </option>
+    </term>
+    <listitem>
+      <para>
+	それまでに
+	<option>-gram</option>，<option>-gramlist</option>，
+	<option>-dfa</option> および <option>-v</option> で
+	指定された文法のリストをクリアし，文法の指定なしの状態
+	にする．
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+
+</refsect3>
+
+<refsect3 id='opt_word'><title>単単語</title>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-w
+      </option>
+      <replaceable>dict_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	単単語認識で用いる単語辞書を指定する．ファイル形式は単語N-gram
+	や文法と同一である．辞書上の全ての単語が認識対象となる．
+	(Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-wlist
+      </option>
+      <replaceable>list_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	単語辞書のリストを指定する．<replaceable>list_file</replaceable>
+	には1行に一つずつ，使用する単語辞書のパスを記述する．相対パスを
+	用いた場合，それはその<replaceable>list_file</replaceable>から
+	の相対パスとして解釈される． (Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nogram
+      </option>
+    </term>
+    <listitem>
+      <para>
+	それまでに
+	<option>-w</option> あるいは <option>-wlist</option>で
+	指定された辞書のリストをクリアし，指定なしの状態に戻す．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-wsil
+      </option>
+      <replaceable>head_sil_model_name</replaceable>
+      <replaceable>tail_sil_model_name</replaceable>
+      <replaceable>sil_context_name</replaceable>
+    </term>
+    <listitem>
+      <para>
+	単単語認識時，音声入力の両端の無音モデルおよびそのコンテキスト
+	名を指定する．
+	<replaceable>sil_context_name</replaceable>として
+	<literal>NULL</literal>を指定した場合，各モデル名がそのまま
+	コンテキストとして用いられる．
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+
+</refsect3>
+
+<refsect3 id='opt_userlm'><title>User-defined LM</title>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-userlm
+      </option>
+    </term>
+    <listitem>
+      <para>
+	プログラム中のユーザ定義言語スコア計算関数を使用することを宣言
+	する．(Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+
+</refsect3>
+
+<refsect3 id='opt_lm_misc'><title>その他の言語モデル関連</title>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-forcedict
+      </option>
+    </term>
+    <listitem>
+      <para>
+	単語辞書読み込み時のエラーを無視する．通常Juliusは単語辞書内に
+	エラーがあった場合そこで動作を停止するが，このオプションを
+	指定することで，エラーの生じる単語をスキップして処理を続行する
+	ことができる．
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+
+</refsect3>
+
+</refsect2>

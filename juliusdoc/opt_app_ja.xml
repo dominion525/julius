@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<refsect2 id='opt_app'>
+<title>
+  Julius アプリケーションオプション
+</title>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-outfile
+      </option>
+    </term>
+    <listitem>
+      <para>
+	認識結果を個別のファイルに出力する．入力ファイルごとの認識結果を，
+	その拡張子を ".out" に変えたファイルに保存する． (rev. 4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-separatescore
+      </option>
+    </term>
+    <listitem>
+      <para>
+	認識結果で言語スコアと音響スコアを個別に出力する．指定しない場
+	合，和の値が認識結果のスコアとして出力される．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-callbackdebug
+      </option>
+    </term>
+    <listitem>
+      <para>
+	コールバックがJuliusLibから呼ばれたときにコールバック名を
+	標準出力に出力する．デバッグ用である．(rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-charconv
+      </option>
+      <replaceable>from</replaceable>
+      <replaceable>to</replaceable>
+    </term>
+    <listitem>
+      <para>
+	出力で文字コードの変換を行う．<replaceable>from</replaceable> 
+	は言語モデルの文字セットを，<replaceable>to</replaceable> は出
+	力の文字セットを指定する．文字セットは，Linux では
+	<literal>iconv</literal> で用いられるコード名である．Windows 
+	では，コードページ番号あるいはいかに示すコード名のどれかである：
+	<literal>ansi</literal>, <literal>mac</literal>,
+	<literal>oem</literal>, <literal>utf-7</literal>,
+	<literal>utf-8</literal>, <literal>sjis</literal>,
+	<literal>euc</literal>．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nocharconv
+      </option>
+    </term>
+    <listitem>
+      <para>
+	文字コード変換を行わない．<option>-charconv</option> の指定を
+	リセットする．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-module
+      </option>
+      <literal>[port]</literal>
+    </term>
+    <listitem>
+      <para>
+	Julius を「サーバモジュールモード」で起動する．TCP/IP 経由でク
+	ライアンとやりとりし，処理の制御や認識結果・イベントの通知が行
+	える．<literal>port</literal> はポート番号であり，省略時は 
+	10500 が用いられる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-record
+      </option>
+      <replaceable>dir</replaceable>
+    </term>
+    <listitem>
+      <para>
+	区間検出された入力音声をファイルに逐次保存する．
+	<replaceable>dir</replaceable>は保存するディレクトリを指定する．
+	ファイル名は，それぞれの処理終了時のシステム時間から
+	<literal>YYYY.MMDD.HHMMSS.wav</literal>の形で保存される．ファ
+	イル形式は16bit, 1チャンネルの<acronym>WAV</acronym>形式である．
+	なお，入力がGMM等によって棄却された場合も記録される．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-logfile
+      </option>
+      <replaceable>file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	通常 Julius は全てのログ出力を標準出力に出力する．
+	このオプションを指定することで，それらの出力を指定ファイルに
+	切替えることができる．(Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nolog
+      </option>
+    </term>
+    <listitem>
+      <para>
+	ログ出力を禁止する．標準出力には何も出力されなくなる．
+	(Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-help
+      </option>
+    </term>
+    <listitem>
+      <para>
+	エンジン設定，オプション一覧などのヘルプを出力して終了する．
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+
+</refsect2>

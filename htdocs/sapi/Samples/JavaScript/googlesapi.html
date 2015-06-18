@@ -1,0 +1,48 @@
+<HTML>
+	<HEAD>
+		<TITLE>Google SAPI</TITLE>
+		<SCRIPT LANGUAGE="JavaScript">
+<!--
+var Recog = new ActiveXObject("Sapi.SpSharedRecognizer");
+var Ctxt = Recog.CreateRecoContext();
+Ctxt.EventInterests = 16;	// SRERecognition
+var GramDict = Ctxt.CreateGrammar(0);
+GramDict.DictationLoad();
+GramDict.DictationSetState(1);
+//-->
+		</SCRIPT>
+	</HEAD>
+	<BODY>
+		<H1>Google SAPI</H1>
+		<!-- http://www.google.co.jp/intl/ja/searchcode.html より -->
+		<!-- Google  -->
+		<center>
+			<FORM name="mainform" method="get" action="http://www.google.com/search">
+				<TABLE bgcolor="#ffffff">
+					<tr>
+						<td>
+							<A HREF="http://www.google.com/"><IMG SRC="http://www.google.com/logos/Logo_40wht.gif" border="0" ALT="Google" align="absMiddle"></A>
+							<INPUT TYPE="text" name="q" size="31" maxlength="255"> <input type="hidden" name="hl" value="ja">
+							<INPUT type="submit" name="btnG" VALUE="Google 検索">
+						</td>
+					</tr>
+				</TABLE>
+			</FORM>
+		</center>
+		<!-- Google -->
+		<SCRIPT>
+<!--
+// 認識完了時のイベントハンドラ
+function Ctxt::Recognition(StreamNum, StreamPos, RecogType, Result)
+{
+	mainform.q.value = Result.PhraseInfo.GetText();
+}
+//-->
+		</SCRIPT>
+		<P>
+			<hr>
+		</P>
+		<P>SAPIのディクテーション機能を利用し、ディクテーションの結果をフォームに出力するサンプルです。</P>
+		<P>&nbsp;</P>
+	</BODY>
+</HTML>

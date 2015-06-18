@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GRAMMAR>
+<RULE name="Shinkansen_Main" toplevel="ACTIVE">
+  <L>
+    <P>
+      <RULEREF name="Station" url="./stations.xml" propname="orig" />
+      <P>から</P>
+      <RULEREF name="Station" url="./stations.xml" propname="dest" />
+      <P>まで</P>
+    </P>
+  </L>
+</RULE>
+</GRAMMAR>

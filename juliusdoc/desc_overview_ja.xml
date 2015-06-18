@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<chapter id='desc_overview'>
+<title>連続音声認識エンジンJulius</title>
+
+<epigraph>
+<para>
+Julius は，音声認識システムの開発・研究のためのオープンソースの高性能
+な汎用大語彙連続音声認識エンジンである．数万語彙の連続音声認識を一般の
+PC 上でほぼ実時間で実行できる．また，高い汎用性を持ち，発音辞書や言語
+モデル・音響モデルなどの音声認識の各モジュールを組み替えることで，様々
+な幅広い用途に応用できる．また，Juliusはオープンソースソフトウェアであり，
+ソースコードを含めて誰でも無償で入手することができる．
+本章では，Julius の概要について述べる．
+</para>
+</epigraph>
+
+<sect1><title>アルゴリズム</title>
+<para>
+Julius の認識処理は2パス構成です．まず第1パスで入力全体を完全に処理し，
+中間結果を出力します．モデルは単語2-gramと単語HMMの木構造ネットワーク
+を用います．解探索はleft-to-rightにフレーム同期ビーム探索を行います．
+第2パスでは3-gramを用いて逆向きに探索を行い，より精度の高い認識結果を
+求めます．第1パスの中間結果を絞り込み＋先読み情報として用い，単語単位
+のスタックデコーディングを行います．
+</para>
+</sect1>
+
+<sect1><title>利用許諾</title>
+<para>
+Juliusはオープンソースソフトウェアであり，無償で利用可能である．
+使用許諾条件は独自のものであるが，BSDライセンスに近く，以下のような
+特徴を持つ．
+<itemizedlist>
+<listitem><para>ソースを含まないバイナリのみの配布が可能</para></listitem>
+<listitem><para>商用利用を妨げない</para></listitem>
+<listitem><para>発表時にJuliusを利用していることを明記すること</para></listitem>
+</itemizedlist>
+正確な使用許諾文書については，アーカイブ内の <literal>LICENSE.txt</literal> を
+参照のこと．なお，参考までに以下に Julius-4.0 の使用許諾文書を載せる．
+</para>
+&license;
+</sect1>
+</chapter>

@@ -1,0 +1,746 @@
+2000-07-02  LEE Akinobu  <ri@uffizi>
+
+	* transparent word
+	* gaussian selection 
+
+	* search_bestfirst_main.c (wb_ok): debug message fixed.
+
+2000-06-23  LEE Akinobu  <ri@uffizi>
+
+	* Makefile.in: MAKEFLAGS fixed.
+
+2000-06-22  LEE Akinobu  <ri@uffizi>
+
+	* Makefile.in (RM): fixed typo.
+
+	* fixed manual install error.
+
+2000-06-16  LEE Akinobu  <ri@uffizi>
+
+	* beam.c (print_1pass_result): fixed message for "no end survived
+	in beam!".
+
+2000-06-13  LEE Akinobu  <ri@uffizi>
+
+	* configure.in (READLINE): fixed libreadline link (delete -lhistory)
+
+2000-06-12  LEE Akinobu  <ri@uffizi>
+
+	* main.c (default_width): setup default beam width according to
+	the engine setup and acoustic models.
+
+2000-05-11  LEE Akinobu  <ri@uffizi>
+
+	* Julius-3.1 released.
+
+2000-05-05  LEE Akinobu  <ri@uffizi>
+
+	*lib/anlz/wrsamp.c: added.
+	
+2000-05-04  LEE Akinobu  <ri@uffizi>
+
+	* adinrec/Makefile.in (SHELL): move adincheck/adinrec to separate
+	directory.  Manuals are added.
+
+	* main.c (set_beam_width): set default beam width:
+	tri with IWCD1: 800 (including PTM)
+	tri without IWCD1: 1000
+	mono: 400
+
+	* global.h: worst_beam_width defaults to 30
+
+2000-05-03  LEE Akinobu  <ri@uffizi>
+
+	* testsuite/adinrec.c (main): added stdout support (when filename="-")
+
+	* lib/hmminfo/rdhmmdef.c (read_token): Detect broken hmmdefs.
+
+2000-04-29  LEE Akinobu  <ri@uffizi>
+
+	* lib/anlz/strip.c, strip_mfcc.c: newly added.
+	
+	* main.c (opt_parse): new option "-nostrip" to disable stripping
+	of invalid samples.
+
+	* main.c (opt_parse): changed option name: "-bw" to "-b2" (still
+	accept "-bw" and "-wb" for backward compatibility)
+
+2000-04-25  LEE Akinobu  <ri@uffizi>
+
+	* lib/configure.in (wavefile_support): store whether libsndfile is
+	used in sentlib-config
+
+	* Sample*.jconf, main.c, global.h: set default values according to
+	the engine setting and mono/tri HMMs: -lmp, -lmp2, -n.
+
+	* main.c: -tmix defaults to 2.
+
+2000-04-24  LEE Akinobu  <ri@uffizi>
+
+	* HAVE_PTHREAD option turned off by default...
+
+	* main.c (detailed_help): some cosmetic changes.
+
+	* global.h: default worst_beam_width changed from -1 (disabled) to
+	100 (enabled).
+
+	* main.c (main): add check for HMM parameter type, to prevent
+	formats other than MFCC_E_D(_N)_Z with direct speech input.
+
+	* testsuite/adinrec.c (main): Netaudio and pthread support.
+
+2000-04-23  LEE Akinobu  <ri@uffizi>
+
+        * (NEW) POSIX thread supported for ad-in.  To enable, define
+	  HAVE_PTHREAD in both here and libs (now auto-detected in
+	  lib/configure).  Tested for Linux-2.2.x and Solaris.  The
+	  following sources are modified: main.c, include/sent/adin.h,
+	  lib/adin/adin-cut.c and configures.  Added doc/thread.txt for
+	  memo.
+	
+	* main.c (main): merged SP_MIC and SP_NETAUDIO on main().
+
+2000-04-07  LEE Akinobu  <ri@uffizi>
+
+	* lib/adin/adin_netaudio.c (adin_netaudio_stop): fixed
+	segmentation fault when using NetAudio.
+
+2000-03-08  LEE Akinobu  <ri@uffizi>
+
+	* lib/adin/adin_mic_linux_alsa.c: updated to 0.5.5 (beta)
+	* lib/adin/adin_mic_linux_oss.c: handle OSS more correctly.
+	* testsuite/adinrec.c: fixed "-lv" argument bug.
+	  (patch_3.0-linux-mic-fix)
+
+2000-02-16  LEE Akinobu  <ri@uffizi>
+
+	* lib/anlz/paramselect.c: fixed 0th cepstral subtraction.
+	  (julius-2.2_0th_fix.patch)
+
+
+	----- Julius rev.3.0 release -----
+
+2000-01-30  LEE Akinobu  <ri@sunlight>
+
+	* main.c: changed behavior of disabled arguments that it now
+	only output warning instead of exiting.
+
+	* configure.in: added "--enable-setup={standard,safe,v2.1}"
+	
+	* configure.in: added "--disable-readline".
+
+	* lib/phmm/outprob_tm.c.*: heuristic, beam, safe:
+	outprob_tm_{safe,heu,beam}.c,
+	calc_outprob_tm() in each pruning merged and moved to outprob.c.
+	mixture_cache, probs, mix_n is defined globally in outprob.c.
+	
+	outprob function selection between state-driven(outprob_ss) and
+	mixture-driven(outprob_tm), and pruning functions (mixture_init,
+	mixture_prepare, calc_all_..._and_cache) selection between safe,
+	heuristic, beam, ... they are now done in main.c.  The entry function
+	pointer is now defined in its old name in global.h.
+
+	New option: "-gprune {safe|heuristic|beam}"
+
+2000-01-24  LEE Akinobu  <ri@uffizi>
+
+	* lib/voca/voca_load_htkdict.c (voca_load_htkdict): changed error
+	message. 
+
+	* lib/ngram/ngram_write_bin.c (ngram_write_bin): output ngram
+	total kilobytes when finished.
+
+	* lib/ngram/ngram_read_arpa.c (ngram_read_arpa): output ngram
+	total num on last.
+
+	* FEATURE FREEZE for IPA evaluation as "Julius-2.3b".  Below are
+	only small fixes that doesn't affect the performance.
+
+2000-01-22  LEE Akinobu  <ri@uffizi>
+
+	* lib/anlz/rddata.c (check_format): Fixed return value of
+	check_format().  File skipping bug is now fixed.
+
+2000-01-20  LEE Akinobu  <ri@uffizi>
+
+	* main.c (get_line): Fixed prompt reading bug.
+
+2000-01-18  LEE Akinobu  <ri@uffizi>
+
+	* lib/phmm/outprob.c (calc_outprob): 
+	* lib/phmm/outprob_tm.c (calc_outprob_tm): 
+	Changed to allow mixture skip in TMIX models.
+	(only dimthres and needcache.numthres fixed)
+
+2000-01-17  LEE Akinobu  <ri@uffizi>
+
+	* lib/hmminfo/rdhmmdef_tiedmix.c (tmix_create_codebook_index):
+	Changed to allow mixture skip in TMIX models.
+
+2000-01-05  LEE Akinobu  <ri@uffizi>
+
+	* main.c (config_file_parse): fixed segfault while reading jconf
+	file (2.2p2)
+
+	* lib/adin/adin_mic_linux_oss.c (adin_mic_read): fixed EAGAIN
+	error on reading sample (2.2p1)
+
+1999-12-07  LEE Akinobu  <ri@uffizi>
+
+	* beam.c (node_exist_token): Added "--enable-wpair-nlimit" to
+	keep at best N tokens in a node with word-pair approximation
+	(implies "--enable-wpair").  N can be specified by argument "-nlimit".
+
+	* lib/configure.in: Changed not to embed absolute path to gzip.
+
+1999-12-01  LEE Akinobu  <ri@uffizi>
+
+	* word_align.c: Add phoneme segmentation. word alignment enabled
+	by "-walign" and phoneme by "-palign".  Also cleanup codes.
+
+	* lib/hmminfo/cdhmm.c (get_left_context_HMM): Back to 2.2, returns
+	base when no triphone found.
+
+1999-11-30  LEE Akinobu  <ri@localhost>
+
+	* doc/Triphone.sgml: New file, not finished yet.
+
+	* lib/hmminfo/cdhmm.c (get_left_context_HMM): Changed as error
+	when no triphone was found.
+
+1999-11-29  LEE Akinobu  <ri@uffizi>
+
+	* main.c: add option "-align" to perform viterbi alignment.
+	
+	* word_align.c: New file to call viterbi segmentation.
+	* lib/phmm/vsegment.c: perform viterbi segmentation to given HMMs.
+
+	* lib/hmminfo/lcdset.c (make_lcdset): fixed typo.
+
+1999-11-29  LEE Akinobu  <ri@localhost>
+	* Version 2.3b:
+
+	* wchmm.c (wchmm_check_match): Changed pointer comparison to strmatch.
+
+	* beam.c (put_atom): Add output logical and physical HMM sequence
+	on 1st pass result, when "-debug" specified.
+
+1999-11-28  LEE Akinobu  <ri@localhost>
+
+	* lib/voca/voca_load_htkdict.c (voca_load_htkdict): Separate
+	voca_load_htkdict and voca_mono2tri.  Each should be called for
+	applying word-internal context dependency.
+	(voca_load_htkdict): delete unused individual HMM check and
+	also delete HTK_HMM_Data.checked.
+
+	* lib/hmminfo/init_phmm.c (init_hmminfo): Changed how to detect
+	triphone.  1) from hmmdefs name, 2)from HMMList if specified.
+	mono->tri conversion on voca is done when the acoustic modeling
+	needs triphone handling by either test.
+
+	* lib/hmminfo/rdhmmlist.c: New, read HMMList.
+
+	* lib/phmm/init_phmm.c: moved to lib/hmminfo.
+
+	* lib/hmminfo/rdhmmdef_*.c (*_add): fixed to compare string instead of
+	pointer itself.
+
+	* lib/hmminfo/rdhmmdef_data.c (htk_hmmdata_add): changed
+	hmminfo->physical_tree from PATNODE to APATNODE.  Add to tree
+	here.
+	* lib/hmminfo/rdhmmdef_data.c (htk_hmmdata_lookup_dumb): no longer
+	used, deleted.
+	
+
+1999-11-27  LEE Akinobu  <ri@localhost>
+
+	* lib/hmminfo/lcdset.c (make_lcdset): fixed segfault when HMM num
+	differs in a LC_SET.
+
+1999-11-20  LEE Akinobu  <ri@uffizi>
+
+	* lib/anlz/adin-cut.c (rddata): fixed adin_cut to do true cycle
+	buffering.  Now don't store data directly.  Also main.c and
+	realtime-1stpass.c has also changed.
+
+1999-11-18  LEE Akinobu  <ri@uffizi>
+
+	* lib/anlz/rdsndfile.c: new support for libsndfile.
+	* lib/configure.in: change name ADINOBJ -> EXTRAOBJ
+	* lib/configure.in: auto-detect libsndfile.
+	
+
+1999-11-17  LEE Akinobu  <ri@uffizi>
+
+	* lib/util/heap_sort.c: Deleted as not used so far.
+
+	* realtime-1stpass.c (RealTimeParam): new typedef VECT for
+	input vectors (not completed).
+	speech(SP16) -wav2mfcc,WMP_*-> mfcc vector(float)
+	-(wav2mfcc(main) or realtime-1stpass.c)-> param.parvec(VEC)
+	
+	HTK Parameter file(float) -(rdparam)-> param.parvec(VEC)
+
+	hmmdefs(float) -(rdhmmdef_)-> mean, var
+	
+	* all: move float to LOGPROBs.
+
+1999-11-09  LEE Akinobu  <ri@uffizi>
+
+	* lib/configure.in: Changed 64K as default. --enable-words-32k
+	enables old 32k mode.
+	(lib/configure.in): ZLIB again disabled because cannot read .Z file.
+
+	* lib/anlz/rdwav.c (rdwav): New support for reading .wav
+	file. (format is still fixed to PCM,16kHz,16bit,monoral). 
+	(main): renamed SP_FILE to SP_RAWFILE
+
+	* main.c (main): moved swap_sample_bytes inside lib/anlz/rddata.c
+	(main): disable "+++" filename feature.
+
+1999-11-05  LEE Akinobu  <ri@uffizi>
+
+	* lib/configure.in (usezlib): deleted support for uncompress.
+
+	* lib: add support for ZLIB.
+
+	* ALL: delete open_readfile, all use fopen_readfile.
+	* ALL: no local read(), all use myfread().
+	* lib/util/gzfile.c: new file, splitted from readfile.c.
+
+1999-11-02  LEE Akinobu  <ri@uffizi>
+
+	* wchmm.c (wchmm_sort_idx_by_wseq): fixed comparison of phonemes
+	from mere pointer to using strcmp() against allocation problem in
+	Windows.
+
+1999-11-01  LEE Akinobu  <ri@uffizi>
+
+	* beam.c (put_seq_others): 
+	* search_bestfirst_main.c (put_hypo_phoneme): put "|" between
+	words in outputing phseq. 
+
+1999-10-16  LEE Akinobu  <ri@localhost>
+
+	* lib/util/strcasecmp.c : future implementation of str(n)casecomp,
+	though most OS have one.
+
+	* lib/net/server-client.c (accept_from): use socklen_t if
+	available, else int *.
+
+	* ALL: eliminate all warnings with -Wall.
+
+	* ALL: add <unistd.h>, <errno.h>, <fcntl.h> to <sent/stddefs.h>.
+	Now assume POSIX.1.
+
+	* ALL: change all strdup to use strcpy for POSIX & ANSI compliants.
+
+1999-10-15  LEE Akinobu  <ri@localhost>
+
+	* ALL: change all bcopy() to memcpy() for better portability.
+
+	* lib/configure.in: use POSIX getpagesize().
+
+1999-10-09  LEE Akinobu  <ri@sunlight>
+
+	* main.c (config_file_parse): fixed last character of a line dropped.
+
+	* include/sent/vocabulary.h: 
+	* include/sent/stddefs.h:
+	* include/sent/ngram2.h:
+	   All maximum word num defines moved together to stddefs.h.
+	   Gather MAX_NW_LIMIT and MAXW_LIMIT to MAX_WORD_NUM.
+	   moved UNSIGNED_SHORT_MAX in stddefs.h to MAX_STATE_NUM in htk_hmm.h
+
+	* ALL: changed speech sample typedef: short -> SP16.
+
+	* lib/anlz/rddata.c (rddata): change old implementation to standard.
+
+	* ALL: eliminate warnings using "gcc -Wall". (lib/phmm/outprob.c
+	still remains 1 warning)
+	* lib/util/mybmalloc.c: malloc per big block.
+	* lib/configure.in: detect for PAGESIZE
+
+
+----------------- Julius-2.2 / Julian-2.2 released ------------------
+
+1999-10-04  LEE Akinobu  <ri@uffizi>
+
+	* lib/hmminfo/rdhmmdef_tiedmix.c (tmix_read): calc max codebook
+	size.  new: hmm->maxcodebooksize.
+
+	* lib/hmminfo/put_htkdata_info.c (print_hmmdef_info): output max
+	codebook size.
+
+	* testsuite/adinrec.c (main): fixed segfault, add option "-lv".
+
+1999-10-03  LEE Akinobu  <ri@uffizi>
+
+	* READMEs: update documents.
+
+1999-09-17  LEE Akinobu  <ri@uffizi>
+
+	* lib/Makefile.in: don't remove lib/sentlib-config when "make clean"
+
+	* search_bestfirst_main.c (put_hypo_wname): adinserv: comment out
+	sendback of recognition result.
+
+	* main.c (main): adinserv: added -1 ack from adin client to
+	terminate 1st pass and cancel rest input.
+
+Fri Sep 17 00:28:23 1999  Akinobu Lee  <ri@louvre>
+
+	* lib/hmminfo/lcdset.c (make_lcdset): allow different number of
+	states in a set (patch from kawahara).
+
+1999-09-16  LEE Akinobu  <ri@uffizi>
+
+	* README.MIC: update for 2.2 (--with-mictype, -lv, adincheck)
+
+1999-09-08  LEE Akinobu  <ri@uffizi>
+
+	* lib/phmm/outprob_tm.c: New experiment: outprob_tm.c with pruning 
+	using backmax.
+
+	* search_bestfirst_v1.c (start_word): 
+	* search_bestfirst_v2.c (start_word): fixed "stack empty" problem
+	when start_words are not found in backtrellis at (peseqlen-1).
+	Now search towards first frame to find one.
+
+1999-09-05  LEE Akinobu  <ri@sunlight>
+
+	* stamp_version.sh: print PRODUCT, VERSION, HOST, DATE at a line.
+
+	* main.c (opt_parse): fixed usage().
+	(detailed_help): make "julius" prompts only short message, "-help"
+	prints detailed option description on stdout.
+
+1999-09-03  LEE Akinobu  <ri@uffizi>
+
+	* lib/phmm/outprob_tm.c (callback_calc_codebook_and_cache): new
+	pruning algorithm "dimthres" sets thresholds for each dimension.
+	Re-link outprob_tm.c.dimthres to outprob_tm.c.  Envelope is set to
+	the lowest scores of last best frame + absolute mergin, which is
+	set by TMBEAMWIDTH in outprob_tm.c.
+
+1999-08-30  LEE Akinobu  <ri@uffizi>
+
+	* testsuite/: test program has been added: adinrec, adincheck, ptree.
+
+	* configure.in: added configure to generate testsuite/Makefile.in
+
+	* lib/adin/adin_mic_o2.c: fixed wrong header includes.
+
+	* configure.in: Fixed readline library detection.
+
+1999-08-30  LEE Akinobu  <ri@sunlight>
+
+	* lib/adin/adin_netaudio.c: Separate NetAudio function calls to
+	adin_na.c because of header conflict.
+
+	* lib/adin/adin_mic_linux_oss.c (adin_mic_standby): changed to do
+	test by calling adin_mic_start() and adin_mic_stop() dumbly.
+
+	* lib/adin/adin_mic_*: Changed return value of adin functions from
+	void to boolean, which returns FALSE on device error.  Now never
+	exit in adin_mic_*.  Also changed lib/adin/adin-cut.c,
+	include/sent/adin.h, main.c.
+
+	* lib/adin/adin_mic_*: modified each adin functions to have same
+	global definition, to be available directory from outside sentlib.
+	Deleted adin_standby().  Now Calls adin_setup_adfunc() and
+	adin_mic_standby() directly at main.c.
+
+	* lib/adin/netaudio*: modified function name and definitions to
+	suit the changes above.
+
+	* main.c (opt_parse): added option "-lv" to specify microphone
+	trigger level.
+
+	* lib/adin/adin-cut.c: modified adin_setup_adfunc() argument order.
+
+1999-08-29  LEE Akinobu  <ri@sunlight>
+
+	* lib/adin/: DOC
+
+1999-08-28  LEE Akinobu  <ri@sunlight>
+
+	* main.c (get_line): use readline library if available.
+
+	* replace all gets() functions to get_line in *.c and delete some
+	obsolute functions that uses gets() in lib/*/*.c.
+
+	* lib/adin/adin_mic_linux_oss.c: delete debug2_flag message.
+
+1999-08-28  LEE Akinobu  <ri@uffizi>
+
+	* include/sent/extern.h: wrong name, moved to util.h.
+
+	* lib/util/sjis2euc.c: no longer used, deleted.
+
+	* lib/*: adin_* moved to lib/adin. lib/anlz/{zc-e.c, zmean.c,
+	adin-cut.c} also moved to lib/adin. Headers are fixed.
+
+	* lib/configure.in: microphone device type and netaudio check is
+	now handled within sentlib.  The CFLAGS of the settings and LIBS
+	needed for the audio device settings are now externally kept in
+	lib/sentlib-config.
+
+	* lib/configure.in: add configure option "--with-mictype=" to
+	force mic type avoiding mis-autodetection.
+
+	* configure.in: begin to separate lib/ as `sentlib' package.  The
+	rest work is: 1)rename lib/ as sentlib/, 2)include/ must reside in
+	lib/, 3)`make install' installs libs to /usr/local/lib, includes
+	to /usr/local/include, sentlib-config to /usr/local/bin	(prefix
+	support), 4) configure.in of Julius should search for sentlib in
+	./lib, /usr/local/lib, etc. 
+
+1999-08-15  LEE Akinobu  <ri@uffizi>
+
+	* lib/phmm/outprob_tm.c (callback_calc_codebook_and_cache): 
+	Fix terminology.
+
+1999-08-14  LEE Akinobu  <ri@uffizi>
+
+	* lib/phmm/outprob_tm.c (callback_calc_codebook_and_cache):
+	define "LAST_BEST" calculates first the best mixtures of last
+	frame, so pruning will become a little faster.
+
+	* main.c (main): fix some error messages when file not found.
+
+1999-08-11  LEE Akinobu  <ri@uffizi>
+
+	* configure.in: MONOTREE now configurized: "--enable-monotree".
+
+	* lib/phmm/outprob_tm.c: "-tmix 1" implementation below is again
+	eliminated. 
+
+1999-08-10  LEE Akinobu  <ri@uffizi>
+
+	* lib/phmm/outprob_tm.c: faster implement for "-tmix 1"
+	
+	* lib/phmm/outprob_tm.c: fixed thres_at_1.
+	
+
+1999-08-07  LEE Akinobu  <ri@sunlight>
+
+	* lib/voca/voca_load_htkdict.c (voca_mono2tri): new experimental
+	to 1st mono -> 2nd tri.  enabled by defining MONOTREE in define.h.
+
+	* lib/hmminfo/rdhmmdef.c (rdhmmdef): cosmetic changes on bootup
+	message.
+
+	* main.c: "-tmix" option is now error for non-tied-mixture model.
+
+	* lib/hmminfo/put_htkdata_info.c (print_hmmdef_info): not to print
+	mixture num avg.
+
+1999-08-06  LEE Akinobu  <ri@sunlight>
+
+	* lib/hmminfo/rdhmmdef_tiedmix.c (tmix_read): start support for
+	multiple mixture codebook, mainly for PTM models
+
+1999-08-04  LEE Akinobu  <ri@uffizi>
+
+	* lib/phmm/outprob.c (addlog_array): fix bug that maximum prob was
+	added twice, and wrong pruning.
+
+1999-07-26  LEE Akinobu  <ri@uffizi>
+
+	* lib/phmm/outprob_tm.c.needcache.scorethres: pruning by score
+	improved. (but no significant improvement in speed...)
+
+	* lib/phmm/outprob.c (addlog_array): fast addlog for
+	tied-mixture. (can be apply to other models...)
+
+	* lib/phmm/outprob_tm.c (callback_calc_codebook_and_cache): tmix
+	method has totally changed.  now support only <TMix> model as
+	tied-mixture model (no macro-shared or hybrid is allowed).
+
+	* lib/phmm/outptob_tm.c (calc_outprob_tm): calc loop per mixtures
+	in cache, now slowing bug fixed.
+
+	* added support for multiple codebook, mainly for PTM.
+
+1999-07-19  LEE Akinobu  <ri@uffizi>
+
+	* julius-2.1z-pl1 released.  fixed LCDSET handling when bi-phone
+	model is not present.  
+
+1999-07-05  LEE Akinobu  <ri@uffizi>
+
+	* First version of Tied-Mixture, but not efficient.  beam are set
+	by number, not score.  Further refinement is needed.
+	1) more efficient & robust pruning & lookup
+	2) state-driven approach for mixture pruning (now mixture-driven)
+
+1999-07-04  LEE Akinobu  <ri@uffizi>
+
+	* lib/hmminfo/rdhmmdef_state.c (state_read): skip null mixture.
+
+	* lib/hmminfo/rdhmmdef_dens.c (dens_read): calculate GCONST if not.
+
+	* lib/hmminfo/rdhmmdef_*.c: use incremental ptree for reading
+	hmmdefs for fast startup.
+
+1999-07-04  LEE Akinobu  <ri@sunlight>
+
+	* lib/util/ptree.c(ptree_add_entry): add new function: incremental
+	ptree. 
+
+	* lib/util/ptree.c: create new functions: ptree_add_strkey.
+
+	* testsuite/: library for testing lib/* functions.
+
+1999-07-03  LEE Akinobu  <ri@uffizi>
+
+	* main.c (print_info): add message for IWCD options below.
+
+	* *.in : added new options: "--enable-iwcd1" enables IWCD handling
+	on 1st pass, and "--enable-strict-iwcd2" uses *true" IWCD between
+	h(n) and g(n), thus uses 1-phoneme prescan on next_word.
+	
+
+	* search_bestfirst.c: splitted. search_bestfirst_v1.c contains
+	former "backscan" scanning for triphone, and search_bestfirst_v2.c
+	contains new "nextscan" scanning for strict IWCD handling.
+
+	* search_bestfirst.c: fixed monophone handling. now don't SEGV.
+
+1999-06-18  LEE Akinobu  <ri@uffizi>
+
+	* main.c (main): fixed recognition pass indicater for DFA
+
+1999-06-08  LEE Akinobu  <ri@uffizi>
+
+	* define.h: new define: FIX_PENALTY to not add insertion penalty
+	on head of the search. 
+	(the last 2 changes are in pass1_iwcd_spfix2)
+
+	* wchmm.c (wchmm_duplicate_state): fixed leaf duplication when
+	PASS1_IWCD. 
+
+	* main.c: DOC:
+
+	* include/sent/*.h: fixed copyright 1998 -> 1999. 
+
+	* lib/anlz: DOC: comment supplement done.
+
+1999-06-07  LEE Akinobu  <ri@uffizi>
+
+	* outprob_style.c (outprob_style): fixed SP and LRSET handling.
+	(pass1_iwcd_spfix)
+
+1999-06-01  LEE Akinobu  <ri@uffizi>
+
+	* lib/anlz/paramtypes.c (param_str2code): fixed mismatch of
+	LPCCEPSTRA as LPC. (patch_2.1-fix_hmm_header_parse)
+
+1999-05-31  LEE Akinobu  <ri@uffizi>
+
+	* mkbingram/Makefile.in (install.catman): 
+	  Makefile.in: fixed typo in cat1.
+
+--------------------- Julius 2.1 patch 1 Released --------------
+
+1999-05-23  LEE Akinobu  <ri@uffizi>
+
+	* lib/voca/voca_lookup.c (voca_lookup_wid): add warning message
+	when more than 1 word are matched.
+
+	* main.c (config_file_parse): more fix to handle "" and '' quotation.
+	(main): fixed output of *_silwid
+
+1999-05-22  LEE Akinobu  <ri@uffizi>
+
+	* main.c: added escape sequence '\' for jconf file.
+	(config_file_parse): fixed wrong comment handling.
+
+1999-05-1?  LEE Akinobu  <ri@uffizi>
+	
+	* BIG FIX: fixed scan_beam_1. now works correctly.
+
+--------------------- Julius / Julian 2.1 Released ----------------------
+
+Mon Apr 19 23:34:08 1999  Akinobu Lee  <ri@uffizi>
+
+	* main.c: Quick Hack: Server Mode called "adinnet" was added
+	experimentally.
+
+Wed Apr 14 22:38:06 1999  Akinobu Lee  <ri@uffizi>
+
+	* README.MIC: add new doc about mic input.
+
+Mon Apr 12 14:12:33 1999  Akinobu Lee  <ri@uffizi>
+
+	* configure.in: check for X11 libs on default.
+
+Tue Apr  6 16:22:19 1999  Akinobu Lee  <ri@uffizi>
+
+	* lib/configure.in: use "r" for ar command instead of $ARFLAGS.
+
+Mon Mar 29 21:25:15 1999  Akinobu Lee  <ri@uffizi>
+
+	* adin_mic_osf1.c: New feature: Experimental microphone support
+	for osf1 (Digital Unix).  Thanks to Mr. Hirose
+	(yosifu-h@is.aist-nara.ac.jp).
+
+Fri Mar 19 20:23:43 1999  Akinobu Lee  <ri@chip>
+
+	* Makefile.in: fixed "make install" behavor.
+
+Wed Mar 17 01:07:49 1999  LEE Akinobu  <ri@sunlight.kuis.kyoto-u.ac.jp>
+
+	* search_bestfirst.c (wchmm_fbs): minor fix: don't output
+	`getting..done' message when not '-debug'.
+
+	* main.c (opt_parse): fix bug: '-d' and '-nrl, -nrl', the later
+ 	will now correctly override others.
+
+	* lib/anlz/adin-cut.c (adin_cut): change input sample queueing
+ 	scheme.  Fixed buges of cutting last few seconds of input in long
+ 	speech.  NOTE: now adin_* are needed to set devices to
+ 	"non-blocking mode" on startup.
+	
+
+Fri Mar  5 14:45:07 1999  Akinobu Lee  <ri@uffizi>
+
+	* wchmm.c (build_wchmm2): added another experimental lowmem
+	facility.  "--enable-lowmem2" do word separation based on word
+	frequency. 
+
+Wed Mar  3 13:00:14 1999  Akinobu Lee  <ri@uffizi>
+
+	* wchmm.c (build_wchmm): (Julian) fix bug that separate short
+	words even when CATEGORY_TREE is defined.  Has little or no effect
+	on performance. 
+
+	* define.h: (Julius) "--enable-lowmem" now defines LOWMEM, which
+	activates the new NO_SEPARATE_SHORT_WORD in define.h.  The old
+	HASH_CACHE_IW is now temporary disabled.
+
+	The NO_SEPARATE_SHORT_WORD saves much memory (140MB -> 5MB), but
+	increases word error by about 5 %. 
+
+Fri Feb 26 11:24:33 1999  Akinobu Lee  <ri@uffizi>
+
+	* (IMPORTANT) script has been added to automatically make
+	Julius/Julian distribution from development source tree.
+	"support/mkdist_julius.sh" for Julius and
+	"support/mkdist_julian.sh" for Julian.
+
+	* include/sent/vocabulary.h: (Julius) moved make_voca_ref() from
+	voca/init_voca.c to ngram/init_ngram.c, and header to
+	sent/ngram2.h
+
+	* mkbingram/Makefile.in (LDFLAGS): fixed to add "-lm"
+
+	* adin_mic_linux_alsa.c: tested on alsa-{driver,lib}-0.3.0pre4 and 
+	worked well as expected.
+
+	* support/mkdist_julius.sh: updated to successfully eliminate
+	REPORT_MEMORY_USAGE in define.h and main.c.
+
+	* Julius-2.0 (IPA submit version) released.
+

@@ -1,0 +1,716 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+		<title>Julius for SAPI 3.2 README </title>
+		<meta content="Microsoft Visual Studio.NET 7.0" name="GENERATOR">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="Content-Type" content="text/html; charset=shift_jis">
+		<style>
+	H1 { BORDER-RIGHT: green thin solid; BORDER-TOP: green thin solid; FONT-WEIGHT: bold; FONT-SIZE: 24pt; MARGIN-LEFT: 0mm; BORDER-LEFT: green thin solid; MARGIN-RIGHT: 0mm; BORDER-BOTTOM: green thin solid; FONT-FAMILY: "ＭＳ Ｐゴシック"; mso-bidi-font-family: "ＭＳ Ｐゴシック"; mso-pagination: widow-orphan; mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; mso-outline-level: 1 }
+	H2 { PADDING-LEFT: 10px; FONT-WEIGHT: bold; FONT-SIZE: 18pt; MARGIN-LEFT: 0mm; MARGIN-RIGHT: 0mm; BORDER-BOTTOM: green solid; FONT-FAMILY: "ＭＳ Ｐゴシック"; BACKGROUND-COLOR: honeydew; mso-bidi-font-family: "ＭＳ Ｐゴシック"; mso-pagination: widow-orphan; mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; mso-outline-level: 2 }
+	H3 { PADDING-LEFT: 4px; FONT-WEIGHT: bold; FONT-SIZE: 13.5pt; PADDING-BOTTOM: 2px; MARGIN-LEFT: 0mm; MARGIN-RIGHT: 0mm; PADDING-TOP: 2px; FONT-FAMILY: "ＭＳ Ｐゴシック"; BACKGROUND-COLOR: gainsboro; mso-bidi-font-family: "ＭＳ Ｐゴシック"; mso-pagination: widow-orphan; mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; mso-outline-level: 3 }
+	P { FONT-SIZE: 12pt; MARGIN-LEFT: 0mm; MARGIN-RIGHT: 0mm; FONT-FAMILY: "ＭＳ Ｐゴシック"; mso-bidi-font-family: "ＭＳ Ｐゴシック"; mso-pagination: widow-orphan; mso-margin-top-alt: auto; mso-margin-bottom-alt: auto }
+	PRE { BORDER-RIGHT: #000000 1px solid; BORDER-TOP: #000000 1px solid; PADDING-BOTTOM: 5px; MARGIN-LEFT: 20px; BORDER-LEFT: #000000 1px solid; MARGIN-RIGHT: 20px; PADDING-TOP: 5px; BORDER-BOTTOM: #000000 1px solid; FONT-FAMILY: 'ＭＳ ゴシック'; BACKGROUND-COLOR: aliceblue }
+	.REF { FONT-SIZE: smaller; FONT-STYLE: italic }
+		</style>
+	</head>
+	<body lang="JA" style="tab-interval: 42.0pt" vLink="blue" link="blue">
+		<h1 class="MsoNormal" style="TEXT-ALIGN: center" align="center"><span lang="EN-US"><FONT face="MS UI Gothic">Julius 
+					for SAPI&nbsp;ver 2.1<BR>
+					Document for Developers</FONT></span></h1>
+		<P class="Section1" style="TEXT-ALIGN: right" align="right"><span lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic">2002/10/22<BR>
+					2002/10/15<BR>
+					2002/09/12 </FONT></span><SPAN lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic">
+					<br>
+					京都大学情報学研究科知能情報学専攻音声メディア研究室<br>
+				</FONT></SPAN><A href="mailto:sumiyosi@kuis.kyoto-u.ac.jp)"><span style="FONT-SIZE: 10pt">
+					<FONT face="MS UI Gothic">住吉貴志(sumiyosi@kuis.kyoto-u.ac.jp)</FONT></span></A></P>
+		<FONT face="MS UI Gothic">
+			<hr align="center" width="100%" SIZE="2">
+		</FONT>
+		<h2><FONT face="MS UI Gothic"><A name="intro"></A>はじめに</FONT></h2>
+		<H3>このドキュメントについて</H3>
+		<P><FONT face="MS UI Gothic">このドキュメントは、音声認識を利用したアプリケーションを作成する人へ向けた、SAPI 
+				を使ったアプリケーション開発についての簡単な解説です。音声認識エンジンとして Julius for SAPI を使用することを想定しています。</FONT></P>
+		<P><FONT face="MS UI Gothic">ドキュメントは現在作成中であり、まだ完全ではありません。</FONT></P>
+		<H3><FONT face="">Speech API(SAPI) とは</FONT></H3>
+		<P><FONT face="">Microsoft Speech API (以下、SAPI)とは、Microsoft 社の作成する Windows 
+				の音声アプリケーションのための標準インターフェース群であり、音声認識、音声合成を用いたアプリケーション開発に便利です。</FONT></P>
+		<P><FONT face="">SAPI 
+				は音声アプリケーションと音声認識(あるいは音声合成)エンジンを仲介する役割を果たします。これまで音声アプリケーション開発は特定のエンジンに依存して開発するのが一般的であり、すなわちエンジンがなければ音声アプリケーションが開発できない状況でした。現在はこのSAPIのインターフェースを使って、エンジンに依存しない開発が可能となっています。</FONT></P>
+		<P><FONT face="">またWindows XP 
+				においてはSAPIが標準で組み込まれているため、ユーザが別途面倒なインストール手続きをすることなく音声アプリケーションを使用することができます。</FONT></P>
+		<H3><FONT face="">Julius for SAPI とは</FONT></H3>
+		<P><FONT face="">Julius for SAPI は、もともとUNIX OSで研究用途を目的として開発されていたフリーの大語彙連続音声認識エンジン 
+				Julius の優れたデコードルーティンを搭載した、SAPI 
+				準拠を目的とする音声認識エンジンです。現在はSAPIで規定されている機能のほとんどを提供できるエンジンとなっています。</FONT></P>
+		<P><FONT face="">現在のヴァージョンは ver 2.1 です。これは Julius 3.2 をベースに作成され、いくつかの改良がなされいます。</FONT></P>
+		<H2>コマンド文法</H2>
+		<FONT face="MS UI Gothic">
+			<P class="REF"><FONT face="">(SpeechSDK 5.1 Help: \Application-Level Interfaces\Grammar 
+					Compiler Interfaces\Text Grammar Format , \White Papers\XML Schema : Grammar 
+					を参照)</FONT></P>
+			<P>コマンド文法とは、音声認識アプリケーションで、ユーザがどのような発話をしたときに、それがアプリケーションにとってどのような意味を持つかの記述です。<![if 
+				!supportLists]><![endif]>
+			</P>
+			<P>詳細な説明はヘルプに譲ることにして、ここでは Julius for SAPI に特有の注意点について述べます。</P>
+		</FONT>
+		<H3>文法の記述法と文法のクラス</H3>
+		<P><FONT face="MS UI Gothic">SAPI では左再帰性を持つ文法は書けません。</FONT></P>
+		<PRE>&lt;RULE name="LeftRecursion" toplevel="ACTIVE"&gt;
+&nbsp; &lt;O&gt;
+&nbsp; &lt;RULEREF name="LeftRecursion" /&gt;
+&nbsp; &lt;/O&gt;
+&nbsp;&nbsp;&lt;P&gt;とんで&lt;/P&gt;
+&lt;/RULE&gt;</PRE>
+		<P><FONT face="MS UI Gothic">すべての左再帰表記の文法は等価な右再帰表記に書くことができるので、次のように記述します。</FONT></P>
+		<PRE>&lt;RULE name="LeftRecursion" toplevel="ACTIVE"&gt;
+&nbsp;&nbsp;&lt;P&gt;とんで&lt;/P&gt;
+&nbsp; &lt;O&gt;
+&nbsp;&nbsp;&nbsp; &lt;RULEREF name="LeftRecursion" /&gt;
+&nbsp; &lt;/O&gt;
+&lt;/RULE&gt;</PRE>
+		<P><FONT face="MS UI Gothic">Julius for SAPI 
+				では正規文法のみ扱うことが可能です。すなわち、下記のような文脈自由文法は利用できません。</FONT></P>
+		<PRE>&lt;RULE name="Sentence" toplevel="ACTIVE"&gt;
+&nbsp; &lt;L&gt;
+&nbsp;&nbsp;&nbsp; &lt;P&gt;ぼくは&lt;/P&gt;
+&nbsp;&nbsp;&nbsp; &lt;P&gt;彼は&lt;/P&gt;
+&nbsp;&nbsp;&nbsp; &lt;P&gt;彼女は&lt;/P&gt;
+&nbsp; &lt;/L&gt;<BR>&nbsp; &lt;L&gt;
+&nbsp;&nbsp;&nbsp; &lt;P&gt;嘘だ&lt;/P&gt;
+&nbsp;&nbsp;&nbsp; &lt;RULEREF name="Sentence" /&gt;
+&nbsp; &lt;/L&gt;<BR>&nbsp; &lt;P&gt;と言った&lt;/P&gt;<BR>&lt;/RULE&gt;</PRE>
+		<P><FONT face="MS UI Gothic">Julius for SAPI は Dictation, TextBuffer, WildCard 
+				には対応していません。また、信頼度の設定は無視します。</FONT></P>
+		<H3>漢字などの読み</H3>
+		<P><FONT face="MS UI Gothic">SAPI-XMLでは、単語の表記についていくつかの方法を規定しています。</FONT></P>
+		<UL>
+			<LI>
+				<FONT face="MS UI Gothic">迷宮</FONT>
+			<LI>
+				<FONT face="MS UI Gothic">/迷宮/めいきゅう;</FONT>
+			<LI>
+				<FONT face="MS UI Gothic">/迷宮/めいきゅう/メーキュー;</FONT></LI></UL>
+		<P><FONT face="MS UI Gothic">一番目の表記は、画面表示形のみを指定します。二番目の表記は、画面表示形と辞書登録形を指定しています。最後のものはさらに発音形を指定しています。</FONT></P>
+		<P><FONT face="MS UI Gothic">Julius for SAPI 
+				ではこれらの情報から音素列を求めます。2番目や3番目のように仮名表記が存在する場合はそれぞれ辞書登録形、発音形を利用しますが、1番目のように画面表示形のみしか存在しない場合は、外部モジュールのIMEの機能を使って求めます。</FONT></P>
+		<P><FONT face="MS UI Gothic">IMEで求められた読みは、文法制作者の意図しないものになる可能性があるので、なるべく発音形まで文法で指定するようにしてください。</FONT></P>
+		<P><FONT face="MS UI Gothic">次に、得られた仮名表記から、音素列を求めます。この変換方法については固定で、以下の標準的な音素の列への変換となります。</FONT></P>
+		<PRE> a i u e o a: i: u: e: o: N w y p py t k ky b by d dy<BR> g gy ts ch m my n ny h hy f s sh z j r ry q sp silB silE</PRE>
+		<P><FONT face="MS UI Gothic"> 最後に、認識精度を上げるため、以下の変換を行います。</FONT></P>
+		<PRE>「ああ」→「あー」 ("a a " → "a: ")<BR>「いい」→「いー」 ("i i " → "i: ")<BR>「うう」→「うー」 ("u u " → "u: ")<BR>「ええ」→「えー」 ("e e " → "e: ")<BR>「えい」→「えー」 ("e i " → "e: ")<BR>「おお」→「おー」 ("o o " → "o: ")<BR>「おう」→「おー」 ("o u " → "o: ")</PRE>
+		<UL>
+			<LI>
+				<FONT face="MS UI Gothic">例：「めいきゅう」→「めーきゅー」 ("m e i ky u u " → "m e: ky u:") </FONT>
+			</LI>
+		</UL>
+		<H3>カテゴリについての補足</H3>
+		<P><FONT face="MS UI Gothic">SAPI-XML 形式の文法は、Julian のカテゴリという概念がありませんが、Julian 
+				の枠組みを利用するために、変換時にカテゴリを自動で作成しています。SAPI-XML形式(RTN)をDFAに変換した後、開始状態と終了状態が同じである遷移の遷移単語を1つのカテゴリとしています。</FONT></P>
+		<H2>イベント</H2>
+		<P><FONT face="MS UI Gothic">Julius for SAPI 
+				は、認識過程においてさまざまなイベントをSAPIに返します。アプリケーションはそのイベントを、Win32 
+				イベントオブジェクト、ウィンドウメッセージ、コールバック関数などを利用して得ることができます。</FONT></P>
+		<P><FONT face="MS UI Gothic">以下に、Julius の処理の過程でどのようなイベントが発行されるかをまとめます。</FONT></P>
+		<P>
+			<TABLE id="Table3" style="WIDTH: 609px; HEIGHT: 72px" cellSpacing="1" cellPadding="1" width="609" border="1">
+				<TR>
+					<TD><FONT face="MS UI Gothic">音声ストリーム開始</FONT></TD>
+					<TD><FONT face="MS UI Gothic">SPEI_START_SR_STREAM (by SAPI)</FONT></TD>
+					<TD><FONT face="MS UI Gothic"></FONT></TD>
+				</TR>
+				<TR>
+					<TD><FONT face="MS UI Gothic">音声検出(切り出しを行う場合は、切り出し開始位置検出時)</FONT></TD>
+					<TD><FONT face="MS UI Gothic">SPEI_SOUND_START</FONT></TD>
+					<TD><FONT face="MS UI Gothic"></FONT></TD>
+				</TR>
+				<TR>
+					<TD><FONT face="MS UI Gothic">切り出し終了位置検出</FONT></TD>
+					<TD><FONT face="MS UI Gothic">SPEI_SOUND_END</FONT></TD>
+					<TD></TD>
+				</TR>
+				<TR>
+					<TD><FONT face="MS UI Gothic">第１パス仮説生成、最初に生成したとき</FONT></TD>
+					<TD><FONT face="MS UI Gothic">SPEI_PHRASE_START</FONT></TD>
+					<TD><FONT face="MS UI Gothic"></FONT></TD>
+				</TR>
+				<TR>
+					<TD><FONT face="MS UI Gothic">第１パス仮説生成</FONT></TD>
+					<TD><FONT face="MS UI Gothic">SPEI_HYPOTHESIS</FONT></TD>
+					<TD></TD>
+				</TR>
+				<TR>
+					<TD><FONT face="MS UI Gothic">第１パス最終結果生成</FONT></TD>
+					<TD><FONT face="MS UI Gothic">SPEI_HYPOTHESIS</FONT></TD>
+					<TD></TD>
+				</TR>
+				<TR>
+					<TD><FONT face="MS UI Gothic">第2パス最終結果生成</FONT></TD>
+					<TD><FONT face="MS UI Gothic">SPEI_RECOGNITION / SPEI_FALSE_RECOGNITION</FONT></TD>
+					<TD><FONT face="MS UI Gothic"></FONT></TD>
+				</TR>
+				<TR>
+					<TD><FONT face="MS UI Gothic">音声ストリーム終了</FONT></TD>
+					<TD><FONT face="MS UI Gothic">SPEI_END_SR_STREAM (by SAPI)</FONT></TD>
+					<TD></TD>
+				</TR>
+			</TABLE>
+		</P>
+		<P><FONT face="MS UI Gothic"><FONT face="MS UI Gothic">SPEI_START_SR_STREAM </FONT>と <FONT face="MS UI Gothic">
+					<FONT face="MS UI Gothic">SPEI_END_SR_STREAM </FONT></FONT>は、SAPI 
+				によって発行されるため、Julius for SAPI では発行しません。</FONT></P>
+		<P><FONT face="MS UI Gothic">SPEI_SOUND_START 
+				は、切り出しオプションが設定されている場合は切り出し開始位置を検出したときに発行されます。切り出しオプションが設定されていないときは常にストリームの最初で発行されます。</FONT></P>
+		<P><FONT face="MS UI Gothic">SPEI_SOUND_END が、SPEI_RECOGNITION よりも前に発行されることに注意してください。</FONT></P>
+		<H2>結果</H2>
+		<P><FONT face="MS UI Gothic">音声認識の結果は SPRECORESULTINFO に格納されます。</FONT><FONT face="MS UI Gothic">
+				Julius for SAPI が返す SPRECORESULTINFO 以下の情報は、SAPIでは規定されているものの Julius for SAPI 
+				では使用できない項目が含まれています。以下に詳細な情報を示します。 </FONT>
+		</P>
+		<UL>
+			<LI>
+				<FONT face="MS UI Gothic">発音データ・・・使用可</FONT>
+				<P><FONT face="MS UI Gothic">ver 2.1 から、SAPI からの結果である SPPHRASE::pszPronunciation 
+						にデータが格納されるようになりました。内部的には、Julius が認識で使用した音素列から変換しています。</FONT></P>
+			<LI>
+				<FONT face="MS UI Gothic">単語ごとのアライメント情報・・・<STRONG>使用可(ver 2.1c より)</STRONG></FONT>
+				<P><FONT face="MS UI Gothic">SPRECORESULTINFO, SPPHRASE 
+						には、認識した音声区間の情報が設定されています。また、SPPHRASEELEMENT 
+						には単語開始位置とサイズの情報が含まれています。位置情報はフレーム単位で計算していますので、それ以上の分解能はありません。</FONT></P>
+			<LI>
+				<FONT face="MS UI Gothic">Confidence・・・<STRONG>使用可(ver 2.1d より)</STRONG></FONT>
+				<P><FONT face="MS UI Gothic">SPPHRASEELEMENT の ActualConfidence, EngineConfidence 
+						の値は無効です。</FONT></P>
+			<LI>
+				<FONT face="MS UI Gothic">Alternate・・・<STRONG>使用可(ver 2.1d より)</STRONG></FONT>
+				<P><FONT face="MS UI Gothic">「デコード」の「N-best を計算する」をチェックすることで、Alternate&nbsp;に N-best 
+						の結果が出力されます。First-best が認識結果として返るため、Alternate として出力されるのは 
+						N-1&nbsp;とおりになります。&nbsp; </FONT>
+				</P>
+			</LI>
+		</UL>
+		<H2>FAQ</H2>
+		<UL>
+			<LI>
+				XML文法の「－」(全角ハイフォン)などが「?」に文字化けする
+				<P>SAPI 内部の処理によってすでに文字化けが起こっているようです。使わないようにしてください。</P>
+			</LI>
+		</UL>
+		<H2>その他</H2>
+		<H3>レジストリ情報</H3>
+		<P><FONT face="MS UI Gothic">Julius for SAPI の情報はレジストリに記録されています。</FONT></P>
+		<P><FONT face="MS UI Gothic">インストール時に、JuliusSAPI.dll によって 
+				HKEY_LOCAL_MACHINE\Software\Microsoft\Speech\Recognizers\Tokens\ に Julius for 
+				SAPI キーが追加され、いくつかのオプションのデフォルト値が設定されます。またインストーラによって、ErrLogFile がインストールディレクトリの 
+				errlog.txt に設定されます。</FONT></P>
+		<P><FONT face="MS UI Gothic"><STRONG>InitialModelsInstall</STRONG> をインストールすることで、音響モデルと言語モデル関係のレジストリがインストールしたモデルファイルに設定されます。</FONT></P>
+		<P><FONT face="MS UI Gothic">Julius for SAPI 
+				のオプションはダイアログで設定可能で、その情報は、HKEY_LOCAL_MACHINE\Software\Microsoft\Speech\Recognizers\Tokens\Julius 
+				for SAPI\ 以下に記録されます。以下にその詳細を記します。</FONT><FONT face="MS UI Gothic"><BR>
+		</P>
+		<P>
+			<TABLE id="Table1" style="HEIGHT: 359px" cellSpacing="1" cellPadding="1" width="100%" border="1">
+				<TR>
+					<TD style="WIDTH: 194px" bgColor="#ffff66" colSpan="1" rowSpan="1"><STRONG>相対パス</STRONG></TD>
+					<TD style="WIDTH: 349px" bgColor="#ffff66"><STRONG>説明</STRONG></TD>
+					<TD style="WIDTH: 45px" bgColor="#ffff66"><STRONG>対応するコマンドラインオプション</STRONG></TD>
+					<TD bgColor="#ffff66"><STRONG>ダイアログ</STRONG></TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px" bgColor="lemonchiffon"><FONT face="MS UI Gothic">Models\</FONT></TD>
+					<TD style="WIDTH: 349px" bgColor="lemonchiffon">モデルファイル情報</TD>
+					<TD style="WIDTH: 45px" bgColor="lemonchiffon"></TD>
+					<TD bgColor="lemonchiffon"></TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; NgramFile</TD>
+					<TD style="WIDTH: 349px">Julius bingram 形式のモデルファイル名</TD>
+					<TD style="WIDTH: 45px">-d</TD>
+					<TD>言語モデル</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; NgramArpaLRFile</TD>
+					<TD style="WIDTH: 349px">ARPA形式の 2gramモデルファイル名(Left to Right)</TD>
+					<TD style="WIDTH: 45px">-nlr</TD>
+					<TD>言語モデル</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; NgramArpaRLFile</TD>
+					<TD style="WIDTH: 349px">ARPA形式の 3gramモデルファイル名(Right to Left)</TD>
+					<TD style="WIDTH: 45px">-nrl</TD>
+					<TD>言語モデル</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; DfaFile</TD>
+					<TD style="WIDTH: 349px">--</TD>
+					<TD style="WIDTH: 45px"></TD>
+					<TD></TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px; HEIGHT: 24px">&nbsp; DictFile</TD>
+					<TD style="WIDTH: 349px; HEIGHT: 24px">Ngram 用辞書ファイル (htkdic 形式)</TD>
+					<TD style="WIDTH: 45px; HEIGHT: 24px">-v</TD>
+					<TD style="HEIGHT: 24px">言語モデル</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; HmmFile</TD>
+					<TD style="WIDTH: 349px">HMM 定義ファイル名</TD>
+					<TD style="WIDTH: 45px">-h</TD>
+					<TD>音響モデル</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; MapFile</TD>
+					<TD style="WIDTH: 349px">HMM マッピングファイル名</TD>
+					<TD style="WIDTH: 45px">-hlist</TD>
+					<TD>音響モデル</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; GsHmmFile</TD>
+					<TD style="WIDTH: 349px"></TD>
+					<TD style="WIDTH: 45px">-gshmm</TD>
+					<TD>音響モデル</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; UseMapFile</TD>
+					<TD style="WIDTH: 349px">[MapFile] が有効なら 1 無効なら 0</TD>
+					<TD style="WIDTH: 45px"></TD>
+					<TD>音響モデル</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; UseGsHmmFile</TD>
+					<TD style="WIDTH: 349px">[GsHmmFile] が有効なら 1 無効なら 0</TD>
+					<TD style="WIDTH: 45px"></TD>
+					<TD>音響モデル</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; UseArpaFile</TD>
+					<TD style="WIDTH: 349px">1 なら [NgramArpaLRFile] [NgramArpaRLFile] を、0 なら 
+						[NgramFile] を使用</TD>
+					<TD style="WIDTH: 45px"></TD>
+					<TD>言語モデル</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px" bgColor="lemonchiffon">LogFiles\</TD>
+					<TD style="WIDTH: 349px" bgColor="lemonchiffon">ログファイル関係</TD>
+					<TD style="WIDTH: 45px" bgColor="lemonchiffon"></TD>
+					<TD bgColor="lemonchiffon"></TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; OutLogFile</TD>
+					<TD style="WIDTH: 349px">認識結果のみを記録するログファイル名</TD>
+					<TD style="WIDTH: 45px">なし</TD>
+					<TD>全般</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; ErrLogFile</TD>
+					<TD style="WIDTH: 349px">エラー情報のみを記録するログファイル名</TD>
+					<TD style="WIDTH: 45px">なし</TD>
+					<TD>全般</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; DebugLogFile</TD>
+					<TD style="WIDTH: 349px">いろいろな情報を記録するログファイル名</TD>
+					<TD style="WIDTH: 45px">なし</TD>
+					<TD>全般</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; UseOutLogFile</TD>
+					<TD style="WIDTH: 349px">[OutLogFile] が有効なら 1 無効なら 0</TD>
+					<TD style="WIDTH: 45px">なし</TD>
+					<TD>全般</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; UseErrLogFile</TD>
+					<TD style="WIDTH: 349px">[ErrLogFile] が有効なら 1 無効なら 0</TD>
+					<TD style="WIDTH: 45px">なし</TD>
+					<TD>全般</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; UseDebugLogFile</TD>
+					<TD style="WIDTH: 349px">[DebugLogFile] が有効なら 1 無効なら 0</TD>
+					<TD style="WIDTH: 45px">なし</TD>
+					<TD>全般</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px"><FONT face="MS UI Gothic">&nbsp; IMEDllFile</FONT></TD>
+					<TD style="WIDTH: 349px"><FONT face="MS UI Gothic">指定するIME の DLL ファイル名</FONT></TD>
+					<TD style="WIDTH: 45px"><FONT face="MS UI Gothic">なし</FONT></TD>
+					<TD><FONT face="MS UI Gothic">言語モデル</FONT></TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px"><FONT face="MS UI Gothic">&nbsp; UseIME</FONT></TD>
+					<TD style="WIDTH: 349px"><FONT face="MS UI Gothic">SAPI-XML の単語読みを求めるのにIMEを使うなら 1 
+							使わないなら 0</FONT></TD>
+					<TD style="WIDTH: 45px"><FONT face="MS UI Gothic">なし</FONT></TD>
+					<TD><FONT face="MS UI Gothic">言語モデル</FONT></TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px"><FONT face="MS UI Gothic">&nbsp; UseIMEDllFile</FONT></TD>
+					<TD style="WIDTH: 349px"><FONT face="MS UI Gothic">IME の DLL を [IMEDllFile] で指定するなら 1 
+							しないなら 0</FONT></TD>
+					<TD style="WIDTH: 45px"><FONT face="MS UI Gothic">なし</FONT></TD>
+					<TD><FONT face="MS UI Gothic">言語モデル</FONT></TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px" bgColor="lemonchiffon">AudioOptions\</TD>
+					<TD style="WIDTH: 349px" bgColor="lemonchiffon">入力音声に関するパラメータ</TD>
+					<TD style="WIDTH: 45px" bgColor="lemonchiffon"></TD>
+					<TD bgColor="lemonchiffon"></TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; PauseSegment</TD>
+					<TD style="WIDTH: 349px">入力音声の切り出しを(0:しない 1:する 2:マイク入力のみする)</TD>
+					<TD style="WIDTH: 45px">-pausesegment<BR>
+						-nopausesegment</TD>
+					<TD>入力音声</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px; HEIGHT: 23px">&nbsp; LevelThreshold</TD>
+					<TD style="WIDTH: 349px; HEIGHT: 23px">切り出しの零交差のレベル閾値</TD>
+					<TD style="WIDTH: 45px; HEIGHT: 23px">-lv</TD>
+					<TD style="HEIGHT: 23px">入力音声</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; HeadMarginMsec</TD>
+					<TD style="WIDTH: 349px">音声区間開始部のマージン(ミリ秒)</TD>
+					<TD style="WIDTH: 45px">-headmargin</TD>
+					<TD>入力音声</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; TailMarginMsec</TD>
+					<TD style="WIDTH: 349px">音声区間終了部のマージン(ミリ秒)</TD>
+					<TD style="WIDTH: 45px">-tailmargin</TD>
+					<TD>入力音声</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; ZeroCross</TD>
+					<TD style="WIDTH: 349px">切り出しの零交差数閾値</TD>
+					<TD style="WIDTH: 45px">-zc</TD>
+					<TD>入力音声</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; StripZeroSample</TD>
+					<TD style="WIDTH: 349px">完全に零の区間のサンプルを取り除くか</TD>
+					<TD style="WIDTH: 45px">-nostrip</TD>
+					<TD>入力音声</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; WaveFormat</TD>
+					<TD style="WIDTH: 349px">内部処理用の波形フォーマット(音響モデルにあわせなければいけない)<BR>
+						0: 16kHz 16bit Mono&nbsp; 1: 8kHz 16bit Mono</TD>
+					<TD style="WIDTH: 45px">-smpPeriod / -smpFreq</TD>
+					<TD>入力音声</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; HiPassFreq</TD>
+					<TD style="WIDTH: 349px">高周波成分カットオフ周波数</TD>
+					<TD style="WIDTH: 45px">-hipass
+					</TD>
+					<TD>入力音声</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; LoPassFreq</TD>
+					<TD style="WIDTH: 349px">低周波成分カットオフ周波数</TD>
+					<TD style="WIDTH: 45px">-lopass</TD>
+					<TD>入力音声</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; FrameSizeSample</TD>
+					<TD style="WIDTH: 349px">窓サイズ(単位：サンプル)※WaveFormatによって時間は変化</TD>
+					<TD style="WIDTH: 45px">-fsize</TD>
+					<TD>入力音声</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; FrameShiftSample</TD>
+					<TD style="WIDTH: 349px">フレームシフト幅(単位：サンプル)※WaveFormatによって時間は変化</TD>
+					<TD style="WIDTH: 45px">-fshift</TD>
+					<TD>入力音声</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; WaveOutFile</TD>
+					<TD style="WIDTH: 349px">処理波形(SAPI変換後)のログ出力ファイル名<BR>
+						ここに指定した名前＋000からインクリメントされる3桁の数値＋.wav というファイル名で保存される</TD>
+					<TD style="WIDTH: 45px">
+						<P>なし</P>
+					</TD>
+					<TD>入力音声</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px" bgColor="lemonchiffon">DecodeOptions\</TD>
+					<TD style="WIDTH: 349px" bgColor="lemonchiffon"></TD>
+					<TD style="WIDTH: 45px" bgColor="lemonchiffon"></TD>
+					<TD bgColor="lemonchiffon"></TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; TrellisBeamWidth</TD>
+					<TD style="WIDTH: 349px"><FONT face="MS UI Gothic">ビーム幅(HMMノード数)</FONT></TD>
+					<TD style="WIDTH: 45px">-b</TD>
+					<TD>デコード</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; GsStateNum</TD>
+					<TD style="WIDTH: 349px">GMS 使用時([UseGsHmmFile]=1)、全モノフォンの状態の中から上位いくつの状 
+						態のトライフォンを計算するかを指定</TD>
+					<TD style="WIDTH: 45px">-gsnum</TD>
+					<TD>音響モデル</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; CalcWordAlign</TD>
+					<TD style="WIDTH: 349px"><FONT face="MS UI Gothic"></FONT></TD>
+					<TD style="WIDTH: 45px"></TD>
+					<TD>デコード</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; FalseRecognitionThreshold</TD>
+					<TD style="WIDTH: 349px"><FONT face="MS UI Gothic"></FONT></TD>
+					<TD style="WIDTH: 45px">なし</TD>
+					<TD>デコード</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; LmWeight</TD>
+					<TD style="WIDTH: 349px">第1パスの言語重み</TD>
+					<TD style="WIDTH: 45px">-lmp</TD>
+					<TD>デコード</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; LmWeight2</TD>
+					<TD style="WIDTH: 349px">第1パスの単語挿入ペナルティ</TD>
+					<TD style="WIDTH: 45px">-lmp2</TD>
+					<TD>デコード</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">
+						<P>&nbsp; LmPenalty</P>
+					</TD>
+					<TD style="WIDTH: 349px">第2パスの言語重み</TD>
+					<TD style="WIDTH: 45px">-lmp</TD>
+					<TD>デコード</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; LmPenalty2</TD>
+					<TD style="WIDTH: 349px">第2パスの単語挿入ペナルティ</TD>
+					<TD style="WIDTH: 45px">-lmp2</TD>
+					<TD>デコード</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; LmpSpecified</TD>
+					<TD style="WIDTH: 349px">[LmWeight], [LmPenalty] が有効なら 1 無効なら 0</TD>
+					<TD style="WIDTH: 45px">-lmp</TD>
+					<TD style="HEIGHT: 18px">デコード</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; Lmp2Specified</TD>
+					<TD style="WIDTH: 349px">[LmWeight2], [LmPenalty2] が有効なら 1 無効なら 0</TD>
+					<TD style="WIDTH: 45px">-lmp2</TD>
+					<TD>デコード</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; Penalty1</TD>
+					<TD style="WIDTH: 349px">--</TD>
+					<TD style="WIDTH: 45px"></TD>
+					<TD></TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px">&nbsp; Penalty2</TD>
+					<TD style="WIDTH: 349px">--</TD>
+					<TD style="WIDTH: 45px"></TD>
+					<TD></TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px"><FONT face="MS UI Gothic">&nbsp;&nbsp;Nbest</FONT></TD>
+					<TD style="WIDTH: 349px"><FONT face="MS UI Gothic">N-best 数</FONT></TD>
+					<TD style="WIDTH: 45px"><FONT face="MS UI Gothic">-nbest n</FONT></TD>
+					<TD>デコード</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px"><FONT face="MS UI Gothic">&nbsp; UseNbest</FONT></TD>
+					<TD style="WIDTH: 349px"><FONT face="MS UI Gothic">N-best を計算する</FONT></TD>
+					<TD style="WIDTH: 45px"><FONT face="MS UI Gothic">-nbest</FONT></TD>
+					<TD>デコード</TD>
+				</TR>
+				<TR>
+					<TD style="WIDTH: 194px"><FONT face="MS UI Gothic">&nbsp; UseCM</FONT></TD>
+					<TD style="WIDTH: 349px"><FONT face="MS UI Gothic">信頼度を計算する</FONT></TD>
+					<TD style="WIDTH: 45px"><FONT face="MS UI Gothic">-SAPICM</FONT></TD>
+					<TD>デコード</TD>
+				</TR>
+			</TABLE>
+		</P>
+		</FONT>
+		<H3>Compliance Test の結果</H3>
+		<P><FONT face="MS UI Gothic">Speech SDK に付属の Compliance Test の実行結果です。</FONT>
+		</P>
+		<P>
+			<TABLE id="Table2" style="TABLE-LAYOUT: fixed" cellSpacing="1" cellPadding="1" width="100%" border="1" x:str>
+				<COLGROUP>
+					<COL style="mso-width-source: userset; mso-width-alt: 14368">
+					<COL style="mso-width-source: userset; mso-width-alt: 3168">
+					<COL style="mso-width-source: userset; mso-width-alt: 5792">
+					<TR>
+						<TD class="xl24" style="WIDTH: 419px">Required</TD>
+						<TD class="xl25" style="WIDTH: 30px"><FONT face="MS UI Gothic"></FONT></TD>
+						<TD class="xl26">理由</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">SoundStart</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">SoundEnd</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29"><FONT face="MS UI Gothic"></FONT>
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">FalseRecognition</TD>
+						<TD class="xl28" style="WIDTH: 30px">×</TD>
+						<TD class="xl29">Rejection に未対応のため</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">FPhraseStart</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">Recognition</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">SoundStart -&gt; SoundEnd order</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">PhraseStart -&gt; Recongnition order</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29"><FONT face="MS UI Gothic"></FONT>
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl30" style="WIDTH: 419px">Events Offset</TD>
+						<TD class="xl31" style="WIDTH: 30px">○</TD>
+						<TD class="xl32">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">Synchronize before loading Command &amp; 
+							Control grammar</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">Synchronize Command &amp; Control grammar 
+							after loading engine</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">Application Lexicon for Command &amp; Control</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" x:str="Uses user lexicon before application lexicon for Command &amp; Control " style="WIDTH: 419px">Uses 
+							user lexicon before application lexicon for Command &amp; Control<SPAN style="mso-spacerun: yes">&nbsp;</SPAN></TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl30" style="WIDTH: 419px">Case sensitive lexicon</TD>
+						<TD class="xl31" style="WIDTH: 30px">○</TD>
+						<TD class="xl32">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">L tag</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">Expected Rule</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">P[hrase] tag</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">O[ptional] tag</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">RULE and RULEREF tags</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">/Disp/lex/pron</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29"><FONT face="MS UI Gothic"></FONT>
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl30" style="WIDTH: 419px">Case sensitive grammar</TD>
+						<TD class="xl31" style="WIDTH: 30px">○</TD>
+						<TD class="xl32"><FONT face="MS UI Gothic"></FONT>
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">SpPhraseElements</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29"><RUBY>ver 2.1c 
+      より対応</RUBY></TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">Automatically pause engine on recognition</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">Invalidate top level rule</TD>
+						<TD class="xl28" style="WIDTH: 30px">×</TD>
+						<TD class="xl29">Rejection に<RUBY>未対応<SPAN style="DISPLAY: none"><RT></RT></SPAN></RUBY>のため</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">Invalidate non-top level rule</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29"><FONT face="MS UI Gothic"></FONT>
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl27" style="WIDTH: 419px">Multi Instance</TD>
+						<TD class="xl28" style="WIDTH: 30px">○</TD>
+						<TD class="xl29">
+						</TD>
+					</TR>
+					<TR>
+						<TD class="xl30" style="WIDTH: 419px">Multiple application contexts 
+							[ISpRecoContext]</TD>
+						<TD class="xl31" style="WIDTH: 30px">○</TD>
+						<TD class="xl32">
+						</TD>
+					</TR>
+			</TABLE>
+		</P>
+	</body>
+</html>

@@ -1,0 +1,297 @@
+<h2>ドキュメント</h2>
+
+<a name="beginner"><h3>ビギナー</h3></a>
+
+<ul>
+<li><font size="+2"><a href="paper/JSAI05.pdf">連続音声認識ソフトウェアJulius</a> (PDF, 9ページ)</font>
+<blockquote>
+研究・開発に役立つオープンソースソフトを紹介する人工知能学会学会誌のシリーズ特集「<a href="http://www.ai-gakkai.or.jp/jsai/journal/toolbox/" target="_top">研究のツールボックス</a>」に掲載された，Julius の紹介とチュートリアルです．Juliusの概要をひととおり知りたい方，これから Julius を使った音声認識を始めたい方にお薦めです．
+
+<p>本原稿は以下の書誌に掲載されたものです．</p>
+
+<div class="bib">
+河原達也, 李晃伸.<br>
+「連続音声認識ソフトウエア Julius」<br>
+人工知能学会誌, Vol.20, No.1, pp.41--49, 2005. 
+</div>
+</blockquote>
+
+<li>Julius に関する文献 (PDF)</li>
+<blockquote>
+<ul>
+<li>A. Lee, T. Kawahara and K. Shikano.
+<a href="http://julius.sourceforge.jp/paper/ri-eurospeech2001.pdf">
+"Julius --- an open source real-time large vocabulary recognition
+engine." </a> In Proc. European Conference on Speech Communication and
+Technology (EUROSPEECH), pp. 1691--1694, 2001.</li>
+
+<li>T. Kawahara, A. Lee, T. Kobayashi, K. Takeda, N. Minematsu,
+S. Sagayama, K. Itou, A. Ito, M. Yamamoto, A. Yamada, T. Utsuro and
+K. Shikano.
+<a href="http://julius.sourceforge.jp/paper/icslp00-6.pdf">
+"Free software toolkit for Japanese large vocabulary continuous speech
+recognition." </a> In Proc. Int'l Conf. on Spoken Language Processing
+(ICSLP) , Vol. 4, pp. 476--479, 2000.</li>
+</ul>
+</blockquote>
+</li>
+
+
+<li><a href="doc/mic.html">マイク入力について</a>
+<blockquote>
+Julius/Julian オリジナル版でマイクの音声を認識する際のコツや，録音された内容の
+検証方法などについて記されています．マイク入力がうまくいかない場合に
+参考にしてください．
+</blockquote>
+
+</ul>
+
+<a name="install"><h3>動作環境・インストール</h3></a>
+
+<ul>
+<li><a href="doc/install.html">コンパイル・インストール手順 - Unix</a>
+<blockquote>
+Julius/Julian をソースからインストールする手順を説明します．
+Linux や Soraris などの Unix OS 用です．
+</blockquote>
+
+<li><a href="doc/install-mingw.html">コンパイル手順 - MinGW</a>
+<blockquote>
+Rev.3.5 から，Windows での開発は，フリーの開発環境の一つである <a href="http://www.mingw.org" target="_top">MinGW - Minimalist GNU for Windows </a>へ移行しました．この文書では，MinGW上での Julius のコンパイル方法を説明します．
+</blockquote>
+
+<li><a href="doc/compile-vc.html">コンパイル手順 - Visual C++</a>
+<blockquote>
+Julius を Microsoft Visual C++ でコンパイルする方法です．
+</blockquote>
+
+<li><a href="doc/configure.html">configure オプションの解説</a>
+<blockquote>
+アルゴリズムのチューニングやマイクのAPI設定は，コンパイル時に configure オプションで指定する必要があります．また，単語グラフ出力など，コンパイル時に指定しないと使えない機能があります．この文書では，Julius/Julian のコンパイル時に使用する configure スクリプトの全オプションについて解説します．
+</blockquote>
+
+</ul>
+
+<a name="application"><h3>アプリケーション開発者</h3></a>
+<ul>
+<li><a href="license.html">Juliusの使用許諾</a>
+<blockquote>
+Julius の使用許諾書です．独自の使用条件ですが，基本的に BSD ライセンスに近いフリーライセンスです．詳しくはリンク先をご覧ください．
+</blockquote>
+
+<li><a href="doc/grammar.html">Julian の認識用文法の書き方</a>
+<blockquote>
+Julius の記述文法版である Julian は，登場しうる入力文のパターンを記述した認識用文法に従って認識を行います．この文書では，Julianで用いる音声認識用文法の作成方法について説明しています．文法の具体的な作成手順やファイルの書式，妥当性のチェック方法などが記されています．またいくつかのサンプル文法も置いてあります．初めて Julian を使う方は，<a href="juliankit.html">Julian記述文法音声認識キット</a>もあわせてご覧ください．
+</blockquote>
+
+<li><a href="doc/multigram.html">複数文法の同時認識</a>
+<blockquote>
+Julian は，複数の文法を同時に用いて認識することができます．この文書では，複数文法の指定方法について説明します．
+</blockquote>
+
+<li><a href="doc/classngram.html">クラスN-gramの使用方法</a>
+<blockquote>
+Julius オリジナル版でクラスN-gramを使用する方法について説明しています
+(Rev.3.4以降)．
+</blockquote>
+
+<li><a href="doc/module.html">モジュールモード</a>
+<blockquote>
+Julius/Julian オリジナル版は，音声認識サーバとしてアプリケーションから
+ネットワーク経由で利用することができます．この文書ではその具体的方法について
+解説します．
+</blockquote>
+
+<li><a href="doc/gmm.html">無効入力の棄却について</a>
+<blockquote>
+Julius-3.5 は Gaussian Mixture Model (GMM) を用いて環境音識別と棄却を行う
+機能を備えており，物音などの雑音や笑い声，咳といった無効な入力を
+判別することができます．この文書では機能の詳細と仕様上の注意，
+GMMの作成方法等について記されています．
+</blockquote>
+
+<li><a href="doc/graphout.html">単語グラフ形式</a>
+<blockquote>
+Julius-3.5 以降では，認識結果を単語グラフの形式で出力する機能がサポートされています．この文書では単語グラフ出力を行う方法，出力結果の読み方について解説します．
+</blockquote>
+
+<li><a href="doc/cm.html">認識結果の単語信頼度について</a>
+<blockquote>
+Juliusでは認識結果の単語ごとにその「信頼度」が付与されています（rev.3.4以降）．
+この文書では，その基本的な仕組みや値の見方について解説します．
+</blockquote>
+
+</ul>
+
+<h3>音声認識システム開発者</h3>
+
+<ul>
+<li><a href="contrib.html">Julius の派生バージョン</a>
+<blockquote>
+Julius は，プラットフォームやアプリケーションへの組み込み方法ごとに，
+いくつかの派生版が存在します．この文書ではそれらの派生版の違いや
+ダウンロード方法について記されています．
+</blockquote>
+
+<li><a href="doc/adin.html">音声入力について</a>
+<blockquote>
+Julius はファイル入力・マイク入力・ネットワーク入力など様々なソースからの
+音声入力をサポートしています．この文書ではオリジナル版Julius/Julian における
+各音声入力の使用方法と音響モデルとの関連，注意点について記されています．
+</blockquote>
+
+<li><a href="doc/param.html">MFCCパラメータの設定</a>
+<blockquote>
+波形入力を正しく認識するためには，サンプリングレートや窓幅，
+MFCC ベクトルの次元数といった特徴量パラメータを，音響モデルの
+学習時パラメータに合わせて設定する必要があります．
+この文書では，Julius での特徴量パラメータの設定について，
+HTK と比較しながら説明します． 
+</blockquote>
+
+<li><a href="doc/format.html">使用可能なファイル形式とモデル形式</a>
+<blockquote>
+音響モデル，言語モデル，記述文法，音声ファイルなど，Julius に与える
+各種ファイルについて，そのサポートの範囲と制限を詳細に説明しています．
+</blockquote>
+
+<li><a href="doc/triphone.html">トライフォンの扱いと HMMList ファイルについて</a>
+<blockquote>
+Julius における音素環境依存モデル（トライフォン）の扱い方，および
+トライフォンモデル使用時に必須である HMMList ファイルについて解説した文書です．
+</blockquote>
+
+<li><a href="doc/iwsp.html">Juliusにおける入力の無音区間・休止の扱い</a>
+<blockquote>
+音声入力においては，多くの場合，発声区間の前後に無音部分が少
+量含まれた状態で入力されます．また，発話中の息継ぎなどにより，
+文中や単語間に短い休止が含まれます．高い音声認識精度を得るに
+は，このような発話前後の無音や発話中の休止部分をうまくモデル
+化する必要があります． Julius/Julian ではそのような無音部・
+休止部分を扱う方法をいくつか用意しています．
+この文書ではその方法について説明します． 
+</blockquote>
+
+
+<li><a href="book/Julius-book-3.3-ja.pdf">Julius book for Rev.3.3</a> (PDF, 88ページ)
+<blockquote>
+Julius の使用方法，各種付属マニュアル，そしてファイルやマイク入力の
+仕様に関するいくつかのドキュメントをまとめた文書です．バージョン
+3.3 に対応した文書です．
+</blockquote>
+
+</ul>
+
+<a name="manual"><h3>マニュアル・資料</h3></a>
+
+<ul>
+<li><a href="http://www.sp.nitech.ac.jp/~ri/julius-dev/doxygen/julius/" target="_blank">ソースドキュメントブラウザ</A>
+<blockquote>
+Julius のソースコードドキュメント（HTML形式）です．
+すべての関数および構造体の定義について詳細に説明されています．
+型定義や関数呼び出しをリンクでたどれるので，ソースを理解する助けに
+なるでしょう．
+<p>
+文書の内容はすべてソースコードにコメントとして埋め込まれています．
+コメントからドキュメントの生成は，
+<a href="http://www.doxygen.org">Doxygen</a>を用いました．
+英語および日本語で記述されています．
+<p>
+なお Julian では仕様が若干異なります．Julian は<a href="http://www.sp.nitech.ac.jp/~ri/julius-dev/doxygen/julian/" target="_blank">こちら</a>をご覧下さい．
+</blockquote>
+
+<li><a href="refman/">オンラインマニュアル</a>
+<blockquote>
+Julius/Julian および付属ツールのオンラインマニュアル(HTML形式)です．
+日本語および英語で提供されています．
+なおオリジナルのオンラインマニュアルは，
+nroff 形式で Julius のアーカイブにも含まれています．
+</blockquote>
+
+</ul>
+
+<h3>Inside Julius</h3>
+<ul>
+
+<li>探索アルゴリズムの概要（未）
+<blockquote>
+Julius はどのように認識を行っているのでしょうか？
+この文書では，Julius の基本な認識アルゴリズムについて述べています．
+（専門度大）
+</blockquote>
+
+<li>単語信頼度の算出アルゴリズム
+<blockquote>
+Julius で用いている単語信頼度の算出アルゴリズムについては以下の文献を
+ご覧ください．また「<a href="doc/cm.html">認識結果の単語信頼度について</a>」
+もあわせてご覧ください．
+<br>
+<br>
+<div class="bib">
+李晃伸，河原達也，鹿野清宏．
+「２パス探索アルゴリズムにおける高速な単語事後確率に基づく信頼度算出法」
+情報処理学会研究報告, 2003-SLP-49-48, 2003-12．
+</div>
+<br>
+<div class="bib">
+Akinobu Lee, Kiyohiso Shikano, and Tatsuya Kawahara,
+"Real-time word confidence scoring using local posterior probabilities on tree trellis search,"
+In Proc. IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP2004), Vol.I, pp.793--796, May 2004.  (<a href="paper/ri-icassp2004.pdf">PDF</a>)
+</div>
+</blockquote>
+
+<li><a href="doc/visualize.html">探索空間可視化機能について</a>
+<blockquote>
+Julius オリジナル版には，その実際の認識過程を可視化する機能があります．
+この文書では，Julius 可視化機能の使い方と画面の見方について記されています．
+</blockquote>
+</ul>
+
+
+<a name="performance"><h3>性能評価</h3></a>
+
+<ul>
+<li><a
+href="http://winnie.kuis.kyoto-u.ac.jp/pub/julius/result99/">1999年度
+大語彙連続音声認識 評価実験結果(Julius-3.1)</a></li>
+</ul>
+
+
+<a name="ml"><h2>Julius users ML</h2></a>
+
+<p>Julius users ML (<tt>julius-users@luky.org</tt>)は，Juliusに関して議論するメーリングリストです．</p>
+
+<p>柴田(ひ)＠福岡 さんのご厚意により運営していただいています．(ご協力ありがとうございますm(__)m)</p>
+
+<p>Juliusのバグ報告やインストールに関する質問などどんな話題でもOKです．
+Julius開発者も参加しておりますので，どうぞお気軽にご参加下さい．</p>
+
+<h3>参加方法</h3>
+<p>
+参加(登録)希望の方は，
+<pre>
+  subscribe あなたのお名前
+</pre>
+というコマンドをメール本文の1行目行頭に書いて，アドレス
+<tt>julius-users-ctl@luky.org</tt> へ送って下さい．たとえば，
+<pre>
+  subscribe Akinobu Lee
+</pre>
+などと書いて頂ければOKです．
+
+<p>なおMLに投稿された内容はWebで公開されており，またCD-ROMへの収録が
+行われることもありますので，ご了承ください．</p>
+
+<h3>過去記事アーカイブ</h3>
+
+過去のJulius-MLの記事は以下から閲覧できます．ご活用ください．
+<ul>
+  <li><a href="http://his.luky.org/ML/julius" target="_top">一覧リスト</a>
+  <li><a href="http://his.luky.org/ML/" target="_top">全文検索</a>
+</ul>
+
+<hr>
+
+<div align="right">
+$Id: documents.html,v 1.5 2008/05/13 11:13:04 julius4 Exp $
+</div>

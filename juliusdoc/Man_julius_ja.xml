@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+                   "/usr/share/xml/docbook/4.4/docbookx.dtd"
+[
+<!ENTITY opt_app SYSTEM "opt_app_ja.xml">
+<!ENTITY opt_global SYSTEM "opt_global_ja.xml">
+<!ENTITY opt_instance SYSTEM "opt_instance_ja.xml">
+<!ENTITY opt_lm SYSTEM "opt_lm_ja.xml">
+<!ENTITY opt_am SYSTEM "opt_am_ja.xml">
+<!ENTITY opt_search SYSTEM "opt_search_ja.xml">
+]>
+
+<refentry id='julius' lang="ja">
+
+<refmeta>
+  <refentrytitle>
+    julius
+  </refentrytitle>
+  <manvolnum>
+    1
+  </manvolnum>
+</refmeta>
+
+<refnamediv>
+  <refname>
+    julius
+  </refname>
+  <refpurpose>
+    open source multi-purpose LVCSR engine
+  </refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis>
+  <command>julius</command>
+  <arg choice='opt'>-C <replaceable>jconffile</replaceable></arg>
+  <arg choice='opt' rep='repeat'><replaceable>options</replaceable></arg>
+</cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1><title>概要</title>
+
+<para>
+Julius は数万語を対象とした大語彙連続音声認識を行うことのできるフリー
+の認識エンジンです．単語N-gramを用いた2パス構成の段階的探索により高精
+度な認識を行うことができます．また，小規模語彙のための文法ベースの認識
+や単単語認識も行うことができます．認識対象としてマイク入力，録音済みの
+音声波形ファイル，特徴抽出したパラメータファイルなどに対応しています．
+</para>
+<para>
+コアの認識処理は，全て JuliusLib ライブラリとして提供されています．
+JuliusはJuliusLibを用いる音声アプリケーションの一つです．
+</para>
+<para>
+Julius を用いて音声認識を行うには，音響モデル，単語辞書，および言語モ
+デルが必要です．
+</para>
+</refsect1>
+
+<!--
+<refsect1 id='search_algorithm_overview'><title>探索アルゴリズム</title>
+
+&desc_search;
+</refsect1>
+
+<refsect1><title>詳細</title>
+<refsect2><title>音響モデル</title>
+&desc_am;
+</refsect2>
+<refsect2><title>言語モデル</title>
+&desc_lm;
+</refsect2>
+<refsect2><title>アプリケーションとしてのJulius</title>
+&desc_app;
+</refsect2>
+
+-->
+
+<refsect1 id='options'><title>設定</title>
+<para>
+  以下のオプション指定を用いてJuliusの動作設定を行います．これらはすべ
+  てJuliusのコマンドオプションとして指定できます．また，"jconf 設定ファ
+  イル" としてテキストファイル内に記述しておき，それを "-C" で指定する
+  こともできます．
+</para>
+&opt_instance;
+&opt_app;
+&opt_global;
+&opt_lm;
+&opt_am;
+&opt_search;
+</refsect1>
+
+<refsect1 id='examples'><title>EXAMPLES</title>
+<para>使用例については付属のチュートリアルをご覧下さい．</para>
+</refsect1>
+
+<refsect1 id='notice'><title>NOTICE</title>
+<para>
+jconf設定ファイル内でのファイルパスの指定について：ファイルを相対パス
+で指定する場合，それは実行時のカレントディレクトリではなく，そのjconf
+ファイルが置いてある場所からの相対パスとして解釈されます．注意してくだ
+さい．
+</para>
+</refsect1>
+
+<refsect1 id='see_also'><title>SEE ALSO</title>
+<para><citerefentry><refentrytitle>julian</refentrytitle><manvolnum>1</manvolnum></citerefentry>, <citerefentry><refentrytitle>jcontrol</refentrytitle><manvolnum>1</manvolnum></citerefentry>, <citerefentry><refentrytitle>adinrec</refentrytitle><manvolnum>1</manvolnum></citerefentry>, <citerefentry><refentrytitle>adintool</refentrytitle><manvolnum>1</manvolnum></citerefentry>, <citerefentry><refentrytitle>mkbingram</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
+<citerefentry><refentrytitle>mkbinhmm</refentrytitle><manvolnum>1</manvolnum></citerefentry>, <citerefentry><refentrytitle>mkgsmm</refentrytitle><manvolnum>1</manvolnum></citerefentry>, wav2<citerefentry><refentrytitle>mfcc</refentrytitle><manvolnum>1</manvolnum></citerefentry>, <citerefentry><refentrytitle>mkss</refentrytitle><manvolnum>1</manvolnum></citerefentry></para>
+
+<para><ulink url='http://julius.sourceforge.jp/en/'>http://julius.sourceforge.jp/</ulink></para>
+</refsect1>
+
+<refsect1 id='diagnostics'><title>DIAGNOSTICS</title>
+<para>
+正常終了した場合，Julius
+は exit status として 0 を返します．エラーが見付かった場合は異常終了し，
+exist status として 1 を返します．
+入力ファイルが見つからない場合やうまく読み込めなかった場合は，そのファ
+イルに対する処理をスキップします．
+</para>
+</refsect1>
+
+<refsect1 id='bugs'><title>BUGS</title>
+<para>使用できるモデルにはサイズやタイプに若干の制限があります．詳しく
+はパッケージに付属のドキュメントを参照してください．
+バグ報告・問い合わせ・コメントなどは 
+julius-info at lists.sourceforge.jp までお願いします．
+</para>
+</refsect1>
+
+<refsect1 id='copyright'><title>COPYRIGHT</title>
+<para>
+Copyright (c) 1991-2007 京都大学 河原研究室
+<!-- .br -->
+Copyright (c) 1997-2000 情報処理振興事業協会(IPA)
+<!-- .br -->
+Copyright (c) 2000-2007 奈良先端科学技術大学院大学 鹿野研究室
+<!-- .br -->
+Copyright (c) 2005-2007 名古屋工業大学 Julius開発チーム
+</para>
+</refsect1>
+
+<refsect1 id='authors'><title>AUTHORS</title>
+<variablelist remap='IP'>
+  <varlistentry>
+  <term>Rev.1.0 (1998/02/20)</term>
+  <listitem>
+<para>設計：河原達也と李 晃伸 (京都大学)</para>
+<para>実装：李 晃伸 (京都大学)</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>Rev.1.1 (1998/04/14)</term>
+  <term>Rev.1.2 (1998/10/31)</term>
+  <term>Rev.2.0 (1999/02/20)</term>
+  <term>Rev.2.1 (1999/04/20)</term>
+  <term>Rev.2.2 (1999/10/04)</term>
+  <term>Rev.3.0 (2000/02/14)</term>
+  <term>Rev.3.1 (2000/05/11)</term>
+  <listitem>
+<para>実装：李 晃伸 (京都大学)</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>Rev.3.2 (2001/08/15)</term>
+  <term>Rev.3.3 (2002/09/11)</term>
+  <term>Rev.3.4 (2003/10/01)</term>
+  <term>Rev.3.4.1 (2004/02/25)</term>
+  <term>Rev.3.4.2 (2004/04/30)</term>
+  <listitem>
+<para>実装：李 晃伸 (奈良先端科学技術大学院大学)</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>Rev.3.5 (2005/11/11)</term>
+  <term>Rev.3.5.1 (2006/03/31)</term>
+  <term>Rev.3.5.2 (2006/07/31)</term>
+  <term>Rev.3.5.3 (2006/12/29)</term>
+  <term>Rev.4.0 (2007/12/19)</term>
+  <listitem>
+<para>実装：李 晃伸 (名古屋工業大学)</para>
+  </listitem>
+  </varlistentry>
+</variablelist>
+</refsect1>
+
+<refsect1 id='thanks_to'><title>THANKS TO</title>
+<para>
+このプログラムは Rev.3.1 まで，情報処理振興事業協会(IPA)独創的情報技術育
+成事業「日本語ディクテーションの基本ソフトウェアの開発」(代表者：鹿野
+清宏 奈良先端科学技術大学院大学教授)の援助を受けて行われました．
+Rev.3.4.2までは「情報処理学会 連続音声認識コンソーシアム」において公開さ
+れました．
+</para>
+
+<para>
+3.x 時代のマルチプラットフォーム DLL版 は，板野秀樹氏(現名城大学)の手
+によって作成・公開されました．また，Windows Microsoft Speech API対応版は
+住吉貴志氏(京都大学・当時)の手によるものです．
+</para>
+
+<para>
+そのほか，上記の協力・貢献してくださった方々，およびさまざまな助言・コ
+メントをいただく関係者各位に深く感謝いたします．
+</para>
+
+</refsect1>
+
+</refentry>

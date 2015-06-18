@@ -1,0 +1,112 @@
+<refsect2 id='opt_instance'>
+<title>
+  Instance declaration for multi decoding
+</title>
+
+<para>
+The following arguments will create a new configuration set with
+default parameters, and switch current set to it.  Jconf parameters
+specified after the option will be set into the current set.
+</para>
+<para>
+To do multi-model decoding, these argument should be specified at
+the first of each model / search instances with different names.
+Any options before the first instance definition will be IGNORED.
+</para>
+<para>
+When no instance definition is found (as older version of Julius), all
+the options are assigned to a default instance named
+<literal>_default</literal>.
+</para>
+<para>
+Please note that decoding with a single LM and multiple AMs is not
+fully supported.  For example, you may want to construct the
+jconf file as following.
+<informalexample>
+<programlisting>
+ -AM am_1 -AM am_2
+ -LM lm (LM spec..)
+ -SR search1 am_1 lm
+ -SR search2 am_2 lm
+</programlisting>
+</informalexample>
+This type of model sharing is not supported yet, since some part
+of LM processing depends on the assigned AM.  Instead, you can
+get the same result by defining the same LMs for each AM, like this:
+<informalexample>
+<programlisting>
+ -AM am_1 -AM am_2
+ -LM lm_1 (LM spec..)
+ -LM lm_2 (same LM spec..)
+ -SR search1 am_1 lm_1
+ -SR search2 am_2 lm_2
+</programlisting>
+</informalexample>
+</para>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-AM
+      </option>
+      <replaceable>name</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Create a new AM configuration set, and switch current to the
+	new one.  You should give a unique name.  (Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-LM
+      </option>
+      <replaceable>name</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Create a new LM configuration set, and switch current to the
+	new one.  You should give a unique name.  (Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-SR
+      </option>
+      <replaceable>name</replaceable>
+      <replaceable>am_name</replaceable>
+      <replaceable>lm_name</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Create a new search configuration set, and switch current to
+	the new one.  The specified AM and LM will be assigned to it.
+	The <replaceable>am_name</replaceable> and
+	<replaceable>lm_name</replaceable> can be either name or ID
+	number.  You should give a unique name.  (Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-AM_GMM
+      </option>
+    </term>
+    <listitem>
+      <para>
+	A special command to switch AM configuration to that of GMM.
+	The current AM will be switched to the GMM one, so be careful
+	not to confuse with normal AM configurations.  (Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect2>

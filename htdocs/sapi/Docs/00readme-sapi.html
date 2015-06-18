@@ -1,0 +1,394 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+<title>Julius for SAPI 2.3 README </title>
+		<META content="IBM WebSphere Studio Homepage Builder Version 7.0.0.0 for Windows" name="GENERATOR">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META http-equiv="Content-Style-Type" content="text/css">
+		<style>
+<!--
+ H1 { BORDER-RIGHT: blue thin solid; BORDER-TOP: blue thin solid; FONT-WEIGHT: bold; FONT-SIZE: 24pt; MARGIN-LEFT: 0mm; BORDER-LEFT: blue thin solid; MARGIN-RIGHT: 0mm; BORDER-BOTTOM: blue thin solid; FONT-FAMILY: "ＭＳ Ｐゴシック"; mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; mso-bidi-font-family: "ＭＳ Ｐゴシック"; mso-pagination: widow-orphan; mso-outline-level: 1 }}}}}
+	H2 { PADDING-LEFT: 10px; FONT-WEIGHT: bold; FONT-SIZE: 18pt; MARGIN-LEFT: 0mm; MARGIN-RIGHT: 0mm; BORDER-BOTTOM: blue solid; FONT-FAMILY: "ＭＳ Ｐゴシック"; BACKGROUND-COLOR: aliceblue; mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; mso-bidi-font-family: "ＭＳ Ｐゴシック"; mso-pagination: widow-orphan; mso-outline-level: 2 }}
+	H3 { PADDING-LEFT: 4px; FONT-WEIGHT: bold; FONT-SIZE: 13.5pt; PADDING-BOTTOM: 2px; MARGIN-LEFT: 0mm; MARGIN-RIGHT: 0mm; PADDING-TOP: 2px; FONT-FAMILY: "ＭＳ Ｐゴシック"; BACKGROUND-COLOR: gainsboro; mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; mso-bidi-font-family: "ＭＳ Ｐゴシック"; mso-pagination: widow-orphan; mso-outline-level: 3 }}
+	P { FONT-SIZE: 12pt; MARGIN-LEFT: 0mm; MARGIN-RIGHT: 0mm; FONT-FAMILY: "ＭＳ Ｐゴシック"; mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; mso-bidi-font-family: "ＭＳ Ｐゴシック"; mso-pagination: widow-orphan }}
+		-->
+-->
+-->
+-->
+</style>
+	</head>
+	<body lang="JA" style="tab-interval: 42.0pt" vLink="blue" link="blue">
+		<h1 class="MsoNormal" style="TEXT-ALIGN: center" align="center"><span lang="EN-US"><FONT face="MS UI Gothic">Julius 
+					for SAPI&nbsp;ver 2.3 README</FONT></span></h1>
+<TABLE id="Table2" cellspacing="1" cellpadding="1" width="677" border="0">
+  <TBODY>
+    <TR>
+      <TD>
+      <UL>
+        <LI><span lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic"><FONT size="2">2004/02/05 ver 2.3</FONT></FONT></SPAN>
+        <LI><span lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic"><FONT face="MS UI Gothic"><FONT size="2">2003/07/23 ver 2.2c</FONT></FONT></FONT></SPAN>
+        <LI><span lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic"><FONT face="MS UI Gothic" size="2"><FONT face="MS UI Gothic"><FONT size="2">2003/07/01 ver 
+														2.2b</FONT></FONT></FONT></FONT></SPAN>
+        <LI><span lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic"><FONT face="MS UI Gothic"><FONT size="2">2003/03/20 ver 2.2</FONT></FONT></FONT></SPAN>
+        <LI><span lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic"><FONT face="MS UI Gothic"><FONT size="2">2003/01/11 ver 2.1d</FONT></FONT></FONT></SPAN>
+        <LI><span lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic"><FONT face="MS UI Gothic"><FONT size="2">2002/10/22 ver 2.1c</FONT></FONT></FONT></SPAN>
+        <LI><span lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic"><SPAN lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic"><SPAN lang="EN-US" style="FONT-SIZE: 10pt">2002/10/15</SPAN> <SPAN lang="EN-US" style="FONT-SIZE: 10pt"><SPAN lang="EN-US" style="FONT-SIZE: 10pt">ver 2.1b</SPAN></SPAN></FONT></SPAN></FONT></SPAN>
+        <LI><span lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic"><SPAN lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic">2002/09/12 ver 2.1</FONT></SPAN></FONT></SPAN>
+        <LI><span lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic"><SPAN lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic"><SPAN lang="EN-US" style="FONT-SIZE: 10pt">2002/07/28</SPAN> <SPAN lang="EN-US" style="FONT-SIZE: 10pt"><SPAN lang="EN-US" style="FONT-SIZE: 10pt">「音声入力の確認」「SALTについて」追加</SPAN></SPAN></FONT></SPAN></FONT></SPAN>
+        <LI><span lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic"><SPAN lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic">2002/07/01 ver 2.0</FONT></SPAN></FONT></SPAN></LI>
+      </UL>
+      <span lang="EN-US" style="FONT-SIZE: 10pt"></SPAN></TD>
+      <TD>
+      <P align="right"><span lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic"><SPAN lang="EN-US" style="FONT-SIZE: 10pt">京都大学 学術情報メディアセンター 河原研究室</SPAN><BR>
+      <SPAN style="FONT-SIZE: 10pt">住吉貴志</SPAN><br>
+      <SPAN style="FONT-SIZE: 10pt">松本曜</SPAN></FONT></SPAN></P>
+      <P class="Section1" align="right"><span lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic"><SPAN lang="EN-US" style="FONT-SIZE: 10pt"><FONT face="MS UI Gothic">(C) 1991-2004 Kyoto University<BR>
+      (C) 2000-2004 Nara Institute of Science and Technology</FONT></SPAN><FONT face="MS UI Gothic">
+			</FONT></FONT></SPAN></P>
+      <span lang="EN-US" style="FONT-SIZE: 10pt"></SPAN></TD>
+    </TR>
+  </TBODY>
+</TABLE>
+<span lang="EN-US" style="FONT-SIZE: 10pt"></SPAN>
+<HR align="center" width="100%" size="2">
+
+		<DIV class="Section1">
+			<UL type="disc">
+				<li class="MsoNormal">
+					<DIV align="left"><A href="#intro" name="a"><FONT face="MS UI Gothic">はじめに</FONT></A></DIV>
+				<LI class="MsoNormal">
+					<DIV align="left"><FONT face="MS UI Gothic"><A href="#version">履歴</A></FONT></DIV>
+				<LI class="MsoNormal">
+					<DIV align="left"><A href="#environment"><FONT face="MS UI Gothic">動作環境</FONT></A></DIV>
+				<LI class="MsoNormal">
+					<DIV align="left"><A href="#modules"><FONT face="MS UI Gothic">配布モジュールの説明</FONT></A><FONT face="MS UI Gothic">
+						</FONT>
+					</DIV>
+				<li class="MsoNormal">
+					<A href="#setting"><FONT face="MS UI Gothic">インストールと設定方法</FONT></A><FONT face="MS UI Gothic">
+					</FONT>
+				<li class="MsoNormal">
+					<A href="#howtouse"><FONT face="MS UI Gothic">使用例</FONT></A><FONT face="MS UI Gothic">
+					</FONT>
+				<li class="MsoNormal">
+					<A href="#restrictions"><FONT face="MS UI Gothic">制限事項</FONT></A>
+				<LI class="MsoNormal">
+					<A href="#etc"><FONT face="MS UI Gothic">その他</FONT></A>
+				<li class="MsoNormal">
+					<A href="#links"><FONT face="MS UI Gothic">関連リンク</FONT></A><FONT face="MS UI Gothic">
+					</FONT>
+				</li>
+			</UL>
+		</DIV>
+		<h2><FONT face="MS UI Gothic"><A name="intro"></A>はじめに</FONT></h2>
+		<P><FONT face="MS UI Gothic">Julius for SAPI は、京都大学音声メディア研究室で開発された大語彙連続音声認識エンジン 
+				Julius&nbsp;に、Microsoft社の Speech API(SAPI) ver.5 を実装したものです。Speech API を利用した 
+				Windows アプリケーションから利用することができます。</FONT></P>
+		<P><FONT face="MS UI Gothic">Julius for SAPI では、Julius を主に次のように拡張してあります。</FONT></P>
+		<UL>
+			<LI>
+				<FONT face="MS UI Gothic">同一音声に対して、1つのプロセス内で複数の音響制約、言語制約を用いて逐次デコードを行う<BR>
+					(注：最新ヴァージョンの Juilus にも同様の機能があります) </FONT>
+			<LI>
+				<FONT face="MS UI Gothic">SAPIの定める文法形式が利用できる(正規文法のみ)</FONT></LI></UL>
+		<H2>履歴</H2>
+		<DL>
+			<DD>
+				<FONT face="MS UI Gothic"><FONT face="MS UI Gothic">※Julius for SAPI のヴァージョンは、本家 Julius 
+						とは独立してつけられています。</FONT></FONT></DD></DL>
+<UL>
+  <LI><FONT face="MS UI Gothic"><strong>2004/02/05 Julius for SAPI ver 2.3 リリース</strong></FONT>
+  <UL>
+    <LI><strong>class N-gram 形式の辞書ファイルに対応</strong></LI>
+    <LI><strong>エンジンを同一プロセス空間内に複数作った場合に強制終了するバグをフィックス</strong></LI>
+    <LI><strong>バイナリHMMファイルの読み込みに対応(本家でのパッチ)</strong></LI>
+    <LI>ログファイルの拡張子をスレッドIDにしてスレッドごとに出力するオプションを追加</LI>
+    <LI>出力wavファイルに日付を追加するオプションを追加</LI>
+    <LI>単語間トライフォンの尤度を上位N個の状態の平均とする機能を追加した(本家でのパッチ)</LI>
+    <LI>単語接続部での言語スコアの2重計算を修正(本家でのパッチ)</LI>
+  </UL>
+  <LI><FONT face="MS UI Gothic"><FONT face="MS UI Gothic">2003/07/23 Julius for SAPI 
+						ver 2.2c リリース (バグフィックス ヴァージョン)</FONT></FONT>
+  <UL>
+    <LI><FONT face="MS UI Gothic"><EM>メモリリーク関係のバグを完全にフィックス</EM></FONT></LI>
+  </UL>
+			<LI>
+				<FONT face="MS UI Gothic"><FONT face="MS UI Gothic">2003/07/01 Julius for SAPI ver 2.2b 
+						リリース (バグフィックス ヴァージョン)</FONT></FONT>
+				<UL>
+					<LI>
+						<FONT face="MS UI Gothic"><EM>メモリリーク関係のバグをフィックス(まだメモリリークは残っている模様)</EM></FONT>
+					<LI>
+						<FONT face="MS UI Gothic"><EM>web上での配布はしていない</EM></FONT>
+					</LI>
+				</UL>
+			<LI>
+				<FONT face="MS UI Gothic"><FONT face="MS UI Gothic">2003/03/20 Julius for SAPI ver 2.2 
+						リリース</FONT></FONT>
+				<UL>
+					<LI>
+						<FONT face="MS UI Gothic"><EM>Wave2MFCC でオプション値を設定できていなかったバグを修正</EM></FONT>
+					<LI>
+						<FONT face="MS UI Gothic">zlib 1.1.3-&gt;1.1.4にUPDATE </FONT>
+					<LI>
+						<FONT face="MS UI Gothic">オプション設定に silB silE を追加 </FONT>
+					<LI>
+						<FONT face="MS UI Gothic">オプション設定インターフェース改良 </FONT>
+					<LI>
+						<FONT face="MS UI Gothic">リジェクションの実装 </FONT>
+						<UL>
+							<LI>
+								<FONT face="MS UI Gothic">最小長、最大長制限によるリジェクション </FONT>
+							<LI>
+								<FONT face="MS UI Gothic">信頼度（文スコア尤度比）によるリジェクション</FONT></LI></UL>
+					<LI>
+						<FONT face="MS UI Gothic">CMN 情報の保存（ファイル and/or プロファイル） </FONT>
+					<LI>
+						<FONT face="MS UI Gothic">Spector Subtraction の組み込み </FONT>
+					</LI>
+				</UL>
+			<LI>
+				<FONT face="MS UI Gothic">2003/01/11 Julius for SAPI ver 2.1d リリース</FONT>
+				<UL>
+					<LI>
+						<FONT face="MS UI Gothic"><EM>Arpa形式のファイルを読み込めるようにした(今までオプションで指定できたが読み込んでなかった！)</EM></FONT>
+					<LI>
+						<FONT face="MS UI Gothic"><EM>大きな文法におけるバッファオーバーフローを修正(DFA.c)</EM></FONT>
+					<LI>
+						<FONT face="MS UI Gothic">Phrase の Alternates に N-best 解を出力</FONT>
+					<LI>
+						<FONT face="MS UI Gothic">Elements.LexicalForm に、単語識別名を出力</FONT>
+					<LI>
+						<FONT face="MS UI Gothic">トップルールの SREngineConfidence に文のビタビスコアを出力</FONT>
+					<LI>
+						<FONT face="MS UI Gothic">単語信頼度の計算と出力</FONT>
+					<LI>
+						<FONT face="MS UI Gothic">「デコード」タブにオプションの追加</FONT>
+    <TABLE id="Table1" style="WIDTH: 550px; HEIGHT: 182px" cellspacing="1" cellpadding="1" width="550" border="1">
+      
+        <TR>
+          <TD style="WIDTH: 101px; HEIGHT: 22px" bgColor="#ffccff" colSpan="1" rowSpan="1"><FONT face="MS UI Gothic"><FONT face="MS UI Gothic"><STRONG>N-bestを計算</STRONG></FONT></FONT></TD>
+          <TD style="HEIGHT: 22px" bgColor="#ffccff"><FONT face="MS UI Gothic"><STRONG>信頼度</STRONG></FONT></TD>
+          <TD style="HEIGHT: 22px" bgColor="#ffccff"><FONT face="MS UI Gothic"><STRONG>失敗判定</STRONG></FONT></TD>
+          <TD style="HEIGHT: 22px" bgColor="#ccffff"><FONT face="MS UI Gothic"><STRONG>計算</STRONG></FONT></TD>
+          <TD style="HEIGHT: 22px" bgColor="#ccffff"><FONT face="MS UI Gothic"><STRONG>Alt出力</STRONG></FONT></TD>
+          <TD style="HEIGHT: 22px" bgColor="#ccffff"><FONT face="MS UI Gothic"><STRONG>単語Confidence値</STRONG></FONT></TD>
+        </TR>
+        <TR>
+          <TD style="WIDTH: 101px"><FONT face="MS UI Gothic">OFF</FONT></TD>
+          <TD><FONT face="MS UI Gothic">-</FONT></TD>
+          <TD><FONT face="MS UI Gothic">-</FONT></TD>
+          <TD><FONT face="MS UI Gothic">1</FONT></TD>
+          <TD><FONT face="MS UI Gothic">0</FONT></TD>
+          <TD><FONT face="MS UI Gothic">音響尤度平均</FONT></TD>
+        </TR>
+        <TR>
+          <TD style="WIDTH: 101px"><FONT face="MS UI Gothic">OFF</FONT></TD>
+          <TD><FONT face="MS UI Gothic">-</FONT></TD>
+          <TD><FONT face="MS UI Gothic">ON</FONT></TD>
+          <TD><FONT face="MS UI Gothic">2</FONT></TD>
+          <TD><FONT face="MS UI Gothic">0</FONT></TD>
+          <TD><FONT face="MS UI Gothic">音響尤度平均</FONT></TD>
+        </TR>
+        <TR>
+          <TD style="WIDTH: 101px"><FONT face="MS UI Gothic">ON (n)</FONT></TD>
+          <TD><FONT face="MS UI Gothic">OFF</FONT></TD>
+          <TD><FONT face="MS UI Gothic">OFF</FONT></TD>
+          <TD><FONT face="MS UI Gothic">n</FONT></TD>
+          <TD><FONT face="MS UI Gothic">n-1</FONT></TD>
+          <TD><FONT face="MS UI Gothic">音響尤度平均</FONT></TD>
+        </TR>
+        <TR>
+          <TD style="WIDTH: 101px"><FONT face="MS UI Gothic">ON (n)</FONT></TD>
+          <TD><FONT face="MS UI Gothic">ON</FONT></TD>
+          <TD><FONT face="MS UI Gothic">OFF</FONT></TD>
+          <TD><FONT face="MS UI Gothic">n</FONT></TD>
+          <TD><FONT face="MS UI Gothic">n-1</FONT></TD>
+          <TD><FONT face="MS UI Gothic">CM</FONT></TD>
+        </TR>
+        <TR>
+          <TD style="WIDTH: 101px"><FONT face="MS UI Gothic">ON (n)</FONT></TD>
+          <TD><FONT face="MS UI Gothic">OFF</FONT></TD>
+          <TD><FONT face="MS UI Gothic">ON</FONT></TD>
+          <TD><FONT face="MS UI Gothic">n</FONT></TD>
+          <TD><FONT face="MS UI Gothic">n-1</FONT></TD>
+          <TD><FONT face="MS UI Gothic">音響尤度平均</FONT></TD>
+        </TR>
+        <TR>
+          <TD style="WIDTH: 101px"><FONT face="MS UI Gothic">ON (n)</FONT></TD>
+          <TD><FONT face="MS UI Gothic">ON</FONT></TD>
+          <TD><FONT face="MS UI Gothic">ON</FONT></TD>
+          <TD><FONT face="MS UI Gothic">n</FONT></TD>
+          <TD><FONT face="MS UI Gothic">n-1</FONT></TD>
+          <TD><FONT face="MS UI Gothic">CM</FONT></TD>
+        </TR>
+      
+    </TABLE>
+    <FONT face="MS UI Gothic">&nbsp;</FONT></LI></UL>
+			<LI>
+				<FONT face="MS UI Gothic">2002/10/22 Julius for SAPI ver 2.1c リリース (バグフィックス ヴァージョン)</FONT>
+				<UL>
+					<LI>
+						<FONT face="MS UI Gothic"><EM>ErrLogFile にファイル名を指定しないとあらゆるログファイルが記録されないバグを修正</EM></FONT>
+					<LI>
+						<EM><FONT face="MS UI Gothic">再帰を含むDFAの構築時に、認識できないパスが存在していたのを修正</FONT></EM>
+					<LI>
+						<FONT face="MS UI Gothic">第2パスで候補が得られなくて第1パスの結果を最終結果とした場合、文法にマッチしていなくて失敗したときにFalseRecognitionを返すようにした</FONT>
+					<LI>
+						<FONT face="MS UI Gothic">認識結果に音声区間情報を返すようにした</FONT></LI></UL>
+			<LI>
+				<FONT face="MS UI Gothic">2002/10/15 Julius for SAPI ver 2.1b リリース (バグフィックス ヴァージョン)</FONT></LI>
+  <LI><FONT face="MS UI Gothic"><FONT face="MS UI Gothic"><EM>ある程度複雑なDFAの構築時に、認識できないパスが存在していたのを修正</EM></FONT></FONT>
+  <LI><FONT face="MS UI Gothic"><FONT face="MS UI Gothic"><EM>2段以上の再帰ルールがうまく処理できていなかったのを修正</EM></FONT></FONT>
+  <LI><FONT face="MS UI Gothic">ファイル入力に対して CMN を正しく行うようにした</FONT>
+  <LI>
+  <UL>
+    <LI><FONT face="MS UI Gothic">-nostrip 時に 0 音声(MFCCに失敗)をノイズモデルに置き換えるオプションを追加</FONT>
+    <LI><FONT face="MS UI Gothic">-pausesegment オプションを設定、反映できるようにした</FONT>
+    <LI><FONT face="MS UI Gothic">レジストリのエンジン情報(Tokens\Attributes)を修正</FONT></LI>
+  </UL>
+  </LI>
+  <LI><FONT face="MS UI Gothic"><FONT face="MS UI Gothic">2002/09/12 Julius for SAPI ver 2.1 リリース(2001年度CSRC CDROM 
+							ヴァージョン)</FONT></FONT>
+  <LI><FONT face="MS UI Gothic">2002/07/01 Julius for SAPI ver 2.0 リリース</FONT>
+  <LI></LI>
+</UL>
+		<H2><FONT face="MS UI Gothic"><A name="environment">動作環境</A></FONT></H2>
+		<P><FONT face="MS UI Gothic">Microsoft の .NET Speech に示されている動作環境であれば動作すると思います。メモリは 
+				256MB以上が望ましいです。</FONT></P>
+		<P><FONT face="MS UI Gothic">開発環境は以下のとおりです。</FONT></P>
+		<UL>
+			<LI>
+				<FONT face="MS UI Gothic">Visual Studio .NET 2003</FONT>
+			<LI>
+				<FONT face="MS UI Gothic">Speech SDK 5.1 </FONT>
+			<LI>
+				<FONT face="MS UI Gothic">Windows XP Professional Edition</FONT></LI></UL>
+		<H2><FONT face="MS UI Gothic"><A name="modules"></A>配布モジュールの説明</FONT></H2>
+		<UL>
+			<LI>
+				<FONT face="MS UI Gothic"><STRONG>JuliusSAPIInstaller</STRONG><BR>
+					Julius for SAPI のDLLファイル(JuliusSAPI.DLL) をインストールし、プログラムが使用するレジストリを初期化します。 </FONT>
+			<LI>
+				<FONT face="MS UI Gothic"><STRONG>InitialModelsInstall</STRONG><BR>
+					Julius for SAPI 
+					で使用できる標準モデルファイルをインストールします。詳細についてはインストールディレクトリに一緒にインストールされるドキュメントを参照してください。Julius 
+					で使用可能な他のモデルを使うこともできます。</FONT></LI></UL>
+		<h2><a name="_インストールと設定方法"></a><FONT face="MS UI Gothic"><A name="settings"></A><A name="setting"></A>インストールと設定方法</FONT></h2>
+		<h3><FONT face="MS UI Gothic">1. Microsoft Speech SDK のインストール</FONT></h3>
+		<p><FONT face="MS UI Gothic">お使いのOSが Windows 2000 の場合、あるいは SAPI 
+				アプリケーションを開発する場合は、Microsoft Speech SDK 5.1 のインストールが必要です。 </FONT>
+		</p>
+		<P><FONT face="MS UI Gothic">Microsoft 社の Speech.net の Web サイト ( </FONT><a href="http://www.microsoft.com/speech/">
+				<FONT face="MS UI Gothic">http://www.microsoft.com/speech/</FONT></a><FONT face="MS UI Gothic">
+				)から </FONT><a href="http://download.microsoft.com/download/speechSDK/SDK/5.1/WXP/EN-US/speechsdk51.exe">
+				<FONT face="MS UI Gothic">Microsoft Speech SDK 5.1</FONT></a><FONT face="MS UI Gothic">
+				(68MB)をダウンロードし、使用するコンピュータにインストールします。</FONT></P>
+		<h3><FONT face="MS UI Gothic">2. JuliusSAPI.dll と標準モデルファイルのインストール</FONT></h3>
+		<p><FONT face="MS UI Gothic"><B style="mso-bidi-font-weight: normal"><SPAN lang="EN-US">JuliusSAPIInstaller</SPAN></B><SPAN lang="EN-US">
+					と <B style="mso-bidi-font-weight: normal">InitialModelsInstall</B> をそれぞれインストールします。インストールディレクトリは、なるべくデフォルトのもの(C:\Program 
+					Files\Julius for 
+					SAPI\)を使用してください。以降の作業がうまくいかないときはインストールディレクトリをデフォルトにして試してみてください。</SPAN></FONT></p>
+		<P><FONT face="MS UI Gothic">注意：インストール中にエラーダイアログが出る場合、「続行」ボタンを押してそのまま続けてください。正常にインストールされます。</FONT></P>
+		<h3><FONT face="MS UI Gothic">3. デフォルトで使用する認識エンジンの設定</FONT></h3>
+		<p><FONT face="MS UI Gothic"><IMG language="javascript" id="IMG1" onclick="return IMG1_onclick()" src="jp_lang.png" align="right" v:shapes="_x0000_s1026" DESIGNTIMEDRAGDROP="156">コントロールパネルの 
+				"Speech"(あるいは「スピーチ」、「音声認識」など) を開くと、「音声認識のプロパティ」ダイアログボックスが表示されます。</FONT></p>
+		<p><FONT face="MS UI Gothic">「音声認識」タブの「言語」コンボボックスで、 デフォルト認識エンジンを "Julius for SAPI 
+				ver&nbsp;x.xx (日本語)" に変更します。</FONT></p>
+		<P><FONT face="MS UI Gothic">これらの項目が見つからない場合は、2. の作業がうまくいってないことが考えられます。 </FONT><FONT face="MS UI Gothic">
+				&nbsp;
+				<br style="mso-special-character: line-break" clear="right">
+		</FONT></P>
+<h3><FONT face="MS UI Gothic">4. 使用する<FONT face="MS UI Gothic">音響モデル、言語モデル、デコードオプション等</FONT>の設定</FONT></h3>
+		<P><FONT face="MS UI Gothic"><IMG src="jp_main.png" align="right" v:shapes="_x0000_s1027">
+				音響モデル、言語モデル、デコードオプション等については、インストール時に標準的な設定になっているため、普通は設定する必要はありません。</FONT></P>
+		<P><FONT face="MS UI Gothic"><B style="mso-bidi-font-weight: normal"></B><B style="mso-bidi-font-weight: normal">InitialModelsInstall</B>
+				をインストールしなかった場合、あるいはモデルを別のものに変えたい場合は、音響モデル、言語モデルの手動設定が必要です。</FONT></P>
+		<P><FONT face="MS UI Gothic">「音声認識のプロパティ」ダイアログボックスから 
+				「設定」ボタンを選択しますと、右のようなダイアログが表示されます。ここで各種モデルを設定します。</FONT></P>
+		<FONT face="MS UI Gothic"></FONT>
+		<UL>
+			<LI>
+				<FONT face="MS UI Gothic">「全般」<BR>
+					現在の設定をJCONFファイルに出力したり、JCONFファイルを現在の設定に反映させるできます。また、ログファイル出力の設定もここで行います。</FONT>
+			<LI>
+				<FONT face="MS UI Gothic">「入力音声」<BR>
+					音声区間検出や音響分析のパラメータを指定できます。処理音声の出力先も指定できます。</FONT>
+			<LI>
+				<FONT face="MS UI Gothic">「言語モデル」<BR>
+					ディクテーション時のNgramモデルなどを指定します。</FONT>
+			<LI>
+				<FONT face="MS UI Gothic">「音響モデル」<BR>
+					使用する音響モデルについて設定できます。</FONT>
+			<LI>
+				<FONT face="MS UI Gothic">「デコード」<BR>
+					デコードオプションなどを指定します。</FONT>
+			<LI>
+				<FONT face="MS UI Gothic">「著作権」<BR>
+					著作権について表示されます。</FONT></LI></UL>
+<P><FONT face="MS UI Gothic"><br style="mso-special-character: line-break" clear="right">
+</FONT></P>
+<H3>5. 音声入力の確認</H3>
+		<P class="section1">最後に、マイクの音声が正しく入力されているかを確認します。入力装置をコンピュータに正しく接続し、<SPAN style="FONT-FAMILY: 'MS UI Gothic'">「音声認識のプロパティ」ダイアログボックスのマイクの音量ゲージなどで反応を確認してください。<SPAN lang="EN-US">(少なくとも全体の1/4ぐらいまで達するようにし、また振り切れないようにマイク入力レベルを調整してください。</SPAN></SPAN><SPAN style="FONT-FAMILY: 'MS UI Gothic'"><SPAN lang="EN-US">)<BR>
+				</SPAN></SPAN>
+			<H3 class="section1">6. アンインストールについて</H3>
+		<P class="section1"><FONT face="MS UI Gothic">アンインストールは、コントロールパネルの「アプリケーションの追加と削除」または「プログラムの追加と削除」で行います。</FONT>
+			<H3 class="section1">7. アップデートについて</H3>
+		<P class="section1"><FONT face="MS UI Gothic">古いバージョンをインストールしているマシンに最新バージョンをインストールする場合、インストール時に設定情報が失われたり、バージョン間でレジストリ情報の格納形式が異なる可能性があります。次のような手順でアップデートしてください。</FONT>
+			<UL>
+				<LI>
+					<DIV class="section1"><FONT face="MS UI Gothic">現在の設定をメモしておく</FONT></DIV>
+				<LI>
+					<DIV class="section1"><FONT face="MS UI Gothic">最新版 JuliusSAPIInstaller をつかってインストールする</FONT></DIV>
+				<LI>
+					<DIV class="section1"><FONT face="MS UI Gothic">コントロールパネルを使って、設定しなおす（あるいは 
+							InitialModelsInstall を実行し、「修復」を行なう）</FONT></DIV>
+				</LI>
+			</UL>
+			<h2><FONT face="MS UI Gothic"><A name="howtouse"></A>使用例</FONT></h2>
+			<H3>SAPI を利用するアプリケーションで Julius for SAPI を使う</H3>
+		<P><FONT face="MS UI Gothic">正しく設定されておれば、SAPI アプリケーションにおいて Julius for SAPI 
+				が使用されます。(アプリケーションによっては特定のエンジンを利用するようになっていたり、特定のエンジンでなければ動かないようになっている場合もありますので、ご注意ください。)</FONT></P>
+		<P><FONT face="MS UI Gothic">SAPI アプリケーションは IME パッドの音声入力、Office XP 
+				などがあります。アプリケーションの操作方法はそれぞれのアプリケーションのマニュアルを参照してください。</FONT></P>
+		<H3>Julius for SAPI を使ったアプリケーションを作成する</H3>
+		<p><FONT face="MS UI Gothic">Julius for SAPI は SAPI を実装していますので、SAPI 
+				対応のアプリケーションを作成することになります。</FONT><FONT face="MS UI Gothic">SAPIアプリケーションのプログラミングについては、SpeechSDK 
+				付属のヘルプやサンプルプログラムなどを参照してください。</FONT></p>
+		<h2><FONT face="MS UI Gothic"><A name="restrictions"></A>制限事項</FONT></h2>
+		<UL type="disc">
+			<li>
+				<FONT face="MS UI Gothic">インスタンスを作成してから最初のコンテキスト作成時に、モデルファイルをメモリにロードするのに数秒の時間がかかります。
+				</FONT>
+			<LI>
+				<FONT face="MS UI Gothic">設定したモデルファイルが不正な場合、ダイアログ等による警告は表示されません。正しいモデルファイルを使用するようにしてください。</FONT>
+			<LI>
+				<FONT face="MS UI Gothic">SAPIのユーザプロファイル、トレーニング、アプリケーション辞書、ユーザ辞書については実装されておりません。</FONT></LI></UL>
+		<H2><A name="etc">その他</A></H2>
+		<P><FONT face="MS UI Gothic">Julius for SAPI の挙動について疑問な箇所があれば <FONT face="MS UI Gothic"><A href="mailto:julius@ar.media.kyoto-u.ac.jp">
+						julius@ar.media.kyoto-u.ac.jp</A>&nbsp;まで</FONT>ご報告いただけると幸いです。その際はぜひ詳しい状況説明とログファイル(ダイアログで設定可能)をお願いします。</FONT></P>
+		<h2><FONT face="MS UI Gothic"><A name="links"></A>関連リンク</FONT></h2>
+		<UL type="disc">
+			<LI class="MsoNormal" style="mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; mso-list: l4 level1 lfo5; tab-stops: list 36.0pt">
+				<A href="http://julius.sourceforge.jp/">Julius トップページ 
+					(http://julius.sourceforge.jp/)</A><FONT face="MS UI Gothic">&nbsp;[日本語]<BR>
+					Julius の sorceforge.jp 上のページです。</FONT>
+			<LI class="MsoNormal" style="mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; mso-list: l4 level1 lfo5; tab-stops: list 36.0pt">
+				<A href="http://julius.sourceforge.jp/sapi/">Julius for SAPI トップページ 
+					(http://julius.sourceforge.jp/sapi/)</A><A href="http://julius.sourceforge.jp/3.3/doc/"><FONT face="MS UI Gothic">&nbsp;[日本語]</FONT></A><FONT face="MS UI Gothic"><BR>
+					Julius for SAPI のトップページです。</FONT>
+			<LI class="MsoNormal" style="mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; mso-list: l4 level1 lfo5; tab-stops: list 36.0pt">
+				<A href="http://julius.sourceforge.jp/3.3/doc/">Julius rev 3.3 
+					(http://julius.sourceforge.jp/3.3/doc/)</A><FONT face="MS UI Gothic">&nbsp;[日本語]<BR>
+					Julius / Julian rev 3.3 に付属するドキュメントのオンライン版です。</FONT>
+			<li class="MsoNormal" style="mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; mso-list: l4 level1 lfo5; tab-stops: list 36.0pt">
+				<a href="http://www.ar.media.kyoto-u.ac.jp/"><FONT face="MS UI Gothic">京都大学河原研究室 
+						(http://www.ar.media.kyoto-u.ac.jp/)</FONT></a><FONT face="MS UI Gothic">&nbsp;[日本語]</FONT>
+			<LI class="MsoNormal" style="mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; mso-list: l4 level1 lfo5; tab-stops: list 36.0pt">
+				<A href="http://www.microsoft.com/speech/"><FONT face="MS UI Gothic">Microsoft(TM) 
+						Speech.net Technologies (http://www.microsoft.com/speech/)</FONT></A><FONT face="MS UI Gothic">&nbsp;[英語]<BR>
+					Microsoft の、Speech API に関する資料、SDKなどがあります。</FONT></LI></UL>
+		<P class="MsoNormal" style="mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; mso-list: l4 level1 lfo5; tab-stops: list 36.0pt"><FONT face="MS UI Gothic"></FONT>&nbsp;</P>
+	</body>
+</html>

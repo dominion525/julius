@@ -1,0 +1,15 @@
+*.swp
+*~
+.DS_Store
+.bundle
+.env
+.idea
+.project
+.pryrc
+
+CVSROOT
+/CVS/*
+**/CVS/**
+.cvsignore
+**/.cvsignore
+

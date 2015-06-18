@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<refsect2 id='opt_global'>
+<title>
+  全体オプション
+</title>
+
+<para>
+全体オプションは，エンジンのプロパティを指定するオプションである．音響
+モデル(<option>-AM</option>)・言語モデル(<option>-LM</option>)・デコー
+ダ(<option>-SR</option>)などのセクション定義に関係なく，どこでも指定可
+能である．
+</para>
+
+<refsect3 id='opt_adin'><title>オーディオ入力</title>
+<variablelist>
+  <varlistentry>
+    <term>
+      <option>
+	-input
+      </option>
+      <literal>
+      {mic|rawfile|mfcfile|adinnet|stdin|netaudio|esd}
+      </literal>
+    </term>
+    <listitem>
+      <para>
+	音声入力ソースを選択する．音声波形ファイルの場合は
+	<literal>file</literal>あるいは<literal>rawfile</literal>を指
+	定する．HTK 形式の特徴量ファイルを認識する場合は
+	<literal>htkparam</literal>あるいは<literal>mfcfile</literal> 
+	を指定する．起動後にプロンプトが表れるので，それに対してファイ
+	ル名を入力する．<literal>adinnet</literal> では， 
+	<command>adintool</command> などのクライアントプロセスから音声
+	データをネットワーク経由で受け取ることができる．
+	<literal>netaudio</literal> はDatLinkのサーバから，
+	<literal>stdin</literal>は標準入力からの音声入力を認識する．
+	<literal>esd</literal>は，音声デバイスの共有手段として多くの
+	Linuxのデスクトップ環境で利用されている EsounD daemon からの入
+	力を認識する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-filelist
+      </option>
+      <replaceable>filename</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(<option>-input rawfile|mfcfile</option> 時)
+	<replaceable>filename</replaceable>内に列挙されている全てのファ
+	イルについて認識を順次行う．
+	<replaceable>filename</replaceable>には認識する入力ファイル名
+	を1行に1つずつ記述する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-notypecheck
+      </option>
+    </term>
+    <listitem>
+      <para>
+	入力の特徴量ベクトルの型チェックを無効にする．通常 Julius は入
+	力の型が音響モデルとマッチするかどうかをチェックし，マッチしない
+	とエラー終了する．このオプションはそのチェックを回避する．なんらかの
+	理由で型チェックがうまく動作しないときに使用する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-48
+      </option>
+    </term>
+    <listitem>
+      <para>
+	48kHzで入力を行い，16kHzにダウンサンプリングしながら認識する．
+	これは 16kHz のモデルを使用しているときのみ有効である．
+	ダウンダンプリングの内部機能は <command>sptk</command> から
+	移植された． (Rev. 4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-NA
+      </option>
+      <replaceable>devicename</replaceable>
+    </term>
+    <listitem>
+      <para>
+	DatLink サーバのデバイス名 (<option>-input netaudio</option>).
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-adport
+      </option>
+      <replaceable>port_number</replaceable>
+    </term>
+    <listitem>
+      <para>
+	<option>-input adinnet</option> 使用時，接続を受け付ける
+	adinnet のボート番号を指定する．(default: 5530)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nostrip
+      </option>
+    </term>
+    <listitem>
+      <para>
+	音声取り込み時，デバイスやファイルによっては，音声波形中に振幅
+	が "0" となるフレームが存在することがある．Julius は通常，音声
+	入力に含まれるそのようなフレームを除去する．この零サンプル除去が
+	うまく動かない場合，このオプションを指定することで自動消去を
+	無効化することができる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-zmean
+      </option>
+    </term>
+    <term>
+      <option>
+	-nozmean
+      </option>
+    </term>
+    <listitem>
+      <para>
+	入力音声ストリームに対して直流成分除去を行う．全ての音声処理の
+	の前段として処理される．
+	<option>-zmeansource</option>オプションも見よ．
+      </para>
+    </listitem>
+  </varlistentry>
+  
+</variablelist>
+
+</refsect3>
+
+
+<refsect3 id='opt_cut'><title>レベルと零交差による入力検知</title>
+
+<variablelist>
+  <varlistentry>
+    <term>
+      <option>
+	-cutsilence
+      </option>
+    </term>
+    <term>
+      <option>
+	-nocutsilence
+      </option>
+    </term>
+    <listitem>
+      <para>
+	レベルと零交差による入力検知を行うかどうかを指定する．デフォル
+	トは，リアルタイム認識（デバイス直接入力およびネットワーク入力）
+	では on, ファイル入力では off である．このオプションを指定する
+	ことで，例えば長時間録音された音声ファイルに対して音声区間検出
+	を行いながら認識を行うこともできる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-lv
+      </option>
+      <replaceable>thres</replaceable>
+    </term>
+    <listitem>
+      <para>
+	振幅レベルのしきい値．値は 0 から 32767 の範囲で指定する．
+	(default: 2000)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-zc
+      </option>
+      <replaceable>thres</replaceable>
+    </term>
+    <listitem>
+      <para>
+	零交差数のしきい値．値は１秒あたりの交差数で指定する．
+	(default: 60)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-headmargin
+      </option>
+      <replaceable>msec</replaceable>
+    </term>
+    <listitem>
+      <para>
+	音声区間開始部のマージン．単位はミリ秒．
+	(default: 300)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-tailmargin
+      </option>
+      <replaceable>msec</replaceable>
+    </term>
+    <listitem>
+      <para>
+	音声区間終了部のマージン．単位はミリ秒．
+	(default: 400)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-rejectshort
+      </option>
+      <replaceable>msec</replaceable>
+    </term>
+    <listitem>
+      <para>
+	検出された区間長が<replaceable>msec</replaceable>以下の入力を
+	棄却する．その区間の認識は中断・破棄される．
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_rejectpower'><title>平均パワーによる入力棄却</title>
+
+<para>
+この試験的な機能は，デフォルトでは無効化されており，ソースからコンパイ
+ルする際に <literal>configure</literal>に
+<literal>--enable-power-reject</literal> を指定することで有効となる．
+リアルタイム認識時のみ用いることが出来る．
+</para>
+
+<variablelist>
+  <varlistentry>
+    <term>
+      <option>
+	-powerthres
+      </option>
+      <replaceable>thres</replaceable>
+    </term>
+    <listitem>
+      <para>
+	切り出し区間の平均パワーのしきい値．(Rev.4.0)
+      </para>
+      
+      <para>
+	このオプションはコンパイル時に
+	<literal>--enable-power-reject</literal>が指定されたときに
+	有効となる．
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+
+<refsect3 id='opt_gmm'><title>GMM</title>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-gmm
+      </option>
+      <replaceable>hmmdefs_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	GMM定義ファイル．3状態（出力状態が１つのみ）のHMMとして定義す
+	る．形式はHTK形式で与える．形式や使用できる特徴量の制限は音響
+	モデルと同じである．
+	なお，GMMで用いるMFCC特徴量の設定は，
+	<option>-AM_GMM</option>のあとに音響モデルと同様に指定する．こ
+	の特徴量設定は音響モデルと別に，明示的に指定する必要があること
+	に注意が必要である．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gmmnum
+      </option>
+      <replaceable>number</replaceable>
+    </term>
+    <listitem>
+      <para>
+	GMM指定時，計算するガウス分布数を指定する．フレームごとにGMMの
+	出力確率を求める際，各モデルで定義されている混合ガウス分布のう
+	ち，この<replaceable>number</replaceable>で指定した数の上位ガ
+	ウス分布の確率のみを計算する．小さな値を指定するほどGMMの計算
+	量を削減できるが，計算精度が悪くなる．(default: 10)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gmmreject
+      </option>
+      <replaceable>string</replaceable>
+    </term>
+    <listitem>
+      <para>
+	GMMで定義されているモデル名のうち，非音声として棄却すべきモデ
+	ルの名称を指定する．モデル名を複数指定することができる．複数指
+	定する場合は，空白を入れずコンマで区切って一つの
+	<replaceable>string</replaceable>として指定する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gmmmargin
+      </option>
+      <replaceable>frames</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(GMM_VAD) GMM VAD による区間検出の開始部マージン．単位はフレー
+	ム数で指定する．(default: 20)  (Rev. 4.0)
+      </para>
+      <para>
+	このオプションは<literal>--enable-gmm-vad</literal>付きでコンパイル
+	されたときに有効となる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gmmup
+      </option>
+      <replaceable>value</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(GMM_VAD) 音声区間の開始とみなす VAD スコアの閾値．VADスコアは
+	(音声GMMの最大尤度 - 非音声HMMの最大尤度) で表される．
+	(Default: 0.7) (Rev.4.1)
+      </para>
+      <para>
+	このオプションは<literal>--enable-gmm-vad</literal>付きでコンパイル
+	されたときに有効となる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gmmdown
+      </option>
+      <replaceable>value</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(GMM_VAD) 音声区間の終了とみなす VAD スコアの閾値．VADスコアは
+	(音声GMMの最大尤度 - 非音声HMMの最大尤度) で表される．
+	(Default: -0.2) (Rev.4.1)
+      </para>
+      <para>
+	このオプションは<literal>--enable-gmm-vad</literal>付きでコンパイル
+	されたときに有効となる．
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+
+<refsect3 id='opt_decode'><title>デコーディングオプション</title>
+
+<para>
+デコーディングオプションは，使用する認識アルゴリズムに関する設定を行う
+オプションである．この設定はエンジン全体に対する設定であり，全ての認識
+処理インスタンスで共通の設定となる．探索の幅や言語重みなどの個々のデコー
+ディング設定については，認識処理インスタンスごとに指定する．
+</para>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-realtime
+      </option>
+    </term>
+    <term>
+      <option>
+	-norealtime
+      </option>
+    </term>
+    <listitem>
+      <para>
+	入力と並行してリアルタイム認識を行うかどうかを明示的に指定する．
+	デフォルトの設定は入力デバイスに依存し，マイクロフォン等のデバ
+	イス直接認識，ネットワーク入力，および DatLink/NetAudio 入力の
+	場合は ON, ファイル入力や特徴量入力についてはOFFとなっている．
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_misc'><title>その他</title>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-C
+      </option>
+      <replaceable>jconffile</replaceable>
+    </term>
+    <listitem>
+      <para>
+	jconf設定ファイルを読み込む．ファイルの内容がこの場所に展開される．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-version
+      </option>
+    </term>
+    <listitem>
+      <para>
+	バージョン情報を標準エラー出力に出力して終了する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-setting
+      </option>
+    </term>
+    <listitem>
+      <para>
+	エンジン設定情報を標準エラー出力に出力して終了する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-quiet
+      </option>
+    </term>
+    <listitem>
+      <para>
+	出力を抑制する．認識結果は単語列のみが出力される．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-debug
+      </option>
+    </term>
+    <listitem>
+      <para>
+	(デバッグ用) モデルの詳細や探索過程の記録など，様々な
+	デバッグ情報をログに出力する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-check
+      </option>
+      <literal>{wchmm|trellis|triphone}</literal>
+    </term>
+    <listitem>
+      <para>
+	デバッグ用のチェックモードに入る．
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+
+</refsect3>
+
+
+
+</refsect2>

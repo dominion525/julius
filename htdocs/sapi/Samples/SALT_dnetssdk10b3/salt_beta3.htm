@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+<META name="GENERATOR" content="IBM WebSphere Studio Homepage Builder Version 7.0.0.0 for Windows">
+<META http-equiv="Content-Style-Type" content="text/css">
+<TITLE></TITLE>
+<STYLE type="text/css">
+<!--
+BLOCKQUOTE{
+  color : black;
+  background-color : white;
+}
+-->
+</STYLE>
+</HEAD>
+<BODY bgcolor="#f0ffe6" text="#0f3700" link="#fa5000" vlink="#808080" alink="#008080">
+<H1>SALT (Speech Application Langage Tags) について</H1>
+<H2>1. ダウンロード</H2>
+<P><A href="http://www.microsoft.com/speech/download/dl/" target="_blank">http://www.microsoft.com/speech/download/dl/</A></P>
+<P>上記のサイトから「Microsoft Speech Application SDK Beta 3」をダウンロードします。</P>
+<P>&quot;Order the .NET Speech SDK&quot; のボタンをクリックし、フォームに情報を記入して
+&quot;Submit&quot; ボタンをクリックしてください。ダウンロードページが表示されましたら、SASDKBeta3_Full.exe
+(約200MB) をダウンロードしてください。</P>
+<H2>2. インストール</H2>
+<P>「Microsoft Speech Application SDK Beta 3」をインストールするか、あるいはダウンロードされたものを解凍し、「downloads\Microsoft
+Internet Explorer Speech Add-in\Setup for Internet Explorer\setup.exe」を実行して、SALTを単体でインストールします
+(SALTのみを使用するのであれば後者のもので十分です)。</P>
+<H2>3. SpeechTagsオブジェクトのCLASSIDについて</H2>
+<P>.NET Speech SDK をインストールした場合と、SALT単体をインストールした場合で、SpeechTagsオブジェクトのCLASSIDが異なります。どちらをインストールしたかによってSALTを使用するHTML文書を変更する必要があります。</P>
+<P>具体的には、今回我々が作ったサンプルでは、</P>
+<BLOCKQUOTE>&lt;object id=&quot;SpeechTags&quot; CLASSID=&quot;clsid:********-****-****-****-************&quot;&gt;</BLOCKQUOTE>
+<P>となっている箇所を、</P>
+<P>.NET Speech SDKをインストールした場合</P>
+<BLOCKQUOTE>&lt;object id=&quot;SpeechTags&quot; CLASSID=&quot;clsid:DCF68E5B-84A1-4047-98A4-0A72276D19CC&quot;&gt;</BLOCKQUOTE>
+<P>SALT単体でインストールした場合</P>
+<BLOCKQUOTE>&lt;object id=&quot;SpeechTags&quot; CLASSID=&quot;clsid:33cbfc53-a7de-491a-90f3-0e782a7e347a&quot;&gt;</BLOCKQUOTE>
+<P>のようにそれぞれ書き変えてください。</P>
+<P>SpeechTagsオブジェクトのCLASSIDは、レジストリを調べることによって確認することも出来ます。regedit.exeを使用して、&quot;ClientBehaviorsU.ElementBehaviorFactory&quot;というキーを検索すれば、SpeechTagsオブジェクトのCLASSIDが記してあるレジストリを見つけることが出来るようです。</P>
+<H2>4. 今回のバージョンの特徴</H2>
+<H3>1. permittedSRengineの設定</H3>
+<P>Microsoft社製以外の音声認識エンジンを使用する場合、あらかじめHTML内にそのエンジンを許可するように記述する必要があります。Julius for SAPI の場合、</P>
+<BLOCKQUOTE>&lt;salt:param name=&quot;permittedSRengine&quot;&gt;Julius SAPI Engine&lt;/salt:param&gt;</BLOCKQUOTE>
+<P>と&lt;salt:listen&gt;タグ直下に記述しなければいけません。</P>
+<H3>2. W3C で定義されたXML文法を利用可能</H3>
+<P>Warld Wide Web Consortium (W3C) で定義された、 Speech Recognition Grammar
+Specification (SRGS) 形式が使用可能です。以前までのサンプルなどで使われていた
+SAPI-XML 形式とは異なる形式です。Julius for SAPI の今回のバージョンの SALT
+のサンプルはこの形式を使用しています。</P>
+<P>タグ名以外特に主だった仕様の変更のないタグに関する、SAPI-XMLのタグとの対応は次の通りです。</P>
+<DIV align="left">
+<TABLE border="1" cellpadding="4">
+  <TBODY>
+    <TR align="center">
+      <TD bgcolor="#99ff99">SAPI-XML形式</TD>
+      <TD bgcolor="#99ff99">SRGS形式</TD>
+    </TR>
+    <TR align="center">
+      <TD>&lt;p&gt; および &lt;/p&gt;</TD>
+      <TD>普通のテキストでは使う必要が無くなりましたが、<BR>
+      &lt;one-of&gt; タグでの各項目の記述などには<BR>
+      &lt;item&gt; および &lt;/item&gt; タグを使用します</TD>
+    </TR>
+    <TR align="center">
+      <TD>&lt;o&gt; および &lt;/o&gt;</TD>
+      <TD>&lt;item repeat=&quot;0-1&quot;&gt; および &lt;/item&gt;</TD>
+    </TR>
+    <TR align="center">
+      <TD>&lt;l&gt; および &lt;/l&gt;</TD>
+      <TD>&lt;one-of&gt; および &lt;/one-of&gt;</TD>
+    </TR>
+  </TBODY>
+</TABLE>
+</DIV>
+<H5>・&lt;ruleref&gt;&lt;/ruleref&gt;タグについて</H5>
+<BLOCKQUOTE>&lt;ruleref uri=&quot;#from&quot; /&gt;</BLOCKQUOTE>
+<BLOCKQUOTE>&lt;ruleref uri=&quot;datesubs.grxml#month&quot; type=&quot;application/srgs+xml&quot; /&gt;</BLOCKQUOTE>
+<P>などと記述することによって、#以降の名前のルールを呼び出すように変更されました。</P>
+<H5>・プロパテイ値の設定について</H5>
+<P>プロパティ値の設定は &lt;tag&gt; &lt;/tag&gt; タグ内に記述します。 &quot;$&quot;
+はそのルールでのルートノードを表わし、 &quot;$$&quot; は直前の &lt;ruleref&gt;
+で呼び出されたルールのルートノードを表わします。 &quot;.&quot; で子ノードへの移動を行ないます。</P>
+<BLOCKQUOTE>
+<PRE>  &lt;ruleref uri=&quot;#from&quot; /&gt;
+  &lt;tag&gt;$.from = $$&lt;/tag&gt;
+…
+&lt;rule id=&quot;from&quot; scope=&quot;public&quot;&gt;
+  &lt;one-of&gt;
+    &lt;item&gt;
+      きょうと<BR>      &lt;tag&gt;$._value = 京都&lt;/tag&gt;<BR>    &lt;/item&gt;<BR>    &lt;item&gt;
+      とうきょう<BR>      &lt;tag&gt;$._value = 東京&lt;/tag&gt;<BR>    &lt;/item&gt;
+    から<BR>&lt;/rule&gt;
+</PRE>
+</BLOCKQUOTE><P>とすれば、上の部分のルールタグ内 &quot;$.from._value&quot; のノードに京都や東京といったプロパティ値が入ることになります。</P>
+<P>今回のバージョンの SALT の html サンプルも御覧下さい。</P>
+</BODY></HTML>

@@ -1,0 +1,699 @@
+<refsect2 id='opt_search'>
+<title>
+  Recognizer and search (<option>-SR</option>)
+</title>
+
+<para>
+Default values for beam width and LM weights will change according to
+compile-time setup of JuliusLib , AM model type, and LM size.  Please
+see the startup log for the actual values.
+</para>
+
+<refsect3 id='opt_search_common'><title>General parameters</title>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-inactive
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Start this recognition process instance with inactive state. (Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-1pass
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Perform only the first pass.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-no_ccd
+      </option>
+    </term>
+    <term>
+      <option>
+	-force_ccd
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Explicitly switch phone context handling at search.  Normally
+	Julius determines whether the using AM is a context-dependent
+	model or not from the model names, i.e., whether the names
+	contain character <literal>+</literal> and
+	<literal>-</literal>.  This option will override the automatic
+	detection.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-cmalpha
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Smoothing parameter for confidence scoring.  (default: 0.05)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-iwsp
+      </option>
+    </term>
+    <listitem>
+      <para>
+	(Multi-path mode only) Enable inter-word context-free short
+	pause insertion.  This option appends a skippable short pause
+	model for every word end.  The short-pause model can be
+	specified by <option>-spmodel</option>.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-transp
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Additional insertion penalty for transparent words. (default:
+	0.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-demo
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Equivalent to <option>-progout -quiet</option>.
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_search_pass1'><title>1st pass parameters</title>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-lmp
+      </option>
+      <replaceable>weight</replaceable>
+      <replaceable>penalty</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(N-gram) Language model weights and word insertion penalties
+	for the first pass.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-penalty1
+      </option>
+      <replaceable>penalty</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(Grammar) word insertion penalty for the first pass.  (default: 0.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-b
+      </option>
+      <replaceable>width</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Beam width in number of HMM nodes for rank beaming on the
+	first pass.  This value defines search width on the 1st pass,
+	and has dominant effect on the total processing time.  Smaller
+	width will speed up the decoding, but too small value will
+	result in a substantial increase of recognition errors due to
+	search failure.  Larger value will make the search stable and
+	will lead to failure-free search, but processing time will
+	grow in proportion to the width.
+      </para>
+      <para>
+	The default value is dependent on acoustic model type: 400
+	(monophone), 800 (triphone), or 1000 (triphone,	setup=v2.1)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nlimit
+      </option>
+      <replaceable>num</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Upper limit of token per node.  This option is valid when
+	<literal>--enable-wpair</literal> and
+	<literal>--enable-wpair-nlimit</literal> are enabled at
+	compilation time.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-progout
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Enable progressive output of the partial results on the first pass.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-proginterval
+      </option>
+      <replaceable>msec</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Set the time interval for <option>-progout</option> in
+	milliseconds.
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_search_pass2'><title>2nd pass parameters</title>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-lmp2
+      </option>
+      <replaceable>weight</replaceable>
+      <replaceable>penalty</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(N-gram) Language model weights and word insertion penalties
+	for the second pass.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-penalty2
+      </option>
+      <replaceable>penalty</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(Grammar) word insertion penalty for the second pass.  (default: 0.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-b2
+      </option>
+      <replaceable>width</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Envelope beam width (number of hypothesis) at the second pass.
+	If the count of word expansion at a certain hypothesis length
+	reaches this limit while search, shorter hypotheses are not
+	expanded further.  This prevents search to fall in
+	breadth-first-like situation stacking on the same position,
+	and improve search failure mostly for large vocabulary
+	condition.  (default: 30)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-sb
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Score envelope width for enveloped scoring.  When calculating
+	hypothesis score for each generated hypothesis, its trellis
+	expansion and Viterbi operation will be pruned in the middle
+	of the speech if score on a frame goes under the width.
+	Giving small value makes the second pass faster, but
+	computation error may occur.  (default: 80.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-s
+      </option>
+      <replaceable>num</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Stack size, i.e. the maximum number of hypothesis that can be
+	stored on the stack during the search.  A larger value may
+	give more stable results, but increases the amount of memory
+	required. (default: 500)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-m
+      </option>
+      <replaceable>count</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Number of expanded hypotheses required to discontinue the
+	search.  If the number of expanded hypotheses is greater then
+	this threshold then, the search is discontinued at that point.
+	The larger this value is, The longer Julius gets to give up
+	search.  (default: 2000)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-n
+      </option>
+      <replaceable>num</replaceable>
+    </term>
+    <listitem>
+      <para>
+	The number of candidates Julius tries to find.  The search
+	continues till this number of sentence hypotheses have been
+	found.  The obtained sentence hypotheses are sorted by score,
+	and final result is displayed in the order (see also the
+	<option>-output</option>).  The possibility that the optimum
+	hypothesis is correctly found increases as this value gets
+	increased, but the processing time also becomes longer.  The
+	default value depends on the engine setup on compilation time:
+	10 (standard) or 1 (fast or v2.1)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-output
+      </option>
+      <replaceable>num</replaceable>
+    </term>
+    <listitem>
+      <para>
+	The top N sentence hypothesis to be output at the end of
+	search.  Use with <option>-n</option>  (default: 1)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-lookuprange
+      </option>
+      <replaceable>frame</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Set the number of frames before and after to look up next word
+	hypotheses in the word trellis on the second pass.  This
+	prevents the omission of short words, but with a large value,
+	the number of expanded hypotheses increases and system becomes
+	slow. (default: 5)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-looktrellis
+      </option>
+    </term>
+    <listitem>
+      <para>
+	(Grammar) Expand only the words survived on the first pass
+	instead of expanding all the words predicted by grammar.  This
+	option makes second pass decoding faster especially for large
+	vocabulary condition, but may increase deletion error of short
+	words. (default: disabled)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_spsegment'><title>Short-pause segmentation</title>
+
+<para>
+  When compiled with <literal>--enable-decoder-vad</literal>, the
+  short-pause segmentation will be extended to support decoder-based
+  VAD.
+</para>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-spsegment
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Enable short-pause segmentation mode.  Input will be segmented
+	when a short pause word (word with only silence model in
+	pronunciation) gets the highest likelihood at certain
+	successive frames on the first pass.  When detected segment
+	end, Julius stop the 1st pass at the point, perform 2nd pass,
+	and continue with next segment.  The word context will be considered 
+	among segments.  (Rev.4.0)
+      </para>
+      <para>
+	When compiled with <literal>--enable-decoder-vad</literal>,
+	this option enables decoder-based VAD, to skip long silence.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-spdur
+      </option>
+      <replaceable>frame</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Short pause duration length to detect end of input segment, in
+	number of frames.  (default: 10)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-pausemodels
+      </option>
+      <replaceable>string</replaceable>
+    </term>
+    <listitem>
+      <para>
+	A comma-separated list of pause model names to be used at
+	short-pause segmentation.  The word whose pronunciation
+	consists of only the pause models will be treated as "pause
+	word" and used for pause detection.  If not specified, name
+	of <option>-spmodel</option>, <option>-silhead</option> and
+	<option>-siltail</option> will be used.  (Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-spmargin
+      </option>
+      <replaceable>frame</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Back step margin at trigger up for decoder-based VAD.  When
+	speech up-trigger found by decoder-VAD, Julius will rewind the
+	input parameter by this value, and start recognition at the
+	point.  (Rev.4.0)
+      </para>
+      <para>
+	This option will be valid only if compiled with 
+	<literal>--enable-decoder-vad</literal>.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-spdelay
+      </option>
+      <replaceable>frame</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Trigger decision delay frame at trigger up for decoder-based
+	VAD.  (Rev.4.0)
+      </para>
+      <para>
+	This option will be valid only if compiled with 
+	<literal>--enable-decoder-vad</literal>.
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_lattice'><title>Lattice / confusion network output</title>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-lattice
+      </option>
+    </term>
+    <term>
+      <option>
+	-nolattice
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Enable / disable generation of word graph.  Search
+	algorithm also has changed to optimize for better word graph
+	generation, so the sentence result may not be the same as
+	normal N-best recognition.  (Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-confnet
+      </option>
+    </term>
+    <term>
+      <option>
+	-noconfnet
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Enable / disable generation of confusion network.  Enabling
+	this will also activates <option>-lattice</option> internally.
+	(Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-graphrange
+      </option>
+      <replaceable>frame</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Merge same words at neighbor position at graph generation.  If
+	the beginning time and ending time of two word candidates of
+	the same word is within the specified range, they will be
+	merged.  The default is 0 (allow merging same words on exactly
+	the same location) and specifying larger value will result in
+	smaller graph output.  Setting this value to
+	<literal>-1</literal> will disable merging, in that case same
+	words on the same location of different scores will be left as
+	they are. (default: 0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-graphcut
+      </option>
+      <replaceable>depth</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Cut the resulting graph by its word depth at post-processing
+	stage.  The depth value is the number of words to be allowed
+	at a frame.  Setting to -1 disables this feature. (default:
+	80)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-graphboundloop
+      </option>
+      <replaceable>count</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Limit the number of boundary adjustment loop at
+	post-processing stage. This parameter prevents Julius from
+	blocking by infinite adjustment loop by short word
+	oscillation.  (default: 20)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-graphsearchdelay
+      </option>
+    </term>
+    <term>
+      <option>
+	-nographsearchdelay
+      </option>
+    </term>
+    <listitem>
+      <para>
+	When this option is enabled, Julius modifies its graph
+	generation algorithm on the 2nd pass not to terminate search
+	by graph merging, until the first sentence candidate is found.
+	This option may improve graph accuracy, especially when you
+	are going to generate a huge word graph by setting broad
+	search.  Namely, it may result in better graph accuracy when
+	you set wide beams on both 1st pass <option>-b</option> and
+	2nd pass <option>-b2</option>, and large number for
+	<option>-n</option>.  (default: disabled)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_multigram'><title>Multi-gram / multi-dic output</title>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-multigramout
+      </option>
+    </term>
+    <term>
+      <option>
+	-nomultigramout
+      </option>
+    </term>
+    <listitem>
+      <para>
+	On grammar recognition using multiple grammars, Julius will
+	output only the best result among all grammars.  Enabling this
+	option will make Julius to output result for each grammar.
+	(default: disabled)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_align'><title>Forced alignment</title>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-walign
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Do viterbi alignment per word units for the recognition
+	result.  The word boundary frames and the average acoustic
+	scores per frame will be calculated.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-palign
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Do viterbi alignment per phone units for the recognition
+	result.  The phone boundary frames and the average acoustic
+	scores per frame will be calculated.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-salign
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Do viterbi alignment per state for the recognition result.
+	The state boundary frames and the average acoustic scores per
+	frame will be calculated.
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+</refsect2>

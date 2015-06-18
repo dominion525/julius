@@ -1,0 +1,551 @@
+<refsect2 id='opt_global'>
+<title>
+  Global options
+</title>
+
+<refsect3 id='opt_misc'><title>Misc. options</title>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-C
+      </option>
+      <replaceable>jconffile</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Load a jconf file.  The options in the file will be expanded
+	at the point.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-version
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Print version information to standard error, and exit.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-setting
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Print engine setting information to standard error, and exit.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-quiet
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Output less log.  For result, only the best word sequence will be 
+	printed.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-debug
+      </option>
+    </term>
+    <listitem>
+      <para>
+	(For debug) output enormous internal message and debug
+	information to log.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-check
+      </option>
+      <literal>{wchmm|trellis|triphone}</literal>
+    </term>
+    <listitem>
+      <para>
+	For debug, enter interactive check mode.
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+
+</refsect3>
+
+<refsect3 id='opt_adin'><title>Audio input</title>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-input
+      </option>
+      <literal>
+      {mic|rawfile|mfcfile|adinnet|stdin|netaudio}
+      </literal>
+    </term>
+    <listitem>
+      <para>
+	Choose speech input source.  Specify 'file' or 'rawfile' for
+	waveform file, 'htkparam' or 'mfcfile' for HTK parameter file.
+	On file input, users will be prompted to enter the file name
+	from stdin, or you can use <option>-filelist</option> option
+	to specify list of files to process.
+      </para>
+      <para>
+	'mic' is to get audio input from live microphone device, and
+	'adinnet' means receiving waveform data via tcpip network from 
+	an adinnet client. 'netaudio' is from DatLink/NetAudio input, 
+	and 'stdin' means data input from standard input.
+      </para>
+      <para>
+	For waveform file input, only <acronym>WAV</acronym> (no
+	compression) and <acronym>RAW</acronym> (noheader, 16bit,
+	big endian) are supported by default.  Other format can be read
+	when compiled with <literal>libsnd</literal> library.  To see
+	what format is actually supported, see the help message using
+	option <option>-help</option>.  For stdin input, only WAV and RAW is
+	supported.  (default: mfcfile)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-filelist
+      </option>
+      <replaceable>filename</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(With <option>-input rawfile|mfcfile</option>) perform recognition on all files
+	listed in the file.  The file should contain input file
+	per line.  Engine will end when all of the files are processed.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-notypecheck
+      </option>
+    </term>
+    <listitem>
+      <para>
+	By default, Julius checks the input parameter type whether it
+	matches the AM or not.  This option will disable the check and
+	force engine to use the input vector as is.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-48
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Record input with 48kHz sampling, and down-sample it to 16kHz
+	on-the-fly.  This option is valid for 16kHz model only.  The
+	down-sampling routine was ported from <command>sptk</command>.
+	(Rev. 4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-NA
+      </option>
+      <replaceable>devicename</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Host name for DatLink server input (<option>-input netaudio</option>).
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-adport
+      </option>
+      <replaceable>port_number</replaceable>
+    </term>
+    <listitem>
+      <para>
+	With <option>-input adinnet</option>, specify adinnet port
+	number to listen.  (default: 5530)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nostrip
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Julius by default removes successive zero samples in input
+	speech data.  This option inhibits the removal.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-zmean
+      </option>
+    </term>
+    <term>
+      <option>
+	-nozmean
+      </option>
+    </term>
+    <listitem>
+      <para>
+	This option enables/disables DC offset removal of input
+	waveform.  Offset will be estimated from the whole input.  For
+	microphone / network input, zero mean of the first 48000
+	samples (3 seconds in 16kHz sampling) will be used for the
+	estimation.  (default: disabled)
+      </para>
+      <para>
+	This option uses static offset for the channel.  See also
+	<option>-zmeansource</option> for frame-wise offset removal.
+      </para>
+    </listitem>
+  </varlistentry>
+  
+</variablelist>
+
+</refsect3>
+
+
+<refsect3 id='opt_cut'><title>Speech segment detection by level and zero-cross</title>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-cutsilence
+      </option>
+    </term>
+    <term>
+      <option>
+	-nocutsilence
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Turn on / off the speech detection by level and zero-cross.
+	Default is on for mic / adinnet input, and off for files.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-lv
+      </option>
+      <replaceable>thres</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Level threshold for speech input detection.  Values should be
+	in range from 0 to 32767.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-zc
+      </option>
+      <replaceable>thres</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Zero crossing threshold per second.  Only input that goes over
+	the level threshold (<option>-lv</option>) will be counted.
+	(default: 60)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-headmargin
+      </option>
+      <replaceable>msec</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Silence margin at the start of speech segment in
+	milliseconds.  (default: 300)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-tailmargin
+      </option>
+      <replaceable>msec</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Silence margin at the end of speech segment in milliseconds.
+	(default: 400)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-rejectshort
+      </option>
+      <replaceable>msec</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Reject input shorter than specified milliseconds.  Search will
+	be terminated and no result will be output.
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_rejectpower'><title>Input rejection by average power</title>
+
+<para>
+This feature will be enabled by
+<literal>--enable-power-reject</literal> on compilation.  Should be
+used with Decoder VAD or GMM VAD.  Valid for real-time input only.
+</para>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-powerthres
+      </option>
+      <replaceable>thres</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Reject the inputted segment by its average energy.  If the
+	average energy of the last recognized input is below the
+	threshold, Julius will reject the input.  (Rev.4.0)
+      </para>
+      <para>
+	This option is valid when
+	<literal>--enable-power-reject</literal> is specified
+	at compilation time.
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+
+<refsect3 id='opt_gmm'><title>Gaussian mixture model</title>
+
+<para>
+GMM will be used for input rejection by accumulated score, or for
+front-end GMM-based VAD when <literal>--enable-gmm-vad</literal> is
+specified.
+</para>
+<para>
+NOTE: You should also set the proper MFCC parameters required for the
+GMM, specifying the acoustic parameters described in AM section
+<option>-AM_GMM</option>.
+</para>
+<para>
+When GMM-based VAD is enabled, the voice activity score will be
+calculated at each frame as front-end processing.  The value will be
+computed as \[ \max_{m \in M_v} p(x|m) - \max_{m \in M_n} p(x|m) \]
+where $M_v$ is a set of voice GMM, and $M_n$ is a set of noise GMM
+whose names should be specified by <option>-gmmreject</option>.  The
+activity score will be then averaged for the last N frames, where N is
+specified by <option>-gmmmargin</option>.  Julius updates the averaged
+activity score at each frame, and detect speech up-trigger when the
+value gets higher than a value specified by <option>-gmmup</option>,
+and detecgt down-trigger when it gets lower than a value of
+<option>-gmmdown</option>.
+</para>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-gmm
+      </option>
+      <replaceable>hmmdefs_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	GMM definition file in HTK format. If specified, GMM-based
+	input verification will be performed concurrently with the 1st
+	pass, and you can reject the input according to the result as
+	specified by <option>-gmmreject</option>.  The GMM should be
+	defined as one-state HMMs.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gmmnum
+      </option>
+      <replaceable>number</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Number of Gaussian components to be computed per frame on GMM
+	calculation.  Only the N-best Gaussians will be computed for
+	rapid calculation.  The default is 10 and specifying smaller
+	value will speed up GMM calculation, but too small value (1 or
+	2) may cause degradation of identification performance.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gmmreject
+      </option>
+      <replaceable>string</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Comma-separated list of GMM names to be rejected as invalid
+	input.  When recognition, the log likelihoods of GMMs
+	accumulated for the entire input will be computed concurrently
+	with the 1st pass.  If the GMM name of the maximum score is
+	within this string, the 2nd pass will not be executed and the
+	input will be rejected.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gmmmargin
+      </option>
+      <replaceable>frames</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(GMM_VAD) Head margin in frames.  When a speech trigger
+	detected by GMM, recognition will start from current frame
+	minus this value.  (Rev.4.0)
+      </para>
+      <para>
+	This option will be valid only if compiled with 
+	<literal>--enable-gmm-vad</literal>.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gmmup
+      </option>
+      <replaceable>value</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(GMM_VAD) Up trigger threshold of voice activity score.  (Rev.4.1)
+      </para>
+      <para>
+	This option will be valid only if compiled with 
+	<literal>--enable-gmm-vad</literal>.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gmmdown
+      </option>
+      <replaceable>value</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(GMM_VAD) Down trigger threshold of voice activity score.  (Rev.4.1)
+      </para>
+      <para>
+	This option will be valid only if compiled with 
+	<literal>--enable-gmm-vad</literal>.
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+
+<refsect3 id='opt_decode'><title>Decoding option</title>
+
+<para>
+Real-time processing means concurrent processing of MFCC computation
+1st pass decoding.  By default, real-time processing on the pass is on
+for microphone / adinnet / netaudio input, and for others.
+</para>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-realtime
+      </option>
+    </term>
+    <term>
+      <option>
+	-norealtime
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Explicitly switch on / off real-time (pipe-line) processing on
+	the first pass.  The default is off for file input, and on for
+	microphone, adinnet and NetAudio input.  This option relates
+	to the way CMN and energy normalization is performed: if off,
+	they will be done using average features of whole input.  If
+	on, MAP-CMN and energy normalization to do real-time processing.
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+</refsect2>

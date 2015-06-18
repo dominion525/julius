@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>
+Reference manual of 
+adinrec
+</title>
+<link rel="stylesheet" href="man.css" type="text/css">
+</head>
+<body>
+[ 
+<a href="adinrec.html.ja">Japanese</a> 
+| 
+<a href="adinrec.html.en">English</a> 
+| 
+<a href="adinrec.html.en">Back to top</a> 
+]
+<div align="right"><font size="-1">
+Last update: "2005/09/29 04:03:21"
+</font></div>
+<pre>
+<h3>ADINREC(1)                                             ADINREC(1)</h3>
+
+
+
+<h3>NAME</h3>
+       adinrec - record one sentence utterance to a file
+
+<h3>SYNOPSIS</h3>
+       adinrec [options..] filename
+
+<h3>DESCRIPTION</h3>
+       adinrec  records one spoken utterance from microphone to a
+       file.
+
+       Output format is WAV, 16bit, monoral, no compression.   If
+       the  file  already exist, it will be overridden.  If file-
+       name of "-" is specified, recorded data will be output  to
+       stdout.
+
+       The sensitiveness of speech detection can be controlled by
+       thresholds of zerocross number and power (level).
+
+<h3>OPTIONS</h3>
+       -freq threshold
+              Sampling frequency (Hz, default=16000)
+
+       -lv threslevel
+              Level threshold (0-32767, default=2000)
+
+       -zc zerocrossnum
+              Zero   cross   number   threshold   in   a   second
+              (default=60)
+
+       -margin msec
+              Record  margin  before/after  the  detected segment
+              (milliseconds, default=300)
+
+       -nostrip
+              Disable skipping of invalid zero samples  (default:
+              enabled)
+
+       -zmean Enable zero mean subtraction to remove DC offset.
+
+       -raw   RAW format output (default: WAV)
+
+<h3>SEE ALSO</h3>
+       adintool(1),  julius(1),  sox(1),  wavplay(1),  wavrec(1),
+       aplay(1), arecord(1)
+
+<h3>VERSION</h3>
+       This version was distributed with Julius-3.5.
+
+<h3>COPYRIGHT</h3>
+       Copyright (c) 2000-2005  Nara  Institute  of  Science  and
+       Technology, Japan
+       Copyright  (c)  2005       Nagoya Institute of Technology,
+       Japan
+
+<h3>AUTHORS</h3>
+       LEE Akinobu (Nagoya Institute of Technology, Japan)
+       contact: julius@kuis.kyoto-u.ac.jp
+
+<h3>LICENSE</h3>
+       Same as Julius.
+
+
+
+                              LOCAL                    ADINREC(1)
+</pre>
+<hr>
+<div align="right">
+$Id: adinrec.html.en,v 1.1.1.1 2007/01/10 08:01:57 kudravka_ Exp $
+</div>
+</body></html>

@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<chapter id='desc_am'><title>音響モデル</title>
+
+<epigraph>
+<para>
+Julius は音響モデルとして，HTK形式のサブワード単位の HMM (Hidden
+Markov Model) を用いることができる．コンテキスト非依存モデル 
+(monophone)，および音素環境依存モデルを triphone まで扱える．出力確率
+モデルは，対角共分散のガウス混合分布を基本とし，tied-mixture モデルや
+phonetic tied-mixture モデルも扱える．本章ではJuliusにおける音響HMMの
+仕様を述べる．
+</para>
+</epigraph>
+
+<sect1><title>HMM定義ファイル</title>
+<para>
+Julius は以下の形式の音響モデルファイルを読み込むことができる．
+それぞれ，gzip で圧縮されたファイルも直接読み込める．
+</para>
+<sect2><title>HTK 形式 (ASCII)</title>
+<para>
+Julius は HTK の ASCII形式のHMM定義ファイル (MMF) を読み込むことができ
+る．音響モデルごとに，全ての音素セットの定義を1つにまとめた単一の MMF 
+ファイル(<literal>hmmdefs</literal>) として与える．
+（音素ごとに別々の定義ファイルとして与えることはできない）
+</para>
+</sect2>
+<sect2><title>Juliusバイナリ形式</title>
+<para>
+HTKのASCII形式のHMM定義ファイルは，モデル構造を解析しながら読み込むた
+め．読み込みに時間がかかる場合がある．あらかじめJulius用のバイナリ形式
+へ変換しておくことで，起動時の読み込み時間を短縮できる．Julius用バイナ
+リ形式への変換は，付属のツール <command>mkbinhmm</command> を用いる．
+</para>
+<para>
+また，バイナリ形式への変換する際に，その音響モデルを認識に使う際に指定
+する必要がある特徴量の抽出条件をファイルに埋め込むことができる．指定方
+法は，特徴量抽出の章のセクション「指定方法３：バイナリHMMファイルへ埋
+め込む」を参照のこと．
+</para>
+<para>
+使用例を以下に示す．
+<informalexample>
+<synopsis>
+% mkbinhmm -htkconf ConfigFile hmmdefs binhmm
+</synopsis>
+</informalexample>
+</para>
+</sect2>
+</sect1>
+
+<sect1><title>サポートする範囲</title>
+<para>
+Julius における音響HMMの型の制限を以下に列挙する．
+<itemizedlist>
+<listitem><para>ストリーム数は 1 のみ</para></listitem>
+<listitem><para>確率分布は連続分布のみ（離散は不可）</para></listitem>
+<listitem><para>共分散行列の型は対角共分散（<literal>&lt;DiagC></literal>）のみ</para></listitem>
+<listitem><para>継続時間モデルはなし（<literal>&lt;NullD></literal> のみ）</para></listitem>
+<listitem><para>共有マクロは <literal>~t</literal>(遷移), 
+<literal>~s</literal>(状態), <literal>~m</literal>(分布), 
+<literal>~v</literal>(共分散) を扱える．
+これ以外の共有マクロ (<literal>~w ~u ~i ~x</literal>等) は非対応．
+</para></listitem>
+<listitem><para>MLLRのための regression tree はスキップ</para></listitem>
+<listitem><para>各HMMは，その初期状態と最終状態に出力を持たないこと（HTKと同様）</para></listitem>
+<listitem><para>音響モデルが triphone であるかどうかは自動判別される．
+</para></listitem>
+<listitem><para>
+状態遷移はすべてのパターンに対応，ただしパターンによってはマルチパスモード
+で実行される（後述）
+</para></listitem>
+</itemizedlist>
+</para>
+<para>
+音響モデルの特徴量について，Juliusでマイクやwavファイルなどの
+音声波形入力を直接認識するには，Juliusが抽出をサポートしている範囲
+の特徴量で音響モデルが学習されている必要がある．さらに，Juliusに対して，
+特徴抽出パラメータを学習時と一致するよう設定する必要がある．
+特徴量の詳細については，特徴量抽出の章を参照されたい．
+</para>
+<para>
+なお，特徴抽出済みの特徴パラメータファイル（HTK形式）を入力とする場合
+は，上記に限らず任意のパラメータ型が扱える．
+</para>
+</sect1>
+
+<sect1><title>音素コンテキスト依存モデル</title>
+<para>
+Julius は，与えられた音韻モデルが音素環境依存モデルであるかどうかを，
+HMM の名称パターンから判定する．HMM名の中に記号 
+`<literal>+</literal>', `<literal>-</literal>' が両方とも１つ以上含ま
+れていれば，そのモデルは音素環境依存モデルとして扱われる．上記の記号
+が名前に全く含まれない場合，音素環境依存に関わる処理は行われない．
+</para>
+
+<sect2><title>論理音素名と物理音素名</title>
+<para>
+音素環境依存モデルを使用する場合，単語辞書上の音素列は，辞書読み込み時
+に単語内のコンテキストを考慮したトライフォン表記に変換され，その表記に
+対応するHMMが割り当てられる．モノフォンからトライフォン表記の生成は，
+ある音素 "X" に対して直前の音素が "L"，直後の音素が "R" である場合に 
+"L-X+R" の形で行われる．たとえば，以下のような単語「英訳」を考える．
+<informalexample>
+<programlisting>
+英訳+エイヤク+17        [英訳]  e     i     y     a     k     u
+</programlisting>
+</informalexample>
+このトライフォン表記への変換は以下のようになる．なお単語の先頭・末尾に
+ついては特別な処理が行われる（詳細は後述）．
+<informalexample>
+<programlisting>
+英訳+エイヤク+17        [英訳]  e+i e-i+y i-y+a y-a+k a-k+u k-u
+</programlisting>
+</informalexample>
+これらのトライフォンHMMが音響モデルで定義されて
+いればよいが，実際には，学習時のコンテキストクラスタリングにより，
+辞書上のすべての可能なトライフォンについてHMMが定義されていないこ
+とがある．また，音響モデル学習時に出現しなかった音素並びが
+辞書中に存在することもある．
+</para>
+<para>
+このような単語辞書上の音素表記およびそれから生成されるモデル参照名を
+「論理音素名(logical phone)」，実際に音響モデル上で定義されているHMM名
+を「物理音素名(physical phone)」と呼ぶ．
+</para>
+<para>
+Julius ではHMMListと呼ばれるファイルを用いて，
+単語辞書から生成されるトライフォン表記と，実際の音響モデル上のHMM
+との対応を明示的に指定する．
+</para>
+</sect2>
+
+<sect2><title>HMMListファイル</title>
+<para>
+HMMListファイルは，辞書上で登場しうるすべての論理音素名に対して，
+音響モデルで定義されている物理音素名を対応づける．
+フォーマットは以下のとおり．
+<itemizedlist>
+<listitem><para>一行に1つの対応を定義する．</para></listitem>
+<listitem><para>第1カラムに論理音素名，第2カラムに対応する物理音素名（hmmdefs 内のHMM名）を指定する．</para></listitem>
+<listitem><para>第2カラムを省略した場合，論理音素名と物理音素名が同じ名前として登録される．</para></listitem>
+<listitem><para>重複して登録した場合，エラーとなる．</para></listitem>
+</itemizedlist>
+以下に例を示す．第２カラムが空白のエントリは，その HMM 名が直接音響モ
+デル内で定義されていることを意味する．
+<informalexample>
+<programlisting>
+a-k+a
+a-k+a: a-k+a
+a-k+e
+a-k+e: a-k+e
+a-k+i
+a-k+i: a-k+i
+a-k+o
+a-k+o: a-k+o
+a-k+u
+a-k+u: a-k+u
+</programlisting>
+</informalexample>
+トライフォン使用時，HMMList には，辞書上の単語内および単語間で登場しう
+るすべてのトライフォンについて記述する必要がある．単語内トライフォンに
+おいて抜けがあった場合は起動時に，単語間トライフォンで抜けがあった場合
+は認識時にエラーとなる．
+</para>
+<para>
+HMMList ファイルでのマッピング指定は hmmdefs内の定義を上書きする．例を挙げると，hmmdefs 内に
+<informalexample>
+<programlisting>
+    ~h "j-u+q"
+</programlisting>
+</informalexample>
+という定義があるとき，HMMList ファイルで
+<informalexample>
+<programlisting>
+    j-u+q y-u+q
+</programlisting>
+</informalexample>
+と指定すると，<literal>j-u+q</literal> のHMMは実際には使用されず
+<literal>y-u+q</literal>が使われることになる．
+</para>
+<para>
+システムにおいて実際にどのようにマッピングされているかは，julius を 
+<option>-check triphone</option>を付けて起動することでチェックできる．
+プロンプトに対して "<literal>H</literal>" と入力すればヘルプが出てくる．
+</para>
+</sect2>
+
+<sect2><title>単語間トライフォン近似：pseudo phone</title>
+<para>
+認識時には，単語内の音素コンテキスト依存モデルは辞書読み込み時に展開さ
+れる．単語をまたぐ依存性（単語間トライフォン）については，第1パスでは
+計算量の爆発を防ぐため "pseudo phone" を用いた近似計算が行われ，第2パ
+スで正確なトライフォンが計算される．
+</para>
+<para>
+この計算のために，Julius では第1パスの内部計算で，与えられた音響モデル
+から <literal>k-u+*</literal> のように同じコンテキストを持つトライフォ
+ンHMMの集合を算出し，それを <literal>k-u</literal> のような擬似バイフォ
+ンとして用いる．これを，"pseudo phone" と呼ぶ．Pseudo phone は，同じコ
+ンテキストを持つトライフォンHMM の集合体で，それ自身が一つの論理バイフォ
+ンあるいは論理モノフォンとして扱われる．種類としては，
+<literal>k-u(+*)</literal> のように同じ中心音素と左コンテキストを持つ
+トライフォンの集合（単語末端用），<literal>(*-)b+e</literal> のように
+同じ中心音素と右コンテキストを持つ集合（単語先頭用），および 
+<literal>(*-)a(+*)</literal> のように中心音素のみ同じ集合（１音素のみ
+からなる単語用）の3種からなる．これらは，音響モデルを読み込んだあとに，
+論理トライフォン名から自動的に生成され，論理バイフォンとして HMMList 
+に追加登録される．
+</para>
+<para>
+pseudo phone は辞書上の単語の先頭および末尾に配置され，第1パスではその
+集合内のすべてのトライフォンについて尤度計算を行い，スコアの高いものを
+その pseudo phone のスコアとして与える．第2パスでは，単語仮説のコン
+テキストからただしいトライフォンに置き換えられて尤度計算される．
+すなわち，pseudo phone は認識中にのみ用いられる．
+</para>
+<para>
+なお，HMMList でバイフォン表記から物理音素名への明示的なマッピングが記述され
+ている場合，そのマッピングは pseudo phone より優先される．HMMList 中に
+バイフォンやモノフォンが明示的に指定されている場合は，pseudo phone は
+使用されず，指定されたモデルが使用される．
+</para>
+</sect2>
+</sect1>
+
+<sect1><title>Tied-mixture モデル</title>
+<para>
+Julius は tied-mixture ベースの音響モデルを扱うことができる．単一のコー
+ドブックからなる通常のtied-mixtureモデルのほか，音素ごとにコードブック
+を持つ phonetic tied-mixture モデルなど複数のコードブックを扱うことも
+できる．ただし，通常の混合分布定義との混在はできない．
+</para>
+<para>
+Tied-mixtureモデルかどうかの判別は，定義ファイル中に "&lt;TMix>" が含
+まれているかどうかで行う．hmmdefs 読み込み中に "&lt;TMix>" 定義が見つ
+かると，Julius はそのモデルを tied-mixture ベースと判断する．
+</para>
+<para>
+Tied-mixtureモデルでは mixture-driven な音響尤度計算が行われる．各フレー
+ムごとに，まず全コードブックの各ガウス分布の尤度を計算し，コードブック
+ごとに各分布尤度をキャッシュする．HMM状態の出力確率は，対応するコード
+ブックの上記のキャッシュを参照しながら，重みをかけて算出される．
+</para>
+</sect1>
+
+<sect1><title>複数モデル使用時の注意</title>
+<para>
+Julius では，複数のモデルを用いて並列認識を行うことができる．複数の音
+響モデルを用いる場合，音響モデルごとに特徴量抽出のパラメータを設定する．
+これによって，モデルごとに特徴量の設定を変えることが可能である．ただし，
+音声信号のサンプリング周波数，窓サイズ長，およびフレームシフト幅については，
+音響モデル間で同一の値を設定する必要がある．
+</para>
+</sect1>
+
+<sect1><title>状態間遷移とマルチパスモード</title>
+<para>
+Julius は認識処理の効率化のために，HMMの持つ状態遷移パターンによってモー
+ドを切り替えている．与えられた音響モデル内の全てのHMMが以下の条件を
+満たすとき，Julius はモデル間の遷移処理を簡素化したモードで動作する．
+<itemizedlist>
+<listitem><para>初期状態から出力を持つ状態への遷移をただ１つ持つ</para></listitem>
+<listitem><para>出力を持つ状態から最終状態への遷移をただ１つ持つ</para></listitem>
+</itemizedlist>
+</para>
+<para>
+上記の条件に当てはまらないモデルが与えられたとき，Juliusはその音響モデ
+ルを用いた認識処理において「マルチパスモード」と呼ばれるモードで動作す
+る．マルチパスモードでは，初期状態から最終状態への直接遷移（すなわちモ
+デルそのものをスキップすることを許す遷移）を含む，任意の状態間遷移を扱
+えるよう拡張された内部アルゴリズムが適用される．なお，拡張の影響として，
+処理の複雑化に伴い認識速度は通常よりも若干低下する．また，単語の先頭お
+よび末尾に単語ノードが新たに作られるため木構造化辞書が大きくなり，ビー
+ム幅を通常よりも若干広めに取るほうがよい．
+</para>
+<para>
+マルチパスモードは，与えられた音響モデルの遷移パターンから自動的に設定
+される．またオプション<option>-multipath</option>, 
+<option>-nomultipath</option> で明示的に指定することもできる．複数の音
+響モデルを用いる場合は，個々の音響モデルに対して個別に設定できる．
+</para>
+</sect1>
+
+</chapter>

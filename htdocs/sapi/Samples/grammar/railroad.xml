@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GRAMMAR>
+<RULE name="S" toplevel="ACTIVE">
+  <L>
+    <P>
+      <RULEREF name="EKI"/>
+    </P>
+    <P>
+      <RULEREF name="EKI"/>
+      <RULEREF name="MADE"/>
+    </P>
+    <P>
+      <RULEREF name="EKI"/>
+      <RULEREF name="KARA"/>
+      <RULEREF name="EKI"/>
+      <RULEREF name="MADE"/>
+    </P>
+    <P>
+      <RULEREF name="FILL_B"/>
+      <RULEREF name="EKI"/>
+    </P>
+    <P>
+      <RULEREF name="FILL_B"/>
+      <RULEREF name="EKI"/>
+      <RULEREF name="MADE"/>
+    </P>
+    <P>
+      <RULEREF name="FILL_B"/>
+      <RULEREF name="EKI"/>
+      <RULEREF name="KARA"/>
+      <RULEREF name="EKI"/>
+      <RULEREF name="MADE"/>
+    </P>
+  </L>
+</RULE>
+<RULE name="KARA" toplevel="INACTIVE">
+  <L propname="KARA">
+    <P valstr="from">から</P>
+  </L>
+</RULE>
+<RULE name="EKI" toplevel="INACTIVE">
+  <L propname="EKI">
+    <P valstr="かみのやま温泉">/かみのやま温泉/かみのやまおんせん;</P>
+    <P valstr="くりこま高原">/くりこま高原/くりこまこうげん;</P>
+    <P valstr="さくらんぼ東根">/さくらんぼ東根/さくらんぼひがしね;</P>
+    <P valstr="がーら湯沢">/がーら湯沢/がーらゆざわ;</P>
+    <P valstr="安中榛名">/安中榛名/あんなかはるな;</P>
+    <P valstr="一の関">/一の関/いちのせき;</P>
+    <P valstr="宇都宮">/宇都宮/うつのみや;</P>
+    <P valstr="浦佐">/浦佐/うらさ;</P>
+    <P valstr="越後湯沢">/越後湯沢/えちごゆざわ;</P>
+    <P valstr="燕三条">/燕三条/つばめさんじょう;</P>
+    <P valstr="岡山">/岡山/おかやま;</P>
+    <P valstr="角館">/角館/かくのだて;</P>
+    <P valstr="掛川">/掛川/かけがわ;</P>
+    <P valstr="岐阜羽島">/岐阜羽島/ぎふはしま;</P>
+    <P valstr="京都">/京都/きょうと;</P>
+    <P valstr="熊谷">/熊谷/くまがい;</P>
+    <P valstr="郡山">/郡山/こおりやま;</P>
+    <P valstr="軽井沢">/軽井沢/かるいざわ;</P>
+    <P valstr="古川">/古川/ふるかわ;</P>
+    <P valstr="厚狭">/厚狭/あさ;</P>
+    <P valstr="広島">/広島/ひろしま;</P>
+    <P valstr="高崎">/高崎/たかさき;</P>
+    <P valstr="高畠">/高畠/たかはた;</P>
+    <P valstr="佐久平">/佐久平/さくだいら;</P>
+    <P valstr="三河安城">/三河安城/みかわあんじょう;</P>
+    <P valstr="三原">/三原/みはら;</P>
+    <P valstr="三島">/三島/みしま;</P>
+    <P valstr="山形">/山形/やまがた;</P>
+    <P valstr="雫石">/雫石/しずくいし;</P>
+    <P valstr="秋田">/秋田/あきた;</P>
+    <P valstr="小郡">/小郡/おごおり;</P>
+    <P valstr="小山">/小山/おやま;</P>
+    <P valstr="小倉">/小倉/こくら;</P>
+    <P valstr="小田原">/小田原/おだわら;</P>
+    <P valstr="上田">/上田/うえだ;</P>
+    <P valstr="上毛高原">/上毛高原/じょうもうこうげん;</P>
+    <P valstr="上野">/上野/うえの;</P>
+    <P valstr="新横浜">/新横浜/しんよこはま;</P>
+    <P valstr="新下関">/新下関/しんしものせき;</P>
+    <P valstr="新花巻">/新花巻/しんはなまき;</P>
+    <P valstr="新潟">/新潟/にいがた;</P>
+    <P valstr="新岩国">/新岩国/しんいわくに;</P>
+    <P valstr="新庄">/新庄/しんじょう;</P>
+    <P valstr="新神戸">/新神戸/しんこうべ;</P>
+    <P valstr="新倉敷">/新倉敷/しんくらしき;</P>
+    <P valstr="新大阪">/新大阪/しんおおさか;</P>
+    <P valstr="新白河">/新白河/しんしらかわ;</P>
+    <P valstr="新尾道">/新尾道/しんおのみち;</P>
+    <P valstr="新富士">/新富士/しんふじ;</P>
+    <P valstr="水沢江刺">/水沢江刺/みずざわえさし;</P>
+    <P valstr="盛岡">/盛岡/もりおか;</P>
+    <P valstr="西明石">/西明石/にしあかし;</P>
+    <P valstr="静岡">/静岡/しずおか;</P>
+    <P valstr="赤湯">/赤湯/あかゆ;</P>
+    <P valstr="仙台">/仙台/せんだい;</P>
+    <P valstr="相生">/相生/あいおい;</P>
+    <P valstr="村山">/村山/むらやま;</P>
+    <P valstr="大宮">/大宮/おおみや;</P>
+    <P valstr="大曲">/大曲/おおまがり;</P>
+    <P valstr="大石田">/大石田/おおいしだ;</P>
+    <P valstr="長岡">/長岡/ながおか;</P>
+    <P valstr="長野">/長野/ながの;</P>
+    <P valstr="天童">/天童/てんどう;</P>
+    <P valstr="田沢湖">/田沢湖/たざわこ;</P>
+    <P valstr="東京">/東京/とうきょう;</P>
+    <P valstr="東広島">/東広島/ひがしひろしま;</P>
+    <P valstr="徳山">/徳山/とくやま;</P>
+    <P valstr="那須塩原">/那須塩原/なすしおばら;</P>
+    <P valstr="熱海">/熱海/あたみ;</P>
+    <P valstr="博多">/博多/はかた;</P>
+    <P valstr="白石蔵王">/白石蔵王/しろいしざおう;</P>
+    <P valstr="姫路">/姫路/ひめじ;</P>
+    <P valstr="浜松">/浜松/はままつ;</P>
+    <P valstr="福山">/福山/ふくやま;</P>
+    <P valstr="福島">/福島/ふくしま;</P>
+    <P valstr="米原">/米原/まいばら;</P>
+    <P valstr="米沢">/米沢/よねざわ;</P>
+    <P valstr="豊橋">/豊橋/とよはし;</P>
+    <P valstr="北上">/北上/きたかみ;</P>
+    <P valstr="名古屋">/名古屋/なごや;</P>
+  </L>
+</RULE>
+<RULE name="FILL_B" toplevel="INACTIVE">
+  <L>
+    <P>えー</P>
+    <P>えーと</P>
+    <P>/えーと/えーっと;</P>
+    <P>あのー</P>
+  </L>
+</RULE>
+<RULE name="MADE" toplevel="INACTIVE">
+  <L propname="MADE">
+    <P valstr="to">まで</P>
+  </L>
+</RULE>
+</GRAMMAR>

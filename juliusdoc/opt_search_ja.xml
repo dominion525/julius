@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<refsect2 id='opt_search'>
+<title>
+  認識処理・探索 (<option>-SR</option>)
+</title>
+
+<refsect3 id='opt_search_common'><title>動作パラメータ</title>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-inactive
+      </option>
+    </term>
+    <listitem>
+      <para>
+	認識処理インスタンスを一時停止状態 (inactive state) で起動する．
+	(Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-1pass
+      </option>
+    </term>
+    <listitem>
+      <para>
+	第1パスのみを実行する．このオプションを指定した場合，第2パスは
+	実行されない．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-no_ccd
+      </option>
+    </term>
+    <term>
+      <option>
+	-force_ccd
+      </option>
+    </term>
+    <listitem>
+      <para>
+	音響モデルを音素コンテキスト依存モデルとして扱うかどうかを明示
+	的に指定する．デフォルトはHMM中のモデル名から自動判断される．
+      </para>
+      <para>
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-cmalpha
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	確信度計算のためのスコアのスムージング係数．(default: 0.05)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-iwsp
+      </option>
+    </term>
+    <listitem>
+      <para>
+	（マルチパスモード時のみ有効）単語間にショートポーズモデルを
+	挟み込んだ認識処理を行う．このオプションを指定すると，辞書上の
+	全単語の末尾に，スキップ可能なショートポーズモデルが付加される．
+	このショートポーズモデルはコンテキストを考慮せず，また前後の
+	音素のコンテキストにも表れない．付加するショートポーズモデルは
+	<option>-spmodel</option> で指定できる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-transp
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	透過単語に対する追加の挿入ペナルティを指定する．(default:
+	0.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-demo
+      </option>
+    </term>
+    <listitem>
+      <para>
+	<option>-progout -quiet</option>と同等．
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_search_pass1'><title>第1パスパラメータ</title>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-lmp
+      </option>
+      <replaceable>weight</replaceable>
+      <replaceable>penalty</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(N-gram使用時) 第1パス用の言語スコア重みおよび挿入ペナルティ．
+	ペナルティは負であれば単語挿入を抑制し，正であれば単語挿入を促
+	進する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-penalty1
+      </option>
+      <replaceable>penalty</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(文法使用時) 第1パス用の単語挿入ペナルティ． (default: 0.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-b
+      </option>
+      <replaceable>width</replaceable>
+    </term>
+    <listitem>
+      <para>
+	第1パス探索の枝刈り (rank pruning) のビーム幅を指定する．単位
+	は HMM ノード数である．
+	デフォルト値は音響モデルやエンジンの設定による．モノフォン
+	使用時は400, トライフォン使用時は800，トライフォンでかつ
+	setup=v2.1 のときは 1000 となる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nlimit
+      </option>
+      <replaceable>num</replaceable>
+    </term>
+    <listitem>
+      <para>
+	第1パスでノードごとに保持する仮説トークンの最大数．通常は 1 で
+	固定されており変更できない．コンパイル時に
+	<literal>configure</literal>で
+	<literal>--enable-wpair</literal>および
+	<literal>--enable-wpair-nlimit</literal> が指定されているとき
+	のみ変更できる．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-progout
+      </option>
+    </term>
+    <listitem>
+      <para>
+	第1パスで，一定時間おきにその時点での最尤仮説系列を出力する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-proginterval
+      </option>
+      <replaceable>msec</replaceable>
+    </term>
+    <listitem>
+      <para>
+	<option>-progout</option>の出力インターバルをミリ秒で指定する．
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_search_pass2'><title>第2パスパラメータ</title>
+
+<variablelist>
+  <varlistentry>
+    <term>
+      <option>
+	-lmp2
+      </option>
+      <replaceable>weight</replaceable>
+      <replaceable>penalty</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(N-gram使用時) 第2パス用の言語スコア重みおよび挿入ペナルティ．
+	ペナルティは負であれば単語挿入を抑制し，正であれば単語挿入を促
+	進する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-penalty2
+      </option>
+      <replaceable>penalty</replaceable>
+    </term>
+    <listitem>
+      <para>
+	(文法使用時) 第2パス用の単語挿入ペナルティ． (default: 0.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-b2
+      </option>
+      <replaceable>width</replaceable>
+    </term>
+    <listitem>
+      <para>
+	第2パス探索における仮説展開回数の上限を指定する．単位は
+	仮説数．(default: 30)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-sb
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	第2パスの仮説尤度計算時のスコア幅を指定する．単位は対数尤度差
+	である．(default: 80.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-s
+      </option>
+      <replaceable>num</replaceable>
+    </term>
+    <listitem>
+      <para>
+	仮説のスタックサイズを指定する．(default: 500)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-n
+      </option>
+      <replaceable>num</replaceable>
+    </term>
+    <listitem>
+      <para>
+	<replaceable>num</replaceable>個の文仮説数が見付かるまで探索を
+	行う．得られた仮説はスコアでソートされて出力される
+	（<option>-output</option>も見よ）．デフォルト値はコンパイル時
+	のエンジン設定によって変わり，fast 版では 1, standard版では10
+	である．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-output
+      </option>
+      <replaceable>num</replaceable>
+    </term>
+    <listitem>
+      <para>
+	見つかったN-best候補のうち，結果として出力する文仮説の数を
+	指定する．<option>-n</option>も参照のこと．(default: 1)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-m
+      </option>
+      <replaceable>count</replaceable>
+    </term>
+    <listitem>
+      <para>
+	探索打ち切りのための仮説展開回数のしきい値を指定する．
+	(default: 2000)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-lookuprange
+      </option>
+      <replaceable>frame</replaceable>
+    </term>
+    <listitem>
+      <para>
+	第2パスの単語展開時に，接続しうる次単語候補を見付けるための
+	終端時刻の許容幅をフレーム数で指定する．値を大きくするほど
+	その周辺の多くの仮説を次単語候補として仮説展開が行われるように
+	なるが，探索が前に進みにくくなることがある．(default: 5)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-looktrellis
+      </option>
+    </term>
+    <listitem>
+      <para>
+	仮説展開を第1パスの結果単語トレリス上に絞る．
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_spsegment'><title>ショートポーズセグメンテーション</title>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-spsegment
+      </option>
+    </term>
+    <listitem>
+      <para>
+	ショートポーズセグメンテーションを有効にする． (Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-spdur
+      </option>
+      <replaceable>frame</replaceable>
+    </term>
+    <listitem>
+      <para>
+	無音区間判定のためのしきい値を指定する．無音単語が一位仮説とな
+	るフレームがこの値以上続いたとき，無音区間として入力が区切られ
+	る．(default: 10)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-pausemodels
+      </option>
+      <replaceable>string</replaceable>
+    </term>
+    <listitem>
+      <para>
+	「無音単語」を定義するための音響モデルにおける無音モデルの名前
+	を指定する．コンマで区切って複数の名前を指定できる．
+	このオプションが指定されない場合，文法を用いた認識では
+	<option>-spmodel</option> で指定されるモデルのみを読みとする単
+	語が無音単語とされる．また，N-gramではこれに加えて
+	<option>-silhead</option> および <option>-siltail</option> で
+	指定される単語も無音単語として扱われる．(Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-spmargin
+      </option>
+      <replaceable>frame</replaceable>
+    </term>
+    <listitem>
+      <para>
+	デコーダベースVADにおいて，アップトリガ時の巻戻し幅をフレーム
+	数で指定する．(Rev.4.0)
+      </para>
+      <para>
+	このオプションは<literal>configure</literal>に
+	<literal>--enable-decoder-vad</literal>を付けてコンパイルしたとき
+	のみ有効である．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-spdelay
+      </option>
+      <replaceable>frame</replaceable>
+    </term>
+    <listitem>
+      <para>
+	デコーダベースVADにおいて，アップトリガ判定の遅延幅をフレーム
+	数で指定する．(Rev.4.0)
+      </para>
+      <para>
+	このオプションは<literal>configure</literal>に
+	<literal>--enable-decoder-vad</literal>を付けてコンパイルしたとき
+	のみ有効である．
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_lattice'><title>単語ラティス / confusion network 出力</title>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-lattice
+      </option>
+    </term>
+    <term>
+      <option>
+	-nolattice
+      </option>
+    </term>
+    <listitem>
+      <para>
+	単語グラフ（ラティス）の出力を有効化/無効化する．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-confnet
+      </option>
+    </term>
+    <term>
+      <option>
+	-noconfnet
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Confusion network の出力を有効化/無効化する．confusion network 
+	は単語グラフから生成されるため，有効時は同時に 
+	<option>-lattice</option> も有効化される．(Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-graphrange
+      </option>
+      <replaceable>frame</replaceable>
+    </term>
+    <listitem>
+      <para>
+	グラフ生成において近傍の同一単語仮説をマージする．開始フレーム
+	および終了フレームの位置の差がそれぞれ
+	<replaceable>frame</replaceable>以下の同一単語仮説についてマー
+	ジする．その際，スコアは高いほうのものが残される．値が -1 の場
+	合，マージは一切行われない．値を大きくするほどコンパクトなグラ
+	フが生成されるが，スコアの誤差が大きくなる．このオプションは
+	<option>-confnet</option>にも影響する．(default: 0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-graphcut
+      </option>
+      <replaceable>depth</replaceable>
+    </term>
+    <listitem>
+      <para>
+	生成されたグラフに対して，深さによるカットオフを行う．
+	<replaceable>depth</replaceable>は，あるフレームにおいて存在可
+	能な単語数の上限を指定する．Julius では，第2パスの探索が不安定
+	な場合，一部分が極端に深いグラフが生成されることが稀にあり，こ
+	のオプションによってそれを抑制することができる．-1 を指定する
+	ことでこの機能は無効化される．(default: 80)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-graphboundloop
+      </option>
+      <replaceable>count</replaceable>
+    </term>
+    <listitem>
+      <para>
+	事後的に行われる単語グラフの境界時間調整において，振動による
+	無限ループを防ぐための打ち切り値を指定する．(default: 20)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-graphsearchdelay
+      </option>
+    </term>
+    <term>
+      <option>
+	-nographsearchdelay
+      </option>
+    </term>
+    <listitem>
+      <para>
+	巨大グラフ生成用にアルゴリズムをチューニングする．このオプショ
+	ンが有効時，Julius は第1文仮説が見つかる前のグラフ生成時の仮説
+	中断を行わないように，グラフ生成アルゴリズムを変更する．これは，
+	ビーム幅や探索範囲を極端に大きくして巨大なワードグラフを生成し
+	ようとするときに，グラフの精度を改善することがある．(default:
+	disabled)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_multigram'><title>複数文法/複数辞書認識</title>
+<para>
+  文法や単単語認識において，一つのインスタンスで複数の文法や辞書を用いる
+  場合に指定できるオプションである．
+</para>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-multigramout
+      </option>
+    </term>
+    <term>
+      <option>
+	-nomultigramout
+      </option>
+    </term>
+    <listitem>
+      <para>
+	複数文法あるいは複数辞書を用いて認識を行う場合，通常の Julius 
+	は全ての文法/辞書の中から最尤仮説を出力する．このオプションを
+	指定することで，与えられた個々の文法/辞書ごとに一位仮説を
+	出力することができる．(default: disabled)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_align'><title>forced alignment</title>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-walign
+      </option>
+    </term>
+    <listitem>
+      <para>
+	認識結果を用いて，入力に対する単語単位の forced alignment を行
+	う．単語の境界フレームと平均音響尤度が出力される．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-palign
+      </option>
+    </term>
+    <listitem>
+      <para>
+	認識結果を用いて，入力に対する音素単位の forced alignment を行
+	う．音素ごとの境界フレームと平均音響尤度が出力される．
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-salign
+      </option>
+    </term>
+    <listitem>
+      <para>
+	認識結果を用いて，入力に対するHMMの状態単位の forced alignment 
+	を行う．状態ごとの境界フレームと平均音響尤度が出力される．
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+</refsect2>

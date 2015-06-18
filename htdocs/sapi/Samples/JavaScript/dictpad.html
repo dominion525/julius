@@ -1,0 +1,99 @@
+<HTML>
+	<HEAD>
+		<TITLE>JavaScript Recognition</TITLE>
+		<SCRIPT LANGUAGE="JavaScript">
+<!--
+var Recog = new ActiveXObject("Sapi.SpSharedRecognizer");
+var Ctxt = Recog.CreateRecoContext();
+Ctxt.EventInterests = 2+4+16+32+512;	// SRESoundStart SRESoundEnd SRERecognition SREHypothesis SREFalseRecognition
+var GramDict = Ctxt.CreateGrammar(0);
+var GramCommand = Ctxt.CreateGrammar(1);
+GramDict.DictationLoad();
+GramDict.DictationSetState(0);
+var DQ = "\"";
+var dictation_text = "";
+//-->
+		</SCRIPT>
+		<script id="clientEventHandlersJS" language="javascript">
+<!--
+
+function Checkbox_Dictation_onclick() {
+	if (document.mainform.Checkbox_Dictation.checked)
+	{
+		GramDict.DictationSetState(1);
+	} else {
+		GramDict.DictationSetState(0);
+	}
+}
+
+//-->
+		</script>
+	</HEAD>
+	<BODY onload="MyOnload()">
+		<H1>JavaScript によるディクテーション</H1>
+		<div class="tekitou" id="Main">
+			<FORM NAME="mainform">
+				<P><FONT face="MS UI Gothic">状態: <INPUT id="Text_State" type="text" readOnly></FONT></P>
+				<P>
+					<INPUT id="Checkbox_Dictation" type="checkbox" onclick="return Checkbox_Dictation_onclick()">
+					マイク入力有効<BR>
+					<TEXTAREA id="Textarea_Dictation" rows="10" cols="55" readOnly="true" NAME="Textarea_Dictation"></TEXTAREA>
+				</P>
+			</FORM>
+		</div>
+		<div class="tekitou" id="NoJSMessage">
+			<H2>!!!!JavaScriptを有効にしてください!!!!</H2>
+			<br>
+		</div>
+		<SCRIPT>
+
+
+function Ctxt::SoundStart(StreamNum, StreamPos)
+{
+	document.mainform.Text_State.value = "音声開始";
+}
+
+function Ctxt::SoundEnd(StreamNum, StreamPos)
+{
+	document.mainform.Text_State.value = "音声終了";
+}
+
+function Ctxt::FalseRecognition(StreamNum, StreamPos, Result)
+{
+	document.mainform.Text_State.value = "認識失敗";
+}
+
+// 認識完了時のイベントハンドラ
+function Ctxt::Recognition(StreamNum, StreamPos, RecogType, Result)
+{
+	
+	dictation_text += Result.PhraseInfo.GetText();
+	mainform.Textarea_Dictation.value = dictation_text;
+}
+
+// 仮説生成時のイベントハンドラ
+function Ctxt::Hypothesis(StreamNum, StreamPos, Result)
+{
+
+	mainform.Textarea_Dictation.value = dictation_text + "(" + Result.PhraseInfo.GetText() + ")";
+}
+
+function MyOnload()
+{
+	var idNameMessage = "NoJSMessage";
+	if ( document.getElementById )
+	{
+		document.getElementById( idNameMessage ).style.visibility = 'hidden';
+	}
+	else if ( document.all )
+	{
+		document.all( idNameMessage ).style.visibility = 'hidden';
+	}
+	else if ( document.layers )
+	{
+		document.layers[ idNameMessage ].visibility = 'hide';
+	}	
+}
+		</SCRIPT>
+	</BODY>
+</HTML>

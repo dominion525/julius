@@ -1,0 +1,259 @@
+/**
+ * @file   version.c.in
+ * @author Akinobu Lee
+ * @date   Mon Sep 12 01:34:15 2005
+ * 
+ * <JA>
+ * @brief  エンジンのバージョンやコンパイル時の設定を出力する．
+ *
+ * configure によってこのファイルから version.c が生成されます．
+ * </JA>
+ * 
+ * <EN>
+ * @brief  Output versions and compilation-time configuration.
+ *
+ * File "version.c" will be generated from this file by configure script.
+ * </EN>
+ * 
+ * $Revision: 1.5 $
+ * 
+ */
+/*
+ * Copyright (c) 1991-2006 Kawahara Lab., Kyoto University
+ * Copyright (c) 2000-2005 Shikano Lab., Nara Institute of Science and Technology
+ * Copyright (c) 2005-2006 Julius project team, Nagoya Institute of Technology
+ * All rights reserved
+ */
+
+/* @configure_input@ */
+
+#include <julius.h>
+
+#define CC "@CC@"
+#define CFLAGS "@CFLAGS@"
+
+/** 
+ * <JA>
+ * ヘッダを出力する．
+ * 
+ * @param strm [in] 出力ストリーム
+ * </JA>
+ * <EN>
+ * Output application header.
+ * 
+ * @param strm [in] output stream
+ * </EN>
+ */
+void
+put_header(FILE *strm){
+  fprintf(strm,"%s rev.%s (%s)\n\n", PRODUCTNAME, VERSION, SETUP);
+}
+
+/** 
+ * <JA>
+ * バージョン情報を出力する
+ * 
+ * @param strm [in] 出力ストリーム
+ * </JA>
+ * <EN>
+ * Output version information.
+ * 
+ * @param strm [in] output stream
+ * </EN>
+ */
+void
+put_version(FILE *strm){
+  fprintf(strm,"\n%s rev.%s (%s)  built for %s\n\n",
+	  PRODUCTNAME, VERSION, SETUP, HOSTINFO);
+  fprintf(strm,"Copyright (c) 1991-2006 Kawahara Lab., Kyoto University\n");
+#ifdef USE_NGRAM
+  fprintf(strm,"Copyright (c) 1997-2000 Information-technology Promotion Agency, Japan\n");
+#endif
+  fprintf(strm,"Copyright (c) 2000-2005 Shikano Lab., Nara Institute of Science and Technology\n");
+  fprintf(strm,"Copyright (c) 2005-2006 Julius project team, Nagoya Institute of Technology\n\n");
+}
+
+/** 
+ * <JA>
+ * コンパイル時の設定を出力する．
+ * 
+ * @param strm [in] 入力ストリーム
+ * </JA>
+ * <EN>
+ * Output compile-time settings.
+ * 
+ * @param strm [in] input stream
+ * </EN>
+ */
+void
+put_compile_defs(FILE *strm){
+  fprintf(strm,"Engine configuration:\n");
+  fprintf(strm," - Base setup : %s\n", SETUP);
+  fprintf(strm," - Tunings    :");
+#ifdef USE_DFA
+  fprintf(strm, " DFA");
+#else  /* USE_NGRAM */
+  fprintf(strm, " N-gram");
+#ifndef UNIGRAM_FACTORING
+  fprintf(strm, ", 2gramFactoring");
+#endif
+#endif
+
+#ifdef GRAPHOUT
+# ifdef GRAPHOUT_DYNAMIC
+#  ifdef GRAPHOUT_SEARCH
+  fprintf(strm, ", GraphOutSearch");
+#  else
+  fprintf(strm, ", GraphOutDynamic");
+#  endif
+# else 
+  fprintf(strm, ", GraphOutNBest");
+# endif
+# ifndef GRAPHOUT_PRECISE_BOUNDARY
+  fprintf(strm, ", DisableGraphOutPostFitting");
+# endif
+#endif
+
+#ifdef CM_SEARCH_LIMIT
+# ifdef CM_SEARCH_LIMIT_AFTER
+  fprintf(strm, ", CMPruning_OnlyAfterReached");
+# else
+  fprintf(strm, ", CMPruning");
+# endif
+# ifdef CM_SEARCH_LIMIT_POP
+  fprintf(strm, ", CMPruningOnPOP");
+# endif
+#endif  
+
+#ifdef USE_NGRAM
+# ifndef LM_FIX_DOUBLE_SCORING
+  fprintf(strm, ", NoLMFix");
+# endif
+#endif
+
+#ifdef USE_NGRAM
+# ifndef CLASS_NGRAM
+  fprintf(strm, ", NoClassNGram");
+# endif
+#endif
+#ifdef WORDS_INT
+  fprintf(strm, ", WordsInt");
+#endif
+
+#ifdef USE_NGRAM
+# ifdef LOWMEM
+  fprintf(strm, ", SingleTree");
+# else
+#  ifdef LOWMEM2
+  /* fprintf(strm, ", HiFreqLinearTree");*/
+#  else
+  fprintf(strm, ", ShortWordTree");
+#  endif
+# endif
+#endif /* USE_NGRAM */
+
+#ifdef USE_DFA
+# ifndef CATEGORY_TREE
+  fprintf(strm, ", NoCategoryTree");
+# endif
+#endif
+
+#ifdef MONOTREE
+  fprintf(strm, ", MonoTree1");
+#endif
+#ifndef SCAN_BEAM
+  fprintf(strm, ", NoScoreEnvelope");
+#endif
+#ifndef PASS1_IWCD
+  fprintf(strm, ", NoIWCD1");
+#endif
+#ifdef PASS2_STRICT_IWCD
+  fprintf(strm, ", StrictIWCD2");
+#endif
+
+#ifdef WPAIR
+# ifdef WPAIR_KEEP_NLIMIT
+  fprintf(strm, ", WordPairNApprox");
+# else
+  fprintf(strm, ", WordPairApprox");
+# endif
+#endif
+
+#ifdef WORD_GRAPH
+  fprintf(strm, ", 1stPassWordGraph");
+#endif
+
+#ifdef SP_BREAK_CURRENT_FRAME
+  fprintf(strm, ", ShortPauseSegment");
+#endif
+
+#ifndef CONFIDENCE_MEASURE
+  fprintf(strm, ", NoCM");
+#else
+# ifdef CM_NBEST
+  fprintf(strm, ", N-bestCM");
+# endif
+# ifdef CM_MULTIPLE_ALPHA
+  fprintf(strm, ", MultiCMOutput");
+# endif
+#endif /* CONFIDENCE_MEASURE */
+
+#ifndef USE_MIC
+  fprintf(strm, ", NoMic");
+#endif
+#ifdef USE_NETAUDIO
+  fprintf(strm, ", NetAudio");
+#endif
+#ifndef HAVE_PTHREAD
+  fprintf(strm, ", NoThreaded");
+#endif
+#ifdef HAVE_LIBSNDFILE
+  fprintf(strm, ", LibSndFile");
+#endif
+
+#ifdef VISUALIZE
+  fprintf(strm, ", Visualize");
+#endif
+
+#ifdef FORK_ADINNET
+  fprintf(strm, ", ForkOnAdinnet");
+#endif
+
+#ifndef MFCC_SINCOS_TABLE
+  fprintf(strm, ", DisableMFCCTable");
+#endif
+
+#ifndef LM_FIX_DOUBLE_SCORING
+  fprintf(strm, ", DisableLMFix3.4");
+#endif
+
+#ifdef USE_LIBJCODE
+  fprintf(strm, ", Libjcode");
+#endif
+  
+#ifdef HAVE_ICONV
+  fprintf(strm, ", IconvOutput");
+#endif
+
+  fprintf(strm, "\n");
+  fprintf(strm," - Compiled by: %s %s\n", CC, CFLAGS);
+}
+
+/** 
+ * <JA>
+ * ライブラリの設定を出力する
+ * 
+ * @param strm [in] 出力ストリーム
+ * </JA>
+ * <EN>
+ * Output library configuration.
+ * 
+ * @param strm [in] output stream
+ * </EN>
+ */
+void
+put_library_defs(FILE *strm) {
+  fprintf(strm, "Library configuration: ");
+  confout(strm);
+  fprintf(strm, "\n");
+}

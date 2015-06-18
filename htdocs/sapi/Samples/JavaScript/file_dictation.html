@@ -1,0 +1,48 @@
+<HTML>
+	<HEAD>
+		<TITLE>Wavefile Dictation</TITLE>
+		<SCRIPT LANGUAGE="JavaScript">
+<!--
+// AudioInputStream をファイルにするには、InprocRecognizer である必要がある
+var Ctxt = new ActiveXObject("Sapi.SpInprocRecoContext");
+var Recog = Ctxt.Recognizer;
+
+Ctxt.EventInterests = 16;	// SRERecognition
+
+var GramDict = Ctxt.CreateGrammar(0);
+GramDict.DictationLoad();
+GramDict.DictationSetState(1);
+//-->
+		</SCRIPT>
+	</HEAD>
+	<BODY>
+		<H1>Wavefile Dictation</H1>
+		<center>
+			<FORM name="mainform">
+				認識ファイル: <input type="file" name="filename"> <input type="button" value="認識" onClick="BeginRecog(filename.value)"><br>
+				認識結果: <input type="text" name="output" size="50">
+			</FORM>
+		</center>
+		<P>
+			<SCRIPT>
+<!--
+function BeginRecog(fn)
+{
+	var FileStream = new ActiveXObject("Sapi.SpFileStream");
+	FileStream.Open(fn);
+	Recog.AudioInputStream = FileStream;
+}
+
+// 認識完了時のイベントハンドラ
+function Ctxt::Recognition(StreamNum, StreamPos, RecogType, Result)
+{
+	mainform.output.value = Result.PhraseInfo.GetText();
+}
+-->
+			</SCRIPT>
+			<hr>
+		<P></P>
+		<P>WAVファイルの音声に対してディクテーションを行い、結果をフォームに出力するサンプルです。ファイル名を入力して、「認識」ボタンをクリックします。</P>
+		<P>&nbsp;</P>
+	</BODY>
+</HTML>

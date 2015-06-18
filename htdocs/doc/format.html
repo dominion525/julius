@@ -1,0 +1,440 @@
+<h2>ファイル形式の仕様と制限</h2>
+
+<p>Julius が扱うことのできるデータ形式は以下のようになっている．</p>
+<p>なお，ファイルは全て gzip によって圧縮された形式 (.gz) のままで読み込める．</p>
+
+<ul>
+ <li><a href="#hmmdefs">1. HMM定義ファイル</a> - HTKのHMM定義ファイル形式 もしくはバイナリ形式</li>
+ <li><a href="#hmmlist">2. HMMlistファイル</a> - 独自形式</li>
+ <li><a href="#ngram">3. 単語N-gram言語モデルファイル</a> - ARPA標準形式 もしくはバイナリN-gram形式</li>
+ <li><a href="#dict">4. 単語辞書ファイル</a> -  HTKの辞書フォーマットに類似</li>
+ <li><a href="#dfa">5. DFA ファイル</a> - 独自形式</li>
+ <li><a href="#rawfile">6. 音声波形ファイル</a> - .wav, .raw, その他</li>
+ <li><a href="#mfcfile">7. 特徴パラメータファイル</a> - HTKの特徴パラメータファイル形式</li>
+ <li><a href="#length">8. 1入力あたりの入力長制限</a></li>
+</ul>
+
+<p>各ファイルの用途/形式や仕様上の制限等を以下に述べる．</p>
+
+<a name="hmmdefs"></a>
+<h3>1. HMM定義ファイル  (起動時指定オプション：-h)</h3>
+
+
+<p>HTKのHMM定義言語で記述されたアスキー形式のHMM定義ファイルを読み込む
+ことができる．音素(monophone)，音素環境依存(triphone), tied-mixture
+ベースモデルに対応している．これらは読み込み時に自動判別される．</p>
+
+<p>バイナリ形式のHMM定義ファイルを読み込むことも可能である．アスキー形式
+と同様に "-h" オプションで指定する(形式は自動判別される)．
+バイナリ形式への変換はJulius に付属のツール "mkbinhmm" で行える．
+なお，このバイナリ形式は Julius 独自のものであり，HTK のバイナリ形式の
+hmmdefs は読み込めないので注意すること．</p>
+
+<p>triphoneモデルの場合は，辞書の音素表記からtriphoneへの変換を行うために，
+辞書上で登場しうる全てのtriphoneに対して実際のモデル上のtriphoneの
+割り付けを指定する <a href="#hmmlist">HMMlist ファイル</a>が必須である(後述)．</p>
+
+<p>JuliusではHTKの仕様を全て実装してはおらず，必要性が低いと思われる
+部分は省いている．また実装の都合上，状態間遷移に制限が加わる．
+(ただしマルチパス版は遷移に制限は無い)</p>
+
+<p>また Rev.3.3 以降ではMLLR適応のための regression tree を含む音響モデルファ
+イルを直接読み込める．ただし Julius/Julian自身が MLLR 適応を行えるわけ
+ではない．</p>
+
+
+<h4>内部形式</h4>
+
+<p>(各項目の意味の詳細は "The HTK Book for HTK" を参考のこと)</p>
+
+
+<ul>
+<li>出力分布形式
+ <ul>
+ <li>連続HMMのみ(離散HMMは不可)．
+ <li>&lt;TMix&gt;対応。Phonetic Tied-Mixture モデルを含む任意の mixture tyingに対応．
+
+ <li>混合数・ベクトル次元数は任意．
+ <li>共分散行列の型は，デフォルトの対角成分(diagonal)のみ．
+ <li>InvCover, LLTCover, XForm, FULL は非対応．
+ <li>継続時間制御(duration)パラメータは非対応．
+ </ul>
+
+
+<li>状態間遷移
+ <ul>
+ <p>通常版では初期状態と最終状態には以下の制限がある．</p>
+ <li>出力分布を持たないこと
+ <li>初期状態から遷移は1つのみであること
+ <li>最終状態への遷移は1つのみであること<br>なおこの2状態を除く内部では任意のskipやloopを許す．
+
+ <li>マルチパス版では上記の制限は存在しない．
+ <li>HTKで表現できるすべての遷移が許される． 
+ </ul>
+
+<li>共有マクロ
+ <ul>
+ <li>~t(遷移), ~s(状態), ~m(分布), ~v(共分散) を扱える．<br>これ以外の共有マクロ(~w ~u ~i ~x)は非対応．
+ </ul>
+
+
+<li>Multi input stream
+ <ul>
+ <li>入力ストリームは1つのみ．
+ </ul>
+</ul>
+
+<p> 以上の条件に合わないHMM定義ファイルを読み込もうとした場合，
+Julius/Julian はエラーメッセージを出力して異常終了する．</p>
+
+
+<h4>サイズの制限</h4>
+
+<p>HMMの定義数や状態数，マクロ数に上限は無い．</p>
+<p>メモリの許す限りのどんな大きさのものでも読み込むことができる．</p>
+
+
+<h4>Tied-Mixture モデルの判別</h4>
+
+<p>バージョン 3.0 以降では，tied-mixture ベースのモデルがサポートされている．
+単一のコードブックからなる通常のtied-mixtureモデルのほかに，
+音素単位でコードブックを持つ phonetic tied-mixture モデルも扱える．
+HTKと同じくコードブックは任意数定義できる．
+ただし，通常の混合分布定義との混在は許されない．</p>
+
+<p>Julius は音響尤度の計算手順として以下の2種類を実装している．
+使用するモデルのタイプを自動判別してどちらかを自動的に選択する．</p>
+
+
+<ol>
+<li> state-driven
+ <ul>
+ <li>monophoneや状態共有triphone用の計算方式．
+ <li>出力確率の計算は状態単位で行い，キャッシュも状態単位で行う．
+ </ul>
+
+<li>mixture-driven
+
+ <ul>
+ <li>tied-mixtureモデルの計算方式． 
+ <li>コードブック(ガウス分布集合)単位で計算を行う．
+ <li>各フレームごとに，まず全コードブックの各ガウス分布の尤度を
+計算し，コードブックごとに各分布尤度をキャッシュする．
+ <li>HMM状態の出力確率は，対応するコードブックの上記のキャッシュを
+参照しながら，重みをかけて算出する．
+ </ul>
+</ol>
+
+<p>Tied-mixtureモデルかどうかの判別は，hmmdefs中に
+"&lt;Tmix&gt;" 定義が用いられてい
+るかどうかで行う．hmmdefs読み込み中に "&lt;Tmix&gt;" 定義が見つかると，Julius
+はそのモデルを tied-mixture ベースと判断してmixture-drivenの計算方式を選択
+する．</p>
+
+<p>このように，音響モデルをtied-mixtureモデルとしてJuliusに計算させるには
+音響モデルを&lt;Tmix&gt; ディレクティブを用いて定義する必要がある．</p>
+
+<p>&lt;Tmix&gt;ディレクティブの扱いについては HTK に準ずる．詳細は HTK Book を
+参照のこと．</p>
+
+
+<a name="hmmlist"></a>
+<h3>2. HMMlistファイル (-hlist)</h3>
+
+  HMMListファイルは， "e-i+q" といった辞書の音素表記から生成される論理
+的な音素表記から，hmmdefs で定義される音響モデル名への任意のマッピング
+を記述する．triphone HMM を用いる場合は必須．
+
+  フォーマットや制限については<a href="hmmlist.html">トライフォンとHMMListについて</a>を参考にされたい．
+
+
+<a name="ngram"></a>
+<h3>3. 単語N-gram言語モデルファイル</h3>
+
+<p><b>3.1. ARPA標準形式  (-nlr, -nrl)</b></p>
+
+<p>2-gramと逆向きの3-gramのARPA標準形式のN-gramデータを読み込むことができる． </p>
+
+
+<h4>形式</h4>
+
+
+<p>ARPA標準形式を読み込める．未知語カテゴリ(<UNK>等)のエントリが1-gramの
+最初のエントリとして必ず含まれていること．(CMU SLM ToolKitで作成した場合，
+仕様上常にこの条件は満たされる)</p>
+
+<p>単語辞書の単語のうちN-gramにない単語のN-gram確率は，この未知語カテゴリ
+の確率をその総数で補正した値が用いられる．</p>
+
+<p>2-gramと(逆向きの)3-gramの両方を読み込む場合，逆向き3-gramにおいて出
+現するコンテキストが 2-gramに無い場合は，警告メッセージを出力しつつ
+そのtupleを無視して処理を続行する．</p>
+
+
+<h4>サイズの制限</h4>
+
+<p>語彙数の上限は 65,535 語である．</p>
+
+<p>configure 時に"--enable-word-int" を指定することで上限を
+(2^31)語まで拡張することができる．ただし現在のところ動作は保証の限りで
+はない．</p>
+
+<p>また，上記 configure で作成した Julius でバイナリN-gramを用いる場合は，
+そのバイナリN-gramも，上記 configure でコンパイルした mkbingram を使って
+生成されたものである必要がある点に注意されたい．</p>
+
+
+<p><b>3.2. バイナリN-gram形式  (-d)</b></p>
+
+<p>2-gramと逆向き3-gramファイル(ARPA形式)から生成できる，バイナリ形式の
+N-gram ファイルである．添付のツール "mkbingram" で生成する．</p>
+
+<p>あらかじめ内部でインデックス化されているので起動が非常に高速になる．ま
+たサイズも小さくなるメリットがある．</p>
+
+<p>なお，CMU-TKのbinary n-gram (.binlm) とは非互換である．</p>
+
+
+<a name="dict"></a>
+<h3>4. 単語辞書ファイル	(-v)</h3>
+
+<p>HTKのdictionary formatとほぼ同等のフォーマットを用いる．
+違いは第2フィールドが必須であることだけである．</p>
+
+
+<h4>形式</h4>
+
+
+<ul>
+
+<li>第1フィールド(言語制約エントリ)
+
+<p>Julius においては，その単語が参照する N-gram エントリの文字列．</p>
+<p>Julian においては，その単語が属するカテゴリ番号．</p>
+
+<p>N-gramエントリを検索するため，辞書ファイルとN-gramファイルの日本語コー
+ドは一致させる必要がある．</p>
+
+<p>N-gramエントリにない単語は<UNK>として参照される．そのN-gram確率は
+N-gramエントリにない単語総数で補正した値が用いられる．</p>
+
+</li>
+
+<li>第1.5フィールド(オプショナル：クラス内生起対数確率)
+
+<p>Julius においてクラスN-gramを用いる際，第1フィールドはその単語の
+対応するクラスエントリの文字列となる．この場合，その第1フィールドの直後に
+空白を挟み，`@' の直後にクラス内の単語生起確率を常用対数(log10)で記述する．</p>
+
+<p>以下に例を示す．</p>
+
+<pre>
+    ＜地名＞ @-2.33251 京都+52 [京都] ky o: t o
+    ＜地名＞ @-1.68893 奈良+52 [奈良] n a r a
+    ＜地名＞ @-2.63574 和歌山+52 [和歌山] w a k a y a m a
+</pre>
+</li>
+
+<li>第2フィールド(出力シンボル)
+
+<p>認識結果として出力する文字列を指定する．値は `[' `]' で囲まれていなく
+てはならない．"[]"と指定することで出力無しにできる．</p>
+<p>`{' `}'で囲むと，その単語は透過語として扱われる．</p>
+</li>
+
+<li>第3フィールド以降(音素HMMの並び)
+
+<p>辞書の音素記述は monophone で行う．</p>
+(triphone HMM使用時は，辞書読み込み時に単語内コンテキストを考慮して
+  自動変換される．)</p>
+
+<p>[例](ソート済みである必要はない)</p>
+<pre>
+課税+1  [カゼイ]        k a z e i 
+課題+1  [カダイ]        k a d a i
+課長+1  [カチョウ]      k a ch o: 
+課長+1  [カチョウ]      k a ch o u 
+過ぎ+過ぎる+102 [スギ]  s u g i
+過ぎ+過ぎる+114 [スギ]  s u g i
+過去+11 [カコ]  k a k o
+過激+14 [カゲキ]        k a g e k i
+過程+1  [カテイ]        k a t e: 
+</pre>
+</li>
+
+</ul>
+
+
+<h4>サイズの上限</h4>
+
+
+<p>認識単語数の上限は 65,535 語である．</p>
+
+<p>ただし，configure 時に"--enable-word-int" を指定することで上限を
+(2^31)語まで拡張することができる．ただし現在のところ動作は保証の限りで
+はない．</p>
+
+
+<a name="dfa"></a>
+<h3> 5. DFAファイル (-dfa)</h3>
+
+<p>オートマトン文法制約を表現する，カテゴリ単位の有限状態オートマトンネッ
+トワークを記述する．</p>
+
+<h4>形式</h4>
+
+
+<p>1行で1遷移を定義する．状態番号は 0 から．</p>
+
+<ul>
+<li>第1フィールド：状態番号</li>
+<li>第2フィールド：入力カテゴリ番号</li>
+<li>第3フィールド：遷移先状態番号</li>
+<li>第4フィールド：最下位ビットが１なら，第1フィールドで示された状態が
+  終了状態(受理状態)であることを表す．最下位ビット以外は未使用．</li>
+<li>第5フィールド：未使用</li>
+</ul>
+
+<p>初期状態は状態番号 0 に固定(１つのみ)．</p>
+<p>終了状態は「状態番号 -1 -1 1」の形で指定(複数指定可能)
+入力カテゴリ番号は，単語辞書中のカテゴリ番号(第1フィールド)に
+対応する．</p>
+
+
+<a name="rawfile"></a>
+<h3>6. 音声波形ファイル (-input rawfile)</h3>
+
+<p>音声データは16bitで与える必要がある．</p>
+
+<p>ファイル形式は以下のものを読み込める(自動判別)．</p>
+
+
+<ol>
+<li>RAW (別名no header)ファイル
+<p>ただし16kHz,16bit(signed short),mono,big-endian</p>
+</li>
+<li>Microsoft Windows WAV ファイル
+<p>ただし16kHz,16bit,無圧縮</p>
+</li>
+</ol>
+
+<p><a href="http://www.zip.com.au/~erikd/libsndfile/" target="top">libsndfile</a>付きでコンパイルした場合はさらに以下の形式のファイルを読み込
+める(libsndfileドキュメントより)．ただしどれも16bitである必要が
+ある(内部でサンプリングレート変換などは行わない)</p>
+
+
+<ol start="3">
+<li>Microsoft WAV 16 bit integer PCM.</li>
+<li>Apple/SGI AIFF and AIFC uncompressed 16bit interger PCM</li>
+<li>Sun/NeXT AU/SND format (big endian 16bit PCM)</li>
+<li>Dec AU format (little endian 16 bit PCM)</li>
+<li>Microsoft IMA/DVI ADPCM WAV format (16 bits per sample compressed to 4 bits per sample)</li>
+<li>Microsoft ADPCM WAV format (16 bits per sample compressed
+   to 4 bits per sample)</li>
+<li>Microsoft 8 bit A-law an u-law formats (16 bits per sample
+   compressed to 8 bits per sample)</li>
+<li>Ensoniq PARIS big and little endian, 16 bit PCM files (.PAF)</li>
+</ol>
+
+<p>なお<a href="http://www.zip.com.au/~erikd/libsndfile/" target="top">libsndfile</a>は以下のURLから取得できる:
+
+<ul>
+<li><a href="http://www.zip.com.au/~erikd/libsndfile/"
+    target="top">http://www.zip.com.au/~erikd/libsndfile/</a>	
+</li>
+</ul>
+
+<p>Juliusの探索アルゴリズムの性質上，長い入力は第2パスの探索が不安定に
+なるため，無音などで短く区切って入力するのが望ましい．</p>
+
+<p>音声入力については「<a href="adin.html">音声入力について</a>」も参考にされたい．</p>
+
+
+<a name="mfcfile"></a>
+<h3> 7. 特徴パラメータファイル (-input mfcfile)</h3>
+
+<p>HTKの用いる特徴パラメータファイルを認識対象として与えることができる．</p>
+
+<h4>形式</h4>
+
+
+<p>特徴パラメータの型(base kind,qualifier)およびベクトル長は，使用する
+HMMの学習パラメータと一致するか，もしくは学習パラメータを含んでいる必
+要がある．認識に必要なパラメータが全て含まれていない場合はエラーと
+なる．</p>
+
+<p>なんらかの理由でチェックがうまく機能しない場合は -notypecheck オプショ
+ンでチェックを回避できる．</p>
+
+
+<h4>与えるパラメータの型について</h4>
+
+
+<p>特徴パラメータの型は本来使用するHMMの学習パラメータと一致している必要
+がある．しかし，与える特徴パラメータが，HMMが必要とするパラメータの構
+成要素を内部に含んでいる場合は，Juliusが自動的にその中から必要な要素を
+抜き出して認識に使用する．</p>
+
+<p>例えば，
+
+<pre>
+・HMM学習パラメータ
+    MFCC_E_D_N_Z = MFCC(12)+ΔMFCC(12)+ΔPow(1) (CMN)        計25次元
+</pre>
+
+のときは，MFCC_E_D_N_Z以外に
+
+<pre>
+・特徴パラメータファイル
+    MFCC_E_D_Z   = MFCC(12)+Pow(1)+ΔMFCC(12)+ΔPow(1) (CMN) 計26次元 
+  または
+    MFCC_E_D_A_Z = MFCC(12)+Pow(1)+ΔMFCC(12)+ΔPow(1)
+		   + ΔΔMFCC(12) + ΔΔPow(1)	(CMN)	     計39次元
+</pre>
+
+を与えても認識を実行可能である．</p>
+
+
+<a name="length"></a>
+<h3>8. 1入力あたりの入力長制限</h3>
+
+<p>文仮説中の単語数には上限がある(デフォルト：150単語)．</p>
+
+<p>非常に長い入力を与えた時に以下のエラーがでた場合は，Juliusのソースプ
+ログラム内のMAXSEQNUMの定義を変更して再コンパイルすれば良い．
+
+<pre>
+    sentence length exceeded ( > 150)
+</pre>
+</p>
+
+具体的には，ソースパッケージの libsent/include/sent/speech.h 内の
+
+<pre>
+    #define MAXSEQNUM     150
+</pre>
+
+の値を必要に応じて大きい値に書き換えた後，
+
+<pre>
+    % make distclean; make
+</pre>
+
+を実行する．</p>
+
+<p>また一入力あたりの長さはデフォルトで20秒が最大である．
+大きくしたい場合は libsent/include/sent/speech.h 内の
+
+<pre>
+    #define MAXSPEECHLEN 320000
+</pre>
+
+を大きくすれば良い．なお講演音声などの長大な入力の場合は，
+逐次デコーディング(--enable-sp-segment)を用いるのが常套である．</p>
+
+
+<hr>
+<div align="right">
+$Id: format.html,v 1.1.1.1 2007/01/10 08:01:57 kudravka_ Exp $
+</div>
+

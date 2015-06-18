@@ -1,0 +1,73 @@
+# Copyright (c) 1991-2006 Kawahara Lab., Kyoto University
+# Copyright (c) 2000-2005 Shikano Lab., Nara Institute of Science and Technology
+# Copyright (c) 2005-2006 Julius project team, Nagoya Institute of Technology
+# All rights reserved
+#
+# Makefile.in --- Makefile Template for configure
+#
+# $Id: Makefile.in,v 1.4 2006/11/10 02:27:42 sumomo Exp $
+#
+SHELL=/bin/sh
+
+SUBDIRS=libsent julius mkbingram mkbinhmm adinrec adintool mkgshmm mkss jcontrol gramtools
+
+CONFIG_SUBDIRS=mkgshmm gramtools jcontrol julius libsent
+
+RM=@RM@ -f
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+INSTALL=@INSTALL@
+
+all:
+	for d in $(SUBDIRS); do \
+	  (cd $$d; $(MAKE)); \
+	done
+
+install:
+	for d in $(SUBDIRS); do \
+	  (cd $$d; $(MAKE) install); \
+	done
+
+install.bin:
+	for d in $(SUBDIRS); do \
+	  (cd $$d; $(MAKE) install.bin); \
+	done
+
+install.man:
+	for d in $(SUBDIRS); do \
+	  (cd $$d; $(MAKE) install.man); \
+	done
+
+install.man.ja:
+	for d in $(SUBDIRS); do \
+	  (cd $$d; $(MAKE) install.man.ja); \
+	done
+
+clean:
+	for d in $(SUBDIRS); do \
+	  (cd $$d; $(MAKE) clean); \
+	done
+	$(RM) config.log config.cache
+
+distclean:
+	for d in $(SUBDIRS); do \
+	  if test -f $$d/Makefile; then \
+	   (cd $$d; $(MAKE) distclean); \
+	  fi; \
+	done
+	$(RM) support/doxygen.conf.en support/doxygen.conf.ja
+	$(RM) config.log config.cache
+	$(RM) config.status
+	$(RM) Makefile
+
+configure:
+	for d in $(CONFIG_SUBDIRS); do \
+	  (cd $$d; autoconf); \
+	done
+
+doxygen:
+	(cd julius; $(MAKE) doxygen)
+	mkdir -p doxygen/en
+	doxygen support/doxygen.conf.en
+	mkdir -p doxygen/ja
+	doxygen support/doxygen.conf.ja

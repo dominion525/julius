@@ -1,0 +1,95 @@
+<h2>複数文法を用いた認識</h2>
+
+Julianでは，複数の文法を同時に用いて認識できます．
+この文書では，Julian のバージョン 3.5 において複数の文法を用いて
+認識を行う方法について解説します．
+
+
+<h3>文法の指定方法</h3>
+
+Julianの起動時に，複数の文法を指定する方法は以下の３通りがあります．
+バージョン3.4.2以前では起動時に１つの文法ファイルしか指定できませんでした
+が，バージョン 3.5 で以下の (1) (2) の方法が新たに追加されました．
+<ul>
+<li>方法１）コマンドラインで直接指定する
+<pre>
+	-gram basename1[,basename2,...]
+</pre>
+使用する文法ファイルをコンマ区切りで指定します．
+<code>basename</code>は，文法の有限状態オートマトンファイル(.dfa)および
+単語辞書ファイル(.dict)の共通のプレフィックスです．例えば，
+ディレクトリ "<code>bar/</code>" に "<code>foo.dfa</code>" と
+"<code>foo.dict</code>" がある場合，basenameは
+"<code>bar/foo</code>" のように指定します．
+<p>
+<li>方法２）使用する文法のリストをファイルで用意する
+<pre>
+	-gramlist gramlistfile
+</pre>
+<code>gramlistfile</code> は，文法のリストを記述したファイルです．
+一行ごとに１つの文法の basename を指定します．<code>'#'</code> 以降行末まで
+はコメントとして無視されます．
+<p>
+例を示します．例えば以下のようなディレクトリ構造で文法が格納されて
+いるとします．
+<pre class="normal">
+	GramJulian/
+		|- appoint/
+		|       |- appoint.dfa
+		|       +- appoint.dict
+		|- intro/
+		|       |- intro.dfa
+		|       +- intro.dict
+		+- vfr/
+		        |- vfr.dfa
+		        +- vfr.dict
+</pre>
+リストファイルを用いてこれらの文法をすべて指定したい場合，例えば上記のディレクトリ <code>GramJulian</code> の下に "<code>listfile</code>" というファイルを作成し，以下のようにそのファイルから相対パスで使用する文法を列挙します．
+<pre class="normal">
+	appoint/appoint
+	intro/intro
+	vfr/vfr
+</pre>
+あとはJulian起動時に <code>-gramlist GramJulian/listfile</code> と指定します．
+<p>
+上記の例のように，<code>listfile</code>内で文法の
+指定に相対パスを使用すると，それらはその <code>gramlistfile</code> 
+ファイルのあるディレクトリからの相対パスとして解釈されます．jconfの
+ディレクトリやカレントディレクトリではありませんので注意してください．
+<p>
+
+<li>方法３）使用する文法のリストをファイルで用意する
+<p>
+いままでの -dfa, -dict も併用できます．上記オプションと併用した場合は
+両方とも読み込まれます．
+
+</ul>
+
+<h3>複数オプションの使用</h3>
+
+上記のオプションを複数回用いた場合，指定した文法がすべて読み込まれます．
+例えば，以下のようにして複数の文法を指定することもできます．
+<pre>
+	-gram vfr/vfr -gram intro/intro
+</pre>
+また複数の種類の異なる指定方法を混在させることもできます．
+<pre>
+	-gram vfr/vfr -gramlist listfile -dfa foo.dfa -v foo.dict
+</pre>
+ただし<code>-dfa</code>, <code>-dict</code> による指定のみ，複数回指定
+した場合常に最後の指定のみが有効となります．
+
+<h3>指定のキャンセル</h3>
+
+<code>-gram</code>, <code>-gramlist</code>で指定するたびに文法は追加
+されていきます．既に読み込まれている文法のリストをある時点でキャンセル
+したい場合は，<code>-nogram</code>オプションを使用します．
+<pre>
+	-nogram
+</pre>
+このオプションを指定すると，その時点までに "-gram" や "-gramlist", "-dfa", "-dict" で既に指定された文法のリストを，すべて破棄します．
+
+<hr>
+<div align="right">
+$Id: multigram.html,v 1.1.1.1 2007/01/10 08:01:57 kudravka_ Exp $
+</div>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<chapter id='desc_instance'>
+<title>
+複数モデルを用いた認識
+</title>
+
+<para>
+Julius は 4.0 より，複数のモデルの並列音声認識をサポートしている．
+複数の言語モデルや音響モデルを用いて，入力に対して並列に認識を行い，
+複数の結果を一度に得ることができる．
+</para>
+<para>
+複数のモデルを用いるには，オプション指定時に，モデルやパラメータの指定
+の前にインスタンス宣言<option>-AM</option>, <option>-LM</option>,
+<option>-SR</option> を行う．ここではインスタンス宣言の書式，および
+複数インスタンスの宣言方法について述べる．
+</para>
+
+<sect1><title>インスタンス宣言</title>
+
+<sect2><title>音響モデルインスタンス (-AM)</title>
+<para>
+<informalexample>
+<synopsis>
+<option>-AM</option> <replaceable>name</replaceable>
+</synopsis>
+</informalexample>
+<option>-AM</option>は，<replaceable>name</replaceable> という名前の音
+響モデルインスタンスを新たに宣言する．<option>-AM</option>が指定される
+たびに新たなインスタンスが生成され，それ以降にある音響モデルおよび特徴
+量抽出パラメータは，そのインスタンスに格納される．以下は２つの音響
+モデルを用いる場合のインスタンス宣言の例である．
+<informalexample>
+<programlisting>
+ -AM AM1
+ ....(音響モデル1関連の設定)
+ -AM AM2
+ ....(音響モデル2関連の設定)
+</programlisting>
+</informalexample>
+インスタンス指定を一つも行わない場合，暗黙のインスタンス名は 
+<literal>_default</literal> となる．ただし，Julius は
+<option>-AM</option> が指定されている場合，最初の <option>-AM</option> 
+より前にあるパラメータは破棄してしまう．複数モデルを用いる場合は，必ず
+上記のように各モデルごとに最初に <option>-AM</option> で宣言する必要がある．
+</para>
+<para>
+音響モデルインスタンスに格納されるパラメータは，音響モデルのファイルや
+計算アルゴリズムに関する設定，ならびにそのモデルで使用する特徴量の設定
+である．Julius は音響モデルごとに個別に特徴量抽出を行える．このため，
+複数の音響モデルを用いる場合，特徴量抽出のパラメータ設定は，モデルごと
+に行う必要がある点に注意されたい．たとえすべてのモデルで同一の特
+徴量を用いる場合でも，その特徴量抽出の設定をすべての音響モデルインスタ
+ンスで繰り返し記述する必要がある．なお，格納されるオプションの完全なリス
+トは，マニュアルの「音響モデルおよび特徴量抽出」のセクションにある．
+</para>
+<para>
+GMM については，オプション<option>-AM_GMM</option>を指定することで，それ
+以降に GMM のための特徴量抽出の設定を定義できる．
+<option>-AM_GMM</option> が指定されない場合，GMM は最初に定義された音
+響モデルインスタンスの特徴量を共有するとみなされる．
+<informalexample>
+<synopsis>
+<option>-AM_GMM</option>
+</synopsis>
+</informalexample>
+</para>
+<para>
+なお，Julius は１つの音声入力をモデル間で共有するため，下記のオプション
+については全インスタンスで同一の値が設定されている必要がある．
+Juliusは，起動時にこれらのパラメータをチェックし，同一の値が指定されてい
+ない場合エラーとする．
+<itemizedlist>
+<listitem><para>
+入力音声のサンプリングレート
+(<option>-smpFreq</option> または <option>-smpPeriod</option>, あるい
+はHTK Config 内の <literal>SOURCERATE</literal>)
+</para></listitem>
+<listitem><para>
+フレームシフト (<option>-fshift</option>)
+</para></listitem>
+<listitem><para>
+フレームサイズ (<option>-fsize</option>)
+</para></listitem>
+</itemizedlist>
+</para>
+</sect2>
+
+<sect2><title>言語モデルインスタンス (-LM)</title>
+<para>
+<option>-LM</option>では言語モデルのインスタンス宣言である．いくつかの
+言語モデルタイプ（単語N-gram, 文法，単単語認識等）が指定できる．一つの
+インスタンスには１つの言語モデルタイプのみ指定できる．
+</para>
+</sect2>
+
+<sect2><title>認識処理（デコーディング）インスタンス (-SR)</title>
+<para>
+<option>-SR</option>は認識処理単位であり，上記のモデルインスタンスを参
+照しながら実際に認識を行う処理インスタンスを定義する．参照する音響モデ
+ルインスタンス名と言語モデルインスタンス名をそれぞれ指定し，続けて認識
+処理のためのパラメータ（重み・ビーム幅等）を指定する．
+</para>
+</sect2>
+</sect1>
+
+<sect1><title>設定例</title>
+<para>
+以下は，１つの音響モデルと複数の言語モデルを用いる場合の例である．
+AM1, LM1, LM2, SR1, SR2 は任意のインスタンス名である．
+<informalexample>
+<programlisting>
+ -AM AM1
+ ....(音響モデル関連の設定)
+ -LM LM1
+ ....(言語モデル１および特徴量抽出関連の設定)
+ -LM LM2
+ ....(言語モデル２および特徴量抽出関連の設定)
+ -SR SR1 AM1 LM1
+ ....(AM1 + LM1 の認識処理の設定)
+ -SR SR2 AM1 LM2
+ ....(AM1 + LM2 の認識処理の設定)
+</programlisting>
+</informalexample>
+あるインスタンス内のパラメータは，他のインスタンスとは共有されずに完全
+に独立している．このため，特徴量抽出や言語モデル重みなど，モデルに付随
+するパラメータは全てインスタンスごとに改めて定義する必要がある点に注意
+が必要である．
+</para>
+<para>
+複数モデルの指定を行う場合，全てのモデルにおいてまず最初に上記のように
+名前を宣言すること．最初のインスタンス宣言の前にあるパラメータは，グロー
+バルなパラメータを除いて，無視される．
+</para>
+<para>
+また，4.0現在では，複数の音響モデルに対して一つの言語モデルを用いる組
+合せは直接サポートされていない．これは，言語モデルの一部の処理が音響モ
+デルに依存しているためである．この制限は，同じ言語モデルを複数指定する
+ことで回避できる．例えば，以下のように設定を行いたい場合，
+<informalexample>
+<programlisting>
+ -AM am_1 -AM am_2
+ -LM lm (LM spec..)
+ -SR search1 am_1 lm
+ -SR search2 am_2 lm
+</programlisting>
+</informalexample>
+以下のように同じ言語モデルを複数回指定してそれぞれの音響モデルに割り付ければよい．
+<informalexample>
+<programlisting>
+ -AM am_1 -AM am_2
+ -LM lm_1 (LM spec..)
+ -LM lm_2 (same LM spec..)
+ -SR search1 am_1 lm_1
+ -SR search2 am_2 lm_2
+</programlisting>
+</informalexample>
+</para>
+</sect1>
+</chapter>

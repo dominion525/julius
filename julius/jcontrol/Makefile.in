@@ -1,0 +1,56 @@
+# Copyright (c) 2002-2006 Kawahara Lab., Kyoto University
+# Copyright (c) 2002-2005 Shikano Lab., Nara Institute of Science and Technology
+# Copyright (c) 2005-2006 Julius project team, Nagoya Institute of Technology
+# All rights reserved
+#
+# $Id: Makefile.in,v 1.3 2006/11/10 02:27:42 sumomo Exp $
+#
+SHELL=/bin/sh
+.SUFFIXES:
+.SUFFIXES: .c .o
+.c.o:
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
+
+CC=@CC@
+CFLAGS=@CFLAGS@
+CPPFLAGS=@CPPFLAGS@ @DEFS@
+LDFLAGS=@LIBS@ @EXTRALIB@
+RM=@RM@ -f
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+INSTALL=@INSTALL@
+
+OBJ=jcontrol.o server.o japi_misc.o japi_grammar.o
+TARGET=jcontrol
+
+all: $(TARGET)
+
+$(TARGET): $(OBJ)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $(OBJ) $(LDFLAGS)
+
+install: install.bin install.man
+
+install.bin: $(TARGET)
+	${INSTALL} -d @bindir@
+	@INSTALL_PROGRAM@ $(TARGET) @bindir@
+
+install.man:
+	${INSTALL} -d @mandir@/man1
+	@INSTALL_DATA@ $(TARGET).man @mandir@/man1/$(TARGET).1
+
+install.man.ja:
+	${INSTALL} -d @mandir@/man1
+	@INSTALL_DATA@ $(TARGET).man.ja @mandir@/man1/$(TARGET).1
+
+clean:
+	$(RM) $(OBJ)
+	$(RM) config.log config.cache
+	$(RM) *~ core
+
+distclean:
+	$(RM) $(OBJ)
+	$(RM) config.log config.cache
+	$(RM) *~ core
+	$(RM) config.status
+	$(RM) $(TARGET)
+	$(RM) Makefile

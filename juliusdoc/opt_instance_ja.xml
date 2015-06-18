@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<refsect2 id='opt_instance'>
+<title>
+  複数モデル認識のためのインスタンス宣言
+</title>
+<variablelist>
+  <varlistentry>
+    <term>
+      <option>
+	-AM
+      </option>
+      <replaceable>name</replaceable>
+    </term>
+    <listitem>
+      <para>
+	音響モデルインスタンスを新たに宣言する．以降の音響モデルに関す
+	る設定はこのインスタンスに対するものと解釈される．
+	<replaceable>name</replaceable> にはインスタンスにつける名前を
+	指定する（既にある音響モデルインスタンスと同じ名前であってはい
+	けない）.  (Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-LM
+      </option>
+      <replaceable>name</replaceable>
+    </term>
+    <listitem>
+      <para>
+	言語モデルインスタンスを新たに宣言する．以降の言語モデルに関す
+	る設定はこのインスタンスに対するものと解釈される．
+	<replaceable>name</replaceable> にはインスタンスにつける名前を
+	指定する（既にある言語モデルインスタンスと同じ名前であってはい
+	けない）.  (Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-SR
+      </option>
+      <replaceable>name</replaceable>
+      <replaceable>am_name</replaceable>
+      <replaceable>lm_name</replaceable>
+    </term>
+    <listitem>
+      <para>
+	認識処理インスタンスを新たに宣言する．以降の認識処理や探索に関
+	する設定はこのインスタンスに対するものと解釈される．
+	<replaceable>name</replaceable> にはインスタンスにつける名前を
+	指定する（既にある認識処理インスタンスと同じ名前であってはいけ
+	ない）．<replaceable>am_name</replaceable>,
+	<replaceable>lm_name</replaceable> にはそれぞれこのインスタン
+	スが使用する音響モデルと言語モデルのインスタンスを名前，あるい
+	は ID 番号で指定する．(Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-AM_GMM
+      </option>
+    </term>
+    <listitem>
+      <para>
+	GMM用の音響モデルインスタンスを新たに宣言する．GMM計算のための
+	特徴量抽出などのパラメータは，この宣言のあとに続けて指定する．
+	(Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect2>

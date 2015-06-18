@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<chapter id='desc_lm'>
+<title>言語モデル</title>
+
+<epigraph>
+<para>
+Julius は認識のための言語制約として，いくつかの種類の言語モデルをサポー
+トしている．統計モデルである単語 N-gram モデルに基づく認
+識，記述文法に基づく認識，および単語リストのみによる孤立単語認識を行う
+ことができる．
+</para>
+<para>
+また，ライブラリとして他のアプリケーションに組み込まれるとき，アプリケー
+ション側から何らかの言語制約を提供するユーザ関数を与えることで，その言
+語制約を直接駆動して認識処理を行うことができる．
+</para>
+<para>
+言語モデルは，言語モデルインスタンスごとに個別に指定できる．一つの言語モ
+デルインスタンスには一つのモデルしか指定できない（ただし文法については
+一つのインスタンス内で複数の文法を使うことができる）．複
+数の言語モデルインスタンスに対してそれぞれ異なるタイプのモデルを
+指定することで，複数の異なるモデルを同時に用いて認識することもできる．
+</para>
+<para>
+本章では，各言語モデルで共通である単語辞書について最初に述べた後，
+各種言語モデルについてファイル形式や構築方法，Julius への指定方法，
+制限等について述べる．
+</para>
+</epigraph>
+
+<sect1><title>単語辞書</title>
+<para>
+単語辞書は，認識対象とする単語とその読み（音素列表記）を定義する．
+Juliusは，この単語を最小ユニットとして解探索を行う．
+Julius では，与えられた辞書上のすべての単語が認識候補となる．
+</para>
+<para>
+認識用辞書のフォーマットは，言語モデルによらず共通である．
+N-gram を使用する場合，辞書は N-gram にある単語エントリに対応する
+単語を指定する．文法の場合は，認識用文法の語彙ファイル (.voca) から
+コンパイラによって認識用辞書を生成して使用する．
+</para>
+
+<sect2><title>ファイル形式</title>
+<para>
+単語辞書ファイルのフォーマットは HTK の発音辞書を拡張したものである．一行
+に一つずつ，単語とその読みを定義する．各フィールドは空白またはタブで区
+切られる．以下に詳細を述べる．
+</para>
+<sect3><title>第1フィールド：言語エントリ（必須）</title>
+<para>
+第1フィールドでは，その単語が参照する構文制約（単語N-gramや文法）上の
+対応シンボル（言語エントリ）を書く．単語N-gramを用いる場合は N-gram 上
+の語彙の文字列．文法を用いる場合は，その単語が属する文法上のカテゴリ番
+号となる．
+</para>
+</sect3>
+<sect3><title>第2フィールド：エントリ内確率（オプション）</title>
+<para>
+単語N-gramの場合，`@' に続けて確率を常用対数(log10)で記述することで，
+言語エントリ内の生起確率を追加指定することができる．以下に例を示す．
+<informalexample>
+<programlisting>
+＜地名＞ @-2.33251 京都+52 [京都] ky o: t o
+＜地名＞ @-1.68893 奈良+52 [奈良] n a r a
+＜地名＞ @-2.63574 和歌山+52 [和歌山] w a k a y a m a
+</programlisting>
+</informalexample>
+この例では，各単語の出現確率は「＜地名＞」という単語のN-gram 上の出現
+確率（対数尤度）にエントリ内生起確率を足した値となる．
+</para>
+<para>
+Julius では，このように，N-gramとしてクラス単位のN-gram
+を与え，認識用辞書で，単語ごとにその属するクラスとクラス内確率を
+上記の要領で記述することで，クラスN-gramが実現できる．
+</para>
+</sect3>
+<sect3><title>第3フィールド：出力文字列（選択）</title>
+<para>
+認識結果として出力する文字列を指定する．値は `[' `]' で囲まれていなく
+てはならない．省略した場合は，第1フィールドの値がそのまま出力される．
+</para>
+<para>
+また特別なケースとして，`{' `}'で囲んだ場合はその単語は「透過語」とし
+て扱われる．透過語については単語N-gramの節を参照のこと．
+</para>
+</sect3>
+<sect3><title>以降：音素列</title>
+<para>
+以降は，その単語の読みとして，音素列を空白で区切って記述する．
+複数の読みを持つ場合は，同じ出力の異なる単語として登録する．
+</para>
+<para>
+以下に辞書エントリの例を示す．
+<informalexample>
+<programlisting>
+課税+1  [カゼイ]        k a z e i 
+課題+1  [カダイ]        k a d a i
+課長+1  [カチョウ]      k a ch o: 
+課長+1  [カチョウ]      k a ch o u 
+過ぎ+過ぎる+102 [スギ]  s u g i
+過ぎ+過ぎる+114 [スギ]  s u g i
+</programlisting>
+</informalexample>
+</para>
+</sect3>
+</sect2>
+<sect2><title>制約</title>
+<para>
+デフォルトの語彙数の上限は 65,534 語である．ただし，コンパイル時に
+<option>--enable-words-int</option>を指定することで，単語IDを
+32bit に拡張できる．この場合の上限は理論上 2^31 語となるが，
+メモリをより多く消費する．
+</para>
+</sect2>
+</sect1>
+
+
+<sect1><title>単語 N-gram </title>
+<para>
+統計言語モデルのひとつである単語 N-gram を用いた認識を行うことができる．
+N の長さは 10-gram までサポートする．使用するには，ARPA標準形式のN-gramを
+オプション <option>-nlr</option>, <option>-nrl</option> で指定するか，
+バイナリN-gramを <option>-d</option> で指定する．また単語辞書を 
+<option>-v</option> で指定する．
+</para>
+
+<sect2><title>前向き N-gram および後ろ向き N-gram</title>
+<para>
+Julius では，デコーディングの第1パスで前向き (left-to-right) の2-gramを
+用いた荒い認識処理を行い，第2パスで後ろ向き (right-to-left) のフルの
+N-gram を用いた詳細な認識を行う．このため，Julius では N-gram として前向きの 
+N-gram と後ろ向きの N-gram を与えることができる．
+</para>
+<para>
+前向きN-gram と後ろ向き N-gram の両方を与えた場合，第1パスで前向きの
+N-gram 内の 2-gram が，第2パスで後ろ向きの N-gram がそれぞれ適用される．
+</para>
+<para>
+どちらか片方のN-gramのみ指定された場合，その与えられたモデルと逆向きの
+探索パスでは，ベイズ則にしたがい算出し
+た逆向き確率が用いられる．具体的には，前向きN-gramのみを指定した場合，第
+1パスではその中の2-gramを用い，第2パスではそのN-gramをベイズ則にしたがっ
+て後向きの確率に変換した確率が用いられる．逆に，後ろ向きN-gramのみを指
+定した場合は，第1パスでは2-gramをベイズ則により前向き確率に変換した値を
+用い，第2パスでは後ろ向きN-gramをそのまま適用する．
+</para>
+<para>
+後ろ向きのN-gramは，学習コーパスの単語を逆順に並べ替えて学習することで
+得られる．前向きと同時に使用する場合，それらは同一の学習コーパスから
+学習されている必要があり，また語彙およびカットオフ値も同一の値で学習する
+必要がある．
+</para>
+</sect2>
+
+<sect2><title>ファイル形式と指定方法</title>
+<para>
+以下に読み込み可能なN-gramのファイル形式と指定方法を説明する．
+なお，認識用辞書もオプション <option>-v</option> で指定すること．
+ファイルは gzip で圧縮されたものもそのまま読み込める．
+</para>
+<sect3><title>ARPA標準形式</title>
+<para>
+ARPA標準形式 (ARPA standard format) の N-gram 定義ファイルを読み込むこ
+とができる．前向き N-gram はオプション <option>-nlr</option>，後向き 
+N-gram はオプション<option>-nrl</option> でそれぞれ与える．
+</para>
+<para>ARPA 標準形式の N-gram は，SRILM や CMU-Cam SLM Toolkit, palmkit 
+などで学習することができる．
+</para>
+<para>
+巨大な N-gram は読み込みに非常に時間がかかるので，次に説明するJulius
+バイナリ形式にあらかじめ変換しておくことが推奨される．
+</para>
+</sect3>
+<sect3><title>Julius バイナリ形式</title>
+<para>
+Julius では独自のバイナリ形式をサポートしている．読み込み時間が ARPA 
+標準形式に比べて大幅に短縮できる．ARPA 形式からの変換は，付属ツール
+<command>mkbingram</command> を用いる．前向き・後ろ向きのN-gramを同時
+に使用する場合は，ふたつをまとめて一つのバイナリ形式へ変換する．
+<informalexample>
+<synopsis>
+<prompt>%</prompt> <command>mkbingram</command> -nlr forward_2gram.arpa -nrl backward_Ngram.arpa out.bingram
+</synopsis>
+</informalexample>
+</para>
+<para>
+バイナリ形式の N-gram はオプション <option>-d</option> でJuliusに与える．
+</para>
+</sect3>
+</sect2>
+
+<sect2><title>制約</title>
+<para>
+デフォルトの語彙数の上限は 65,534 語である．ただし，コンパイル時に
+<option>--enable-words-int</option>を指定することで，単語IDを
+32bit に拡張できる．この場合の上限は理論上 2^31 語となるが，
+メモリを多く消費する．
+</para>
+<para>
+tuple 数の上限は，N-gram ごとに (2^32 - 1) 個である．
+</para>
+<para>
+Julius は，未知語エントリ（<literal>&lt;UNK></literal> 等）が，
+1-gramの最初のエントリとして定義されていることを仮定している(N-gram を CMU
+SLM ToolKit で作成した場合，仕様上常にこの条件は満たされる)．認識時に
+は，単語のエントリがN-gramの語彙にない辞書上の単語について，この未知語
+エントリの確率が補正されて割り当てられる．
+</para>
+</sect2>
+</sect1>
+
+<sect1><title>記述文法</title>
+<para>
+Julius は記述文法に基づく認識を行うことができる．
+<para>
+認識用文法は，ある対象タスクにおいて発話されうる文の構文および語彙を定
+義するものである．認識時には，文法上可能な文パターンのなかから，入力に
+マッチする文候補が選ばれ，最もマッチするものが認識結果として出力される．
+おもに特定タスク向けの，数百語程度の小語彙の認識でよく用いられる．
+</para>
+文法は，BNF形式に準じた独自のフォーマットで記述し，付属のコンパイラ
+<citerefentry><refentrytitle>mkdfa.pl</refentrytitle><manvolnum>1</manvolnum></citerefentry> 
+でオートマトンと辞書に変換してから Julius に与える．
+以下に詳細を述べる．
+</para>
+
+<sect2><title>フォーマット</title>
+<para>
+認識用文法は，
+<itemizedlist>
+<listitem><para>
+grammar ファイル：構文制約を単語のカテゴリを終端規則として記述する．
+</para></listitem>
+<listitem><para>
+voca ファイル：カテゴリごとに単語の表記と読み（音素列）を登録する．
+</para></listitem>
+</itemizedlist>
+それぞれの書き方を以下に説明する．なお，例としてここでは，『りんご３個です』『蜜柑8個をください』などの発話を受理する「果物注文システム」用の文法を考える．
+</para>
+
+<sect3><title>grammarファイル</title>
+<para>
+grammar ファイルでは，単語のカテゴリ間の構文制約（単語間の接続に関する
+制約）をBNF 風に記述する．"<literal>S</literal>" を開始記号として，1行
+につき1つの書き換え規則を記述する．具体的には，左辺に書き換え元のシン
+ボルを表記し， セミコロンで区切って右辺に書き換え後のシンボル列を列挙
+する．
+</para>
+<para>
+この grammar ファイルにおいて，終端記号，すなわち左辺に現れなかった
+シンボルが，voca ファイルにおける「単語カテゴリ」となる．
+各単語カテゴリに属する実際の単語は，voca ファイルで記述する．
+</para>
+<para>
+例として，前述の「果物注文システム」のための grammar ファイル
+<filename>fruit.grammar</filename> を以下に示す．
+<informalexample>
+<programlisting>
+S       :  NS_B FRUIT_N PLEASE NS_E
+# 果物名(+数量)
+FRUIT_N :  FRUIT
+FRUIT_N :  FRUIT NUM KO
+# ください/にしてください/です
+PLEASE  :  WO KUDASAI
+PLEASE  :  NISHITE KUDASAI
+PLEASE  :  DESU
+</programlisting>
+</informalexample>
+この例では，<literal>FRUIT</literal>，<literal>NUM</literal>，
+<literal>KO</literal>，<literal>WO</literal>，
+<literal>KUDASAI</literal>，<literal>NISHITE</literal>，
+<literal>DESU</literal>，が終端記号，すなわち単語カテゴリとなり，
+これらに属する単語を voca ファイルで定義することになる．
+</para>
+<para>
+以下は grammar ファイルの記述に関する注意点である．
+<itemizedlist>
+<listitem><para>
+"<literal>#</literal>" で始まる行はコメント行で，任意のコメントを書くことができます．
+</para></listitem>
+<listitem><para>
+英数字とアンダースコアが使用できる．大文字・小文字は区別される．
+</para></listitem>
+<listitem><para>
+"<literal>NS_B</literal>" と "<literal>NS_E</literal>" はそれぞれ文頭および文末の「無音区間」に対応する単語カテゴリである．文の最初と最後に必ず挿入すること．
+</para></listitem>
+</itemizedlist>
+なお，形式上は CFG のクラスまで記述可能だが，Julius はオートマトン（正
+規文法）のクラスまでしか扱えない．この制限はコンパイル時に自動チェック
+され，オートマトンのクラスで扱えない場合はエラーとなる．
+</para>
+<para>
+また，再帰性は左再帰性のみ扱える．1回以上の繰り返しを許す文法を書く場合，
+以下のように記述する．
+<informalexample>
+<programlisting>
+WORD_LOOP: WORD_LOOP WORD
+WORD_LOOP: WORD
+</programlisting>
+</informalexample>
+</para>
+</sect3>
+
+<sect3><title>vocaファイル</title>
+<para>
+voca ファイルでは，grammar ファイルで記述した終端記号（＝単語カテゴリ）
+ごとに単語を登録する．1行に1単語ずつ，その単語の表記と発音音素列を記述する．
+以下に，前述の <filename>fruit.grammar</filename> に対応する voca ファイル 
+<filename>fruit.voca</filename> を示す．
+<informalexample>
+<programlisting>
+% FRUIT
+蜜柑           m i k a N
+リンゴ         r i N g o
+ぶどう         b u d o:
+% NUM
+0         z e r o
+1         i ch i
+2         n i:
+3         s a N
+4         y o N
+5         g o:
+6         r o k u
+7         n a n a
+7         sh i ch i
+8         h a ch i
+9         ky u:
+% KO
+個             k o
+% WO
+を             o
+% KUDASAI
+ください       k u d a s a i
+% NISHITE
+にして         n i sh i t e
+% DESU
+です           d e s u
+% NS_B
+&lt;s>            silB
+% NS_E
+&lt;/s>           silE
+</programlisting>
+</informalexample>
+行頭が "<literal>%</literal>" で始まる行はカテゴリの定義である．
+定義するカテゴリは対応する grammar ファイルと
+一対一の対応がとれている必要がある．
+<literal>NS_B</literal>，<literal>NS_E</literal>には，
+それぞれ文頭・文末の無音に対応する
+無音音響モデル（Julius の標準音響モデルでは "<literal>silB</literal>",
+"<literal>silE</literal>"）を割り当てる．
+</para>
+</sect3>
+</sect2>
+
+<sect2><title>コンパイルおよびチェックの方法</title>
+<para>
+grammar ファイルと voca ファイルは，付属のコンパイラ 
+<command>mkdfa.pl</command> を用いて Julius の形式へ変換する．
+<filename>fruit.grammar</filename>, <filename>fruit.voca</filename>" に
+対する <command>mkdfa.pl</command> の実行例を以下に示す．
+<screen>
+<prompt>%</prompt> <command>mkdfa.pl <replaceable>fruit</replaceable></command>
+fruit.grammar has 6 rules
+fruit.voca    has 9 categories and 20 words
+---
+Now parsing grammar file
+Now modifying grammar to minimize states[0]
+Now parsing vocabulary file
+Now making nondeterministic finite automaton[8/8]
+Now making deterministic finite automaton[8/8]
+Now making triplet list[8/8]
+---
+-rw-r--r--    1 foo      users         112 May  9 21:31 fruit.dfa
+-rw-r--r--    1 foo      users         351 May  9 21:31 fruit.dict
+-rw-r--r--    1 foo      users          65 May  9 21:31 fruit.term
+</screen>
+</para>
+<para>
+作成した文法がどの程度正しく作れているかをチェックする方法の一つとして，
+作成した文法にしたがって文をランダムに生成するツール 
+"<command>generate</command>" が提供されている．これを用いることで，意
+図に反するような文章が生成されないか，あるいは認識して欲しい文章がきち
+んと出力されるかどうかチェックできる．
+以下は，"<filename>fruit.dfa</filename>",
+"<filename>fruit.dict</filename>" からの生成例です．
+<screen>
+<prompt>%</prompt> <command>generate <replaceable>fruit</replaceable></command>
+Reading in dictionary...13 words...done
+Reading in DFA grammar...done
+Mapping dict item &lt;-> DFA terminal (category)...done
+Reading in term file (optional)...done
+9 categories, 13 words
+DFA has 8 nodes and 10 arcs
+----- 
+ &lt;s> 蜜柑 1 個 です &lt;/s>
+ &lt;s> リンゴ 9 個 です &lt;/s>
+ &lt;s> ぶどう 9 個 です &lt;/s>
+ &lt;s> リンゴ です &lt;/s>
+ &lt;s> ぶどう 4 個 です &lt;/s>
+ &lt;s> ぶどう にして ください &lt;/s>
+ &lt;s> ぶどう です &lt;/s>
+ &lt;s> 蜜柑 9 個 です &lt;/s>
+ &lt;s> 蜜柑 です &lt;/s>
+ &lt;s> 蜜柑 を ください &lt;/s>
+</screen>
+</para>
+
+</sect2>
+
+<sect2><title>Julius への文法指定方法</title>
+<para>
+Julius に文法ファイル (.dfa, .dict) を与えるには，以下のように
+オプション <option>-gram</option> を使用する．
+<informalexample>
+<synopsis>
+<prompt>%</prompt> <command>julius</command> ... -gram <replaceable>basename</replaceable>
+</synopsis>
+</informalexample>
+<literal>basename</literal>には，.dfa および .dict ファイルの共通のプ
+レフィックスを指定する．例えば，"<filename>foo.dfa</filename>" と 
+"<filename>foo.dict</filename>" がカレントディレクトリにある場合，
+"<literal>foo</literal>" のように指定する．また，以下のように個別に指
+定することもできる．これは旧バージョンでの指定方法である．
+<informalexample>
+<synopsis>
+<prompt>%</prompt> <command>julius</command> ... -dfa <replaceable>foo.dfa</replaceable> -v <replaceable>foo.dict</replaceable>
+</synopsis>
+</informalexample>
+</para>
+</sect2>
+<sect2><title>複数の文法を使用するには</title>
+<para>
+Julius では，一つの言語モデルインスタンス内に複数の文法を使用できる．
+複数の文法が与えられたとき，Julius はそれらを並列に結合した文法を内部
+で生成し，それに基づいて認識を行い，文法全体で最も尤度の高い結果を出力
+する．
+</para>
+<para>
+複数の文法を指定するには，オプション<option>-gram</option> において
+コンマ区切りで複数の文法を指定する．
+<informalexample>
+<synopsis>
+<prompt>%</prompt> <command>julius</command> ... -gram <replaceable>base1,base2,base3</replaceable>
+</synopsis>
+</informalexample>
+あるいは，<option>-gram</option> を複数回に分けて指定することもできる．
+複数回指定した場合は，その全てが読み込まれる．
+<informalexample>
+<synopsis>
+<prompt>%</prompt> <command>julius</command> ... -gram <replaceable>base1</replaceable> -gram <replaceable>base2</replaceable> -gram <replaceable>base2</replaceable>
+</synopsis>
+</informalexample>
+また，文法のリストをファイルに記述しておき，それを与えることもできる．
+<informalexample>
+<synopsis>
+<prompt>%</prompt> <command>julius</command> ... -gramlist <replaceable>gramlistfile</replaceable>
+</synopsis>
+</informalexample>
+<replaceable>gramlistfile</replaceable> 内では一行に１つずつ文法のプレフィックスを
+指定する．プレフィックスは，その <replaceable>gramlistfile</replaceable> の
+ある場所からの相対パスで記述する（実行時のカレントディレクトリではない
+ことに注意）．また '<literal>#</literal>' 以降行末までは
+コメントとして無視される．
+</para>
+<para>
+この <option>-gramlist</option> についても，複数回指定したり，
+<option>-gram</option> と同時に指定した場合，その全てが読み込まれる．
+</para>
+<para>
+既に読み込まれている文法のリストをキャンセルしたい場合は，
+<option>-nogram</option>オプションを使用する．このオプションを指定する
+と，それ以前に <option>-gram</option> や <option>-gramlist</option>, 
+<option>-dfa</option>, <option>-dict</option> で指定されていた文法は
+すべて破棄される．
+</para>
+</sect2>
+
+<sect2><title>無音の扱い</title>
+<para>
+ある程度の長さの文章を発声しようとするとき，多くの場合，途中で息継ぎな
+どによる短時間の「発声の休止」が起こる．Julius では，こうした発声休止
+の出現しうる場所を文法上で指定することで，この発声休止を考慮した認識を
+行うことができる．
+</para>
+<para>
+Julius で発声の休止位置を記述するには，まず grammarファイルで，休止の
+出現しうる単語間にカテゴリ名「<literal>NOISE</literal>」を挿入する．さ
+らに，vocaファイルでこの「<literal>NOISE</literal>」カテゴリに，無音の
+音響モデル（標準モデルでは "<literal>sp</literal>"）を読みとする単語を
+定義する．
+</para>
+<para>
+以下に fruit での例を示す．休止が入りうる場所に入れていくのがよい．
+<informalexample>
+<programlisting>
+# fruit.grammar (NOISE対応版)
+S       :  NS_B FRUIT_N NOISE PLEASE NS_E
+# 果物名(+数量)
+FRUIT_N :  FRUIT
+FRUIT_N :  FRUIT NUM KO
+# ください/にしてください/です
+PLEASE  :  WO NOISE KUDASAI
+PLEASE  :  NISHITE KUDASAI
+PLEASE  :  DESU
+</programlisting>
+</informalexample>
+これに対応する <filename>fruit.voca</filename> では，以下の2行を追加する．
+第1欄は無音が挿入されたときに出力される文字列であり，何を指定してもよい．
+<informalexample>
+<programlisting>
+% NOISE
+&lt;sp>	sp
+</programlisting>
+</informalexample>
+</para>
+<para>
+認識処理において，入力発話に実際には休止が無い場合，
+この NOISE 単語はスキップされる．
+</para>
+<para>
+なお，無音を表す無音音響モデルの名前のデフォルトは 
+<literal>sp</literal> である．この名前はオプション 
+<option>-spmodel</option> で変更できる．
+</para>
+</sect2>
+
+</sect1>
+
+
+<sect1><title>単語リスト（孤立単語認識）</title>
+<para>
+Juliusは，音声コマンドや音声リモコンのような，より単純で簡単な
+音声認識を手軽に実現できるよう，単語リストのみで実行できる
+孤立単語認識を行える．
+</para>
+<para>
+孤立単語認識を行う場合は，単語リストとして
+単語辞書のみを <option>-w</option> で指定する．
+なお，文法と同様に複数の辞書を用いたり，個々の辞書を動的に有効
+化・無効化することができる．複数の辞書を指定するには，上記のオプション
+を繰り返し指定するか，使用したい辞書のリストが入ったファイルを
+<option>-wlist</option>で指定する．
+</para>
+<para>
+Julius は，孤立単語認識のとき，入力発声の始終端の無音部分に対応するよう，
+無音モデルを各単語の前後に付加して認識を行う．具体的には，
+各単語の先頭に <literal>silB</literal>, 末尾に <literal>silE</literal>
+が自動的につけられる．なお，この値は以下のように
+オプション <option>-wsil</option> で変更できる．
+<informalexample>
+<synopsis>
+<prompt>%</prompt> <command>julius</command> ... -wsil <replaceable>head_sil_model_name</replaceable> <replaceable>tail_sil_model_name</replaceable> <replaceable>sil_context_name</replaceable>
+</synopsis>
+</informalexample>
+<replaceable>head_sil_model_name</replaceable>，
+<replaceable>tail_sil_model_name</replaceable>は
+それぞれ先頭・末尾に付加される音響モデルの名前である．
+また，<replaceable>sil_context_name</replaceable>に <literal>NULL</literal>
+以外を指定することで，トライフォン使用時のこれらの無音モデルの
+コンテキスト上の名前を指定できる．
+例えば，<literal>-wsil silB silE sp</literal>と指定した場合，
+<literal>i m a</literal>という単語は<literal>silB sp-i+m i-m+a
+m-a+sp silE</literal>として照合される．
+</para>
+</sect1>
+
+<sect1><title>ユーザ定義関数による言語制約拡張</title>
+<para>
+  Julius はアプリ上で定義した単語出現確率の計算関数を与えることで，ユー
+  ザが定義した任意の言語制約を使って認識を行うことができる．この場合，
+  まずアプリ内であらかじめ指定された型の関数を定義し，それらを 
+  JuliusLib に対して，モデルの初期化前に引きわたしておく．そして，実行
+  時には単語辞書を <option>-v</option> で指定し，さらにオプション
+  <option>-userlm</option>を指定する．なお，同時に<option>-d</option>
+  等で単語N-gramを与えることで，ユーザの計算関数への引数として単語N-gram
+  の確率を提供することも可能である．
+</para>
+</sect1>
+
+<sect1><title>無音部分の扱いについて</title>
+<para>
+  Juliusは単語N-gram使用時，音声入力の両端に音声の含まれない無音区間が
+  存在するという前提のもと，各無音区間に対応する辞書中の単語エントリ
+  「無音単語」を仮説の両端点として固定して用いる．この始端・終端の無音単語
+  はオプション<option>-silhead</option>, <option>-siltail</option>で
+  指定する．デフォルトはそれぞれ "&lt;s&gt;", "&lt;/s&gt;" である．
+</para>
+<para>
+  単語間のポーズに対応する単語を辞書に追加できる．単語間のポーズを言語
+  モデル上でモデル化しておらず，辞書にもそれに対応するエントリが存在し
+  ない場合，このオプションを指定することで認識率が改善されることがある．
+  追加する場合は<option>-iwspword</option>を指定する．また，
+  追加される単語の内容はオプション<option>-iwspentry</option>で変更で
+  きる．
+</para>
+</sect1>
+
+</chapter>

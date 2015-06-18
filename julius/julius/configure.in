@@ -1,0 +1,357 @@
+dnl Copyright (c) 1991-2006 Kawahara Lab., Kyoto University
+dnl Copyright (c) 1997-2000 Information-technology Promotion Agency, Japan
+dnl Copyright (c) 2000-2005 Shikano Lab., Nara Institute of Science and Technology
+dnl Copyright (c) 2005-2006 Julius project team, Nagoya Institute of Technology
+dnl All rights reserved
+dnl
+dnl $Id: configure.in,v 1.8 2006/12/26 03:16:51 sumomo Exp $
+dnl
+
+AC_INIT(search_bestfirst_main.c)
+AC_CONFIG_HEADER(config.h)
+AC_CONFIG_AUX_DIR(../support)
+
+VERSION=3.5.3
+
+dnl Checks for options
+
+dnl easy setup
+AC_ARG_ENABLE(setup,
+[  --enable-setup=...         select algorithm set
+                 standard       high accuracy, slow speed
+                 fast           balanced for both speed and accuracy (default)
+                 v2.1           backward compatible with Rev.2.1],
+easy_setup=$enableval,
+easy_setup=fast
+)
+dnl expand easy setup
+if test "$easy_setup" = standard; then
+dnl JULIUS related begin
+    dnl AC_DEFINE(UNIGRAM_FACTORING)
+    want_unigram_factoring=yes
+dnl JULIUS related end
+    dnl AC_DEFINE(PASS1_IWCD)
+    want_pass1_iwcd=yes
+    dnl AC_DEFINE(PASS2_STRICT_IWCD)
+    want_pass2_strict_iwcd=yes
+    dnl AC_DEFINE(GPRUNE_DEFAULT_SAFE)
+    want_gprune_default=safe
+elif test "$easy_setup" = fast; then
+dnl JULIUS related begin
+    dnl AC_DEFINE(UNIGRAM_FACTORING)
+    want_unigram_factoring=yes
+    dnl AC_DEFINE(LOWMEM2)
+    want_lowmem2=yes
+dnl JULIUS related end
+    dnl AC_DEFINE(PASS1_IWCD)
+    want_pass1_iwcd=yes
+    dnl AC_DEFINE(GPRUNE_DEFAULT_BEAM)
+    want_gprune_default=beam
+elif test "$easy_setup" = v2.1; then
+    dnl AC_DEFINE(GPRUNE_DEFAULT_SAFE)
+    want_gprune_default=safe
+fi
+
+dnl multipath version
+AC_ARG_ENABLE(multipath,
+[  --enable-multipath         compile as multipath version],
+want_multipath=$enableval
+,want_multipath=no)
+
+dnl JULIUS related begin
+
+dnl enable 1-gram factoring
+AC_ARG_ENABLE(factor1,
+[  --enable-factor1           use 1-gram factoring on 1st pass],
+   dnl AC_DEFINE(UNIGRAM_FACTORING)
+   want_unigram_factoring=$enableval)
+AC_ARG_ENABLE(factor2,
+[  --enable-factor2           use 2-gram factoring on 1st pass],
+if test "$enableval" = yes; then
+   want_unigram_factoring=no
+else
+   want_unigram_factoring=yes
+fi)
+
+dnl no linear tree separation
+AC_ARG_ENABLE(lowmem,
+[  --enable-lowmem            all words share a single root on lexicon tree],
+if test "$enableval" = yes; then
+	AC_DEFINE(LOWMEM)
+fi)
+
+dnl linear tree separation for hi-freq words
+AC_ARG_ENABLE(lowmem2,
+[  --enable-lowmem2           separate hi-freq words from lexicon tree],
+   dnl AC_DEFINE(LOWMEM2)
+   want_lowmem2=$enableval)
+
+dnl JULIUS related end
+
+dnl use monophone tree on 1st pass
+AC_ARG_ENABLE(monotree,
+[  --enable-monotree          monophone lexicon on 1st pass (EXPERIMENTAL)],
+if test "$enableval" = yes; then
+	AC_DEFINE(MONOTREE)
+fi)
+
+dnl enable score envelope beaming on 2nd pass forward scan
+AC_ARG_ENABLE(score-beam,
+[  --disable-score-beam       enable score envelope beaming on 2nd pass scan],
+if test "$enableval" = yes; then
+	AC_DEFINE(SCAN_BEAM)
+fi
+,AC_DEFINE(SCAN_BEAM))
+
+dnl enable inter-word context dependency handling on 1st pass
+AC_ARG_ENABLE(iwcd1,
+[  --enable-iwcd1             handle inter-word triphone on 1st pass],
+   dnl AC_DEFINE(PASS1_IWCD)
+   want_pass1_iwcd=$enableval)
+
+dnl enable strict inter-word context handling on 2nd pass (slow)
+AC_ARG_ENABLE(strict-iwcd2,
+[  --enable-strict-iwcd2      strict IWCD scoring on 2nd pass],
+   dnl AC_DEFINE(PASS2_STRICT_IWCD)
+   want_pass2_strict_iwcd=$enableval)
+
+dnl use word-pair approximation on 1st pass
+AC_ARG_ENABLE(wpair,
+[  --enable-wpair             use word-pair approximation on 1st pass],
+if test "$enableval" = yes; then
+	AC_DEFINE(WPAIR)
+fi)
+
+dnl use N-best approximation
+AC_ARG_ENABLE(wpair-nlimit,
+[  --enable-wpair-nlimit      keep only N-best path with wpair (-nlimit)],
+if test "$enableval" = yes; then
+	AC_DEFINE(WPAIR)
+	AC_DEFINE(WPAIR_KEEP_NLIMIT)
+fi)
+
+dnl output word graph on 1st pass (default: trellis)
+AC_ARG_ENABLE(word-graph,
+[  --enable-word-graph        use word graph instead of trellis between passes],
+if test "$enableval" = yes; then
+	AC_DEFINE(WORD_GRAPH)
+fi)
+
+dnl enable short pause segmentation for successive decoding
+AC_ARG_ENABLE(sp-segment,
+[  --enable-sp-segment        enable progressive decoding with short pause segmentation],
+if test "$enableval" = yes; then
+	AC_DEFINE(SP_BREAK_CURRENT_FRAME)
+fi)
+
+dnl disable confidence measure computation
+AC_ARG_ENABLE(cm,
+[  --disable-cm               disable confidence measure computation],
+use_cm=$enableval
+,use_cm=yes)
+dnl use confidence measure based on N-best candidate
+AC_ARG_ENABLE(cm-nbest,
+[  --enable-cm-nbest          use N-best CM instead of search CM],
+use_cm_nbest=$enableval
+,use_cm_nbest=no)
+dnl for exprtiment: confidence measure output for multiple alphas
+AC_ARG_ENABLE(cm-multiple-alpha,
+[  --enable-cm-multiple-alpha  EXPERIMENTAL: test multi alphas (need much mem)],
+use_cm_multiple_alpha=$enableval
+,use_cm_multiple_alpha=no)
+# visualization (use GTK)
+AC_ARG_ENABLE(visualize,
+[  --enable-visualize         enable search space visualization on X11 and GTK],
+if test "$enableval" = yes; then
+	want_gtk=yes
+fi
+,want_gtk=no)
+# disable lmfix
+AC_ARG_ENABLE(lmfix,
+[  --disable-lmfix	      make LM computing compatible with < 3.4],
+if test "$enableval" = yes; then
+	AC_DEFINE(LM_FIX_DOUBLE_SCORING)
+fi
+,AC_DEFINE(LM_FIX_DOUBLE_SCORING))
+
+# enable word graph output
+AC_ARG_ENABLE(graphout,
+[  --enable-graphout	      word graph output (modified stack decoding)],
+if test "$enableval" = yes; then
+	AC_DEFINE(GRAPHOUT)
+	AC_DEFINE(GRAPHOUT_DYNAMIC)
+	AC_DEFINE(GRAPHOUT_SEARCH)
+fi)
+# enable word graph output from N-best sentences
+AC_ARG_ENABLE(graphout-nbest,
+[  --enable-graphout-nbest    word graph output from N-best sentence],
+if test "$enableval" = yes; then
+	AC_DEFINE(GRAPHOUT)
+fi)
+# enable pruning by confidence score on 2nd pass
+AC_ARG_ENABLE(cmthres,
+[  --enable-cmthres           enable confidence score based pruning on 2nd pass],
+use_cmthres=$enableval
+,use_cmthres=no)
+
+dnl CM options check
+if test "$use_cm" = yes; then
+  AC_DEFINE(CONFIDENCE_MEASURE)
+fi
+if test "$use_cm_nbest" = yes; then
+  if test "$use_cm" = yes; then
+    AC_DEFINE(CM_NBEST)
+  else 
+    AC_MSG_ERROR([--disable-cm and --enable-cm-nbest conflicts])
+  fi
+fi
+if test "$use_cm_multiple_alpha" = yes; then
+  if test "$use_cm" = yes; then
+    AC_DEFINE(CM_MULTIPLE_ALPHA)
+  else
+    AC_MSG_ERROR([--disable-cm and --enable-cm-multiple-alpha conflicts])
+  fi
+fi
+if test "$use_cmthres" = yes; then
+  if test "$use_cm" = yes; then
+    if test "$use_cm_nbest" = yes; then
+      AC_MSG_ERROR([--enable-cmthres cannot be used with --enable-cm-nbest])
+    elif test "$use_cm_multiple_alpha" = yes; then
+      AC_MSG_ERROR([--enable-cmthres cannot be used with --enable-cm-multiple-alpha])
+    else
+      AC_DEFINE(CM_SEARCH_LIMIT)
+    fi
+  else
+    AC_MSG_ERROR([--disable-cm and --enable-cmthres conflicts])
+  fi
+fi
+
+
+dnl final definition based on easy setup and separate option
+if test ! -z "$want_unigram_factoring"; then
+   if test "$want_unigram_factoring" = yes; then
+      AC_DEFINE(UNIGRAM_FACTORING)
+   fi
+fi
+if test ! -z "$want_pass1_iwcd"; then
+   if test "$want_pass1_iwcd" = yes; then
+      AC_DEFINE(PASS1_IWCD)
+   fi
+fi
+if test ! -z "$want_pass2_strict_iwcd"; then
+   if test "$want_pass2_strict_iwcd" = yes; then
+      AC_DEFINE(PASS2_STRICT_IWCD)
+   fi
+fi
+if test ! -z "$want_lowmem2"; then
+   if test "$want_lowmem2" = yes; then
+      AC_DEFINE(LOWMEM2)
+   fi
+fi
+if test "$want_gprune_default" = safe; then
+   AC_DEFINE(GPRUNE_DEFAULT_SAFE)
+elif test "$want_gprune_default" = beam; then
+   AC_DEFINE(GPRUNE_DEFAULT_BEAM)
+fi
+
+dnl multipath version
+if test "$want_multipath" = yes; then
+	AC_DEFINE(MULTIPATH_VERSION)
+	VERSION="${VERSION}-multipath"
+fi
+
+dnl JULIAN related begin
+dnl JULIUS related begin
+AC_ARG_ENABLE(julian,
+[  --enable-julian            compile as Julian],
+dnl JULIUS related end
+	EXECNAME=julian
+	PRODUCTNAME=Julian
+	AC_DEFINE(USE_DFA)
+dnl JULIUS related begin
+	,
+dnl JULIAN related end
+	EXECNAME=julius
+	PRODUCTNAME=Julius
+dnl JULIAN related begin
+	)
+dnl JULIAN related end
+dnl JULIUS related end
+
+dnl -------------------------------------------------------------------
+
+dnl Checks for system.
+AC_CANONICAL_HOST
+
+dnl Checks for optimization flag
+AC_MSG_CHECKING([host-specific optimization flag])
+if test -z "$CFLAGS" ; then
+    OPTFLAG=../support/cflags.${host_cpu}-${host_vendor}-${host_os}
+    if test -f "$OPTFLAG" ; then
+	. $OPTFLAG
+	AC_MSG_RESULT([$OPTFLAG])
+    else
+	AC_MSG_RESULT([no])
+    fi
+else
+    AC_MSG_RESULT([skipped])
+fi
+
+dnl Checks for compiler.
+AC_PROG_CC
+AC_PROG_CPP
+
+dnl Checks for programs.
+AC_PROG_INSTALL
+AC_PATH_PROG(RM, rm)
+
+dnl Checks for libraries.
+dnl add '-lLIBRARY' to LIBS and define 'HAVE_LIBLIBRARY'
+dnl AC_CHECK_LIB(m, log10)
+
+dnl Check for HTK and define GTK_CFLAGS and GTK_LIBS
+if test "$want_gtk" = yes; then
+   AC_DEFINE(VISUALIZE)
+   AM_PATH_GTK(,,AC_MSG_ERROR([gtk not found for visualization]))
+   AC_MSG_CHECKING(for playing capability)
+   case "$host_os" in
+   linux*)
+	AC_MSG_RESULT([yes])
+	AC_DEFINE(PLAYCOMMAND, ["sox -r %d -c 1 -s -w -t .raw -x %s -t ossdsp /dev/dsp"])
+	;;
+   solaris2*)
+	AC_MSG_RESULT([yes])
+	AC_DEFINE(PLAYCOMMAND, ["sox -r %d -c 1 -s -w -t .raw %s -t sunau /dev/audio"])
+	;;
+   *)
+	AC_MSG_RESULT([no])
+   esac
+fi
+
+dnl Checks for header files.
+AC_HEADER_STDC
+dnl AC_CHECK_HEADERS(fcntl.h strings.h sys/file.h sys/ioctl.h unistd.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+dnl AC_TYPE_SIZE_T
+
+dnl Checks for library functions.
+dnl AC_PROG_GCC_TRADITIONAL
+AC_TYPE_SIGNAL
+dnl AC_CHECK_FUNCS(strdup strstr)
+dnl AC_CHECK_FUNC(gethostbyname,,AC_CHECK_LIB(nsl,gethostbyname))
+dnl AC_CHECK_FUNC(connect,,AC_CHECK_LIB(socket, connect))
+
+dnl write names
+AC_DEFINE_UNQUOTED(EXECNAME, "$EXECNAME")
+AC_DEFINE_UNQUOTED(PRODUCTNAME, "$PRODUCTNAME")
+AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
+AC_DEFINE_UNQUOTED(SETUP, "$easy_setup")
+AC_DEFINE_UNQUOTED(HOSTINFO, "$host")
+AC_SUBST(EXECNAME)
+AC_SUBST(PRODUCTNAME)
+AC_SUBST(VERSION)
+AC_SUBST(easy_setup)
+
+AC_OUTPUT(Makefile version.c)

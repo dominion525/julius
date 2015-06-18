@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<chapter id='desc_module'>
+<title>
+  モジュールモード
+</title>
+
+<para>
+サーバーモジュールモードこのモードで起動した Julius は，TCP/IP 経由で
+接続要求してきたクライアントプロセスと通信を確立する．クライアントから
+は認識の実行や結果・イベントの送信，クライアントからの動作制御などが行
+える．
+</para>
+
+</chapter>

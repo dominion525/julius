@@ -1,0 +1,97 @@
+# Copyright (c) 1991-2006 Kawahara Lab., Kyoto University
+# Copyright (c) 1997-2000 Information-technology Promotion Agency, Japan
+# Copyright (c) 2000-2005 Shikano Lab., Nara Institute of Science and Technology
+# Copyright (c) 2005-2006 Julius project team, Nagoya Institute of Technology
+# All rights reserved
+
+#
+# $Id: Makefile.in,v 1.4 2006/11/10 02:27:42 sumomo Exp $
+#
+SHELL=/bin/sh
+.SUFFIXES:
+.SUFFIXES: .c .o
+.c.o:
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
+
+LIBSENT=../libsent
+CC=@CC@
+CFLAGS=@CFLAGS@
+CPPFLAGS=-I. -I$(LIBSENT)/include @CPPFLAGS@ @DEFS@ `$(LIBSENT)/libsent-config --cflags`
+LDFLAGS=@LDFLAGS@ -L$(LIBSENT) -lsent @LIBS@ `$(LIBSENT)/libsent-config --libs` -lm 
+GTK_CFLAGS=@GTK_CFLAGS@
+GTK_LIBS=@GTK_LIBS@
+RM=@RM@ -f
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+INSTALL=@INSTALL@
+
+############################################################
+
+TARGET = @EXECNAME@
+INSTALLTARGET = @EXECNAME@
+
+OBJSENT = main.o m_usage.o m_options.o m_jconf.o m_chkparam.o m_info.o \
+	  m_bootup.o m_adin.o m_fusion.o \
+	  wchmm.o wchmm_check.o factoring_sub.o \
+	  beam.o outprob_style.o realtime-1stpass.o backtrellis.o \
+	  search_bestfirst_main.o search_bestfirst_v1.o search_bestfirst_v2.o \
+	  ngram_decode.o dfa_decode.o word_align.o \
+	  wav2mfcc.o hmm_check.o \
+	  result_tty.o result_msock.o \
+	  module.o multi-gram.o record.o \
+	  visual.o graphout.o gmm.o
+
+############################################################
+
+all: $(TARGET)
+
+$(TARGET): $(LIBSENT)/libsent.a $(OBJSENT) version.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $(OBJSENT) version.c $(LDFLAGS) $(GTK_LIBS)
+
+visual.o: visual.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(GTK_CFLAGS) -o $@ -c $<
+
+############################################################
+
+install: install.bin install.man
+
+install.bin: $(TARGET)
+	${INSTALL} -d @bindir@
+	@INSTALL_PROGRAM@ $(TARGET) @bindir@/${INSTALLTARGET}
+
+install.man:
+	${INSTALL} -d @mandir@/man1
+	@INSTALL_DATA@ $(TARGET).man @mandir@/man1/$(TARGET).1
+
+install.man.ja:
+	${INSTALL} -d @mandir@/man1
+	@INSTALL_DATA@ $(TARGET).man.ja @mandir@/man1/$(TARGET).1
+
+depend:
+	makedepend -- $(CFLAGS) -- $(OBJSENT)
+
+smallclean:
+	$(RM) *.o
+
+clean:
+	$(RM) *.o *.bak *~ core TAGS
+	$(RM) config.log config.cache
+
+distclean:
+	$(RM) *.o version.c *.bak *~ core TAGS
+	$(RM) config.log config.cache
+	$(RM) config.status config.h
+	$(RM) $(TARGET) $(INSTALLTARGET)
+	$(RM) Makefile testsuite/Makefile
+
+############################################################
+configure:
+	autoconf
+	$(RM) config.h.in
+	autoheader
+
+doxygen:
+	echo "PROJECT_NAME=@PRODUCTNAME@" >> ../support/doxygen.conf.en
+	echo "PROJECT_NAME=@PRODUCTNAME@" >> ../support/doxygen.conf.ja
+	echo "PROJECT_NUMBER=@VERSION@" >> ../support/doxygen.conf.en
+	echo "PROJECT_NUMBER=@VERSION@" >> ../support/doxygen.conf.ja

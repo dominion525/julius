@@ -1,0 +1,92 @@
+/* $Id: docstyle.css,v 1.1.1.1 2007/01/10 08:01:57 kudravka_ Exp $ */
+BODY{
+  background-color : #FFFFFF;
+  color : black;
+  margin-top : 3px;
+  margin-left : 3px;
+  margin-right : 3px;
+  margin-bottom : 3px;
+  border-style : none none none none;
+  width : auto;
+  height : auto;
+  list-style-type : disc;
+  list-style-position : outside;
+  border-width : 0px 0px 0px 0px;
+  padding-top : 5px;
+  padding-left : 5px;
+  padding-right : 5px;
+  padding-bottom : 5px;
+  top : 10px;
+  left : 10px;
+  
+  scrollbar-Track-Color:#aaaaaa;
+  scrollbar-Face-Color:#eeeeee;
+  scrollbar-Shadow-Color:#cccccc;
+  scrollbar-DarkShadow-Color:#000000;
+  scrollbar-Highlight-Color:#cccccc;
+  scrollbar-3dLight-Color:#cccccc;
+  scrollbar-Arrow-Color:#000000;
+  background-attachment : fixed;
+}
+A {
+  text-decoration : underline;
+}
+A:LINK{
+  color : navy;
+}
+A:VISITED{
+  color : navy;
+}
+A:Active {
+  color : gray;
+}
+A:HOVER{
+  color : blueviolet;
+  background-color : thistle;
+  text-decoration : underline overline;
+	top: 1px;
+	left: 1px;
+}
+H2 {
+        color: #333333;
+        border-width: 0pt 0pt 3pt 10pt;
+        border-color: #444444;
+        border-style: solid;
+        text-indent: 10pt;
+}
+H3 {
+        margin-top: 1.5em;
+        border-width: 0pt 0pt 2pt 0pt;
+        border-color: #444444;
+        border-style: solid;
+}
+code {
+        font-family: courier, monospace;
+        color: #770000;
+}
+pre {
+        color: #770000;
+        background: #eeeecc;
+        border-width: 0pt 1pt;
+        border-color: gray;
+        border-style: solid;
+        font-family: courier, monospace;
+	font-size: small;
+        padding: 0.5em;
+}
+pre.normal {
+	color: black;
+	background: #fffff8;
+	font-size: small;
+	border-width: 0pt;
+}
+div.bib {
+        color: #333333;
+        background: #dddddd;
+        border-width: 1pt 1pt;
+        border-color: gray;
+        border-style: solid;
+	font-size: small;
+        padding: 0.5em;
+        font-family: 'Times New Roman', courier, monospace;
+}

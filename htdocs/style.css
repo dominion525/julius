@@ -1,0 +1,367 @@
+/* ######### Main ######### */
+
+body{
+	font: normal 90% Verdana, Helvetica, sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: white;
+}
+
+a:link    { color: #003399; }
+a:visited { color: #330099; }  
+a:active  { color: #990033; }
+
+
+.submitform p{
+	margin: 10px 0;
+}
+
+.maincontainer{
+	width: 1024px;
+	padding-left: 5px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: white;
+}
+
+* html #.maincontainer{ /*IE only */
+       width: 1024px; /*IE 5*/
+       width: 1024px; /*IE 6*/
+}
+
+
+.header{
+	font-size: 120%;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+/* ######### Top Section ######### */
+
+#topbar{
+	background-color: black;
+	color: black;
+	background: #ecf0fc url(graphics/topbar.png) top left repeat-x;
+}
+
+#logodiv{
+	width: 350px;
+	height: 120px;
+}
+
+#logodiv img{
+	 padding: 10px;
+}
+
+#toprightdiv{
+	width: 350px;
+	font: bold 11px arial, sans-serif;
+	float: right;
+	text-align: right;
+	margin: 10px 8px 0 0;
+}
+
+
+#toprightdiv a{
+	     text-decoration: none;
+	     color: navy;
+	     margin-right: 5px;
+	     margin-left: 5px;
+	     letter-spacing: 0.5pt;
+}
+
+#toprightdiv a:hover{
+	     color: red;
+}
+
+
+/* toptabs */
+
+#toptabs{
+	width: 800px;
+	padding-left: 70px;
+	margin-left: auto;
+	margin-right: auto;
+	background: transparent;
+#	padding-right: 0px;
+}
+
+#toptabs ul{
+	 font: bold 85% Arial, Verdana;
+	 margin:0;
+	 padding:0;
+	 list-style:none;
+}
+
+#toptabs li{
+	 display: inline;
+	 margin:0 0 0 0;
+	 padding:0;
+	 text-transform:uppercase;
+}
+
+#toptabs a{
+	 float:left;
+	 color: white;
+	 background: #244682 url(./graphics/tab_left.png) no-repeat left top;
+	 margin:0 2px 0 0;
+	 padding:0 0 1px 3px;
+	 text-decoration:none;
+	 letter-spacing: 1px;
+}
+
+#toptabs a span{
+	 float:left;
+	 display:block;
+	 background: transparent url(./graphics/tab_right.png) no-repeat right top;
+	 padding:4px 9px 3px 6px;
+}
+
+#toptabs a span{
+	 float:none;
+}
+
+#toptabs a:hover{
+	 background-color: #1562a6;
+}
+
+#toptabs a:hover span{
+	 background-color: #1562a6;
+}
+
+/* currently selected tab */
+#toptabs #current a, #toptabs #current span{ 
+	 background-color: black;
+}
+
+#toptabsline{
+	clear: both;
+	padding: 0;
+	width: 100%;
+	height: 4px;
+	line-height: 4px;
+	background: black;
+	border-top: 1px solid #ffffff; 
+}
+
+
+/* ######### Left column ######### */
+
+#leftcolumn{
+	background-color: white;
+	clear: left;
+	width: 160px;
+	margin-right: 5px;
+	float: left;
+	margin-top: 1em;
+}
+
+
+.listmenu{
+	list-style-type: none;
+	margin: 0;
+	margin-bottom: 4px;
+	padding: 0;
+}
+
+.listmenu li{
+	  padding-bottom: 2px;
+}
+
+.listmenu li a{
+	  color: #aa2715;
+	  background: url(graphics/listmenu.png) no-repeat center left;
+	  display: block;
+	  padding: 2px 0;
+	  padding-left: 18px;
+	  text-decoration: none;
+	  font-weight: bold;
+	  border-bottom: 1px solid #dadada;
+	  font-size: 90%;
+}
+
+.listmenu li a:visited{
+	  color: #aa2715;
+}
+
+.listmenu a:hover{
+	  background-color: #e3e3e3;
+	  color: #aa2716;
+}
+
+#leftcolumn .titlebar, #rightcolumn .titlebar {
+	    font-weight: bold;
+	    background: black url(graphics/titlebar.png) repeat-x top left;
+	    color: white;
+	    border-bottom: 1px solid #7b9bc4;
+	    margin: 1em 0;
+	    text-transform: uppercase;
+	    padding-left: 4px;
+}
+
+#leftcolumn .titlebar a{
+	    color: #ffffff;
+	    text-decoration: none;
+}	    
+
+#leftcolumn .titlebar a:hover{
+	    color: #aa2215;
+}
+
+/* ######### Middle column ######### */
+
+#middlecolumn{
+	background-color: transparent;
+	width: 650px;
+	float: left;
+	border-left: 1px dashed #C3C3C3;
+	border-right: 1px dashed #C3C3C3;
+	padding-left: 15px;
+	padding-right: 15px;
+	margin-top: 1em;
+	padding-bottom: 1em;
+	margin-bottom: 1em;
+}
+
+#middlecolumn a:hover{ 
+        color: #990033; 
+	background-color: 
+	#ffcccc;
+}
+
+
+.headers{
+	border: 1px solid #BBB;
+	width: 99%;
+	background: url(graphics/headersbg.png) center center repeat-x;
+	margin-left: 0;
+	padding: 2px 0 2px 5px;
+	text-align: left;
+	font-size: 110%;
+}
+
+.headers img{
+	float: right;
+	margin-right: 5px;
+	padding-top: 5px;
+}
+
+/*---------------------------------*/
+h2 {
+        color: #000055;
+        border-width: 0pt 0pt 2pt 0pt;
+        border-color: #444444;
+        border-style: solid;
+        text-indent: 10pt;
+}
+h3 {
+        color: #001122;
+        margin-top: 1.5em;
+        border-width: 0pt 0pt 1pt 0pt;
+        border-color: #444444;
+        border-style: solid;
+}
+
+h4 {
+        color: #110044;
+        margin-top: 1.2em;
+        border-width: 0pt 0pt 0pt 0pt;
+}
+
+code {
+        font-family: courier, monospace;
+        color: #770000;
+}
+
+pre {
+        color: #770000;
+        background: #eeeecc;
+        border-width: 0pt 1pt;
+        border-color: gray;
+        border-style: solid;
+        font-family: courier, monospace;
+        font-size: small;
+        padding: 0.5em;
+
+	white-space: -moz-pre-wrap; /* Mozilla */
+	white-space: -pre-wrap;     /* Opera 4-6 */
+	white-space: -o-pre-wrap;   /* Opera 7 */
+	white-space: pre-wrap;      /* CSS3 */
+	word-wrap: break-word;      /* IE 5.5+ */
+}
+
+pre.normal {
+        color: black;
+        background: #fffff8;
+        font-size: small;
+        border-width: 0pt;
+}
+
+div.bib {
+        color: #333333;
+        background: #dddddd;
+        border-width: 1pt 1pt;
+        border-color: gray;
+        border-style: solid;
+        font-size: small;
+        padding: 0.5em;
+        font-family: 'Times New Roman', courier, monospace;
+}
+
+table.jarc { 
+	border-width: 0pt 0pt;
+	font-size: 100%;
+        padding: 5px;
+	border-collapse: separate; 
+
+}
+
+td {
+   padding-right: 5px;
+}
+
+
+/* ######### Right column ######### */
+
+#rightcolumn{
+	background-color: white;
+	width: 170px;
+	float: left;
+	padding-left: 5px;
+	margin-top: 1em;
+}
+
+#rightcolumn .titlebar{
+	     text-transform: uppercase;
+	     letter-spacing: 1.5pt;
+}
+
+#rightcolumn .listmenu li a{
+	     color: #c26464;
+	     background: url(graphics/listmenu2.png) no-repeat center left;	
+}
+
+#rightcolumn .listmenu a:hover{
+	     background-color: #e3e3e3;
+}
+
+
+/* ######### Site Footer ######### */
+
+#contentfooter{
+	font-size: 11px;
+	font-family: Verdana;
+	padding-bottom: 1em;
+	margin-left: 173px;
+	clear: both;
+}
+
+#footerarea{
+	clear: left;
+	background: #ecf0fc;
+	padding-top: 15px;
+	text-align: center;
+	height: 50px;
+}
+
+

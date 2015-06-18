@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+                   "/usr/share/xml/docbook/4.4/docbookx.dtd"
+[
+<!ENTITY opt_app SYSTEM "opt_app.xml">
+<!ENTITY opt_global SYSTEM "opt_global.xml">
+<!ENTITY opt_instance SYSTEM "opt_instance.xml">
+<!ENTITY opt_lm SYSTEM "opt_lm.xml">
+<!ENTITY opt_am SYSTEM "opt_am.xml">
+<!ENTITY opt_search SYSTEM "opt_search.xml">
+]>
+
+<refentry id='julius'>
+
+<refmeta>
+  <refentrytitle>
+    julius
+  </refentrytitle>
+  <manvolnum>
+    1
+  </manvolnum>
+</refmeta>
+
+<refnamediv>
+  <refname>
+    julius
+  </refname>
+  <refpurpose>
+    open source multi-purpose LVCSR engine
+  </refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis>
+  <command>julius</command>
+  <arg choice='opt'>-C <replaceable>jconffile</replaceable></arg>
+  <arg choice='opt' rep='repeat'><replaceable>options</replaceable></arg>
+</cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1><title>Description</title>
+
+<para><command>julius</command> is a high-performance,
+multi-purpose, open-source speech recognition engine for researchers
+and developers.  It is capable of performing almost real-time
+recognition of continuous speech with over 60k-word 3-gram language model
+and triphone HMM model, on most current PCs.</para>
+
+<para><command>julius</command>
+can perform recognition on audio files, live microphone input,
+network input and feature parameter files. </para>
+
+<refsect2><title>Supported Models</title>
+
+<para><command>julius</command> needs a language model and 
+an acoustic model to run as a speech recognizer.
+<command>julius</command>
+supports the following models.</para>
+
+<refsect3><title>Acoustic model</title>
+<para>Sub-word HMM (Hidden Markov Model) in HTK ascii format are supported.
+Phoneme models (monophone), context dependent phoneme models
+(triphone), tied-mixture and phonetic tied-mixture models of any unit
+can be used.  When using context dependent models, inter-word context 
+dependency is also handled.  You can further use a tool
+<citerefentry><refentrytitle>mkbinhmm</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+to convert the ascii HMM file to a compact binary format.
+</para>
+
+<para>Note that <command>julius</command> itself can only
+extract MFCC features from speech data.  If you use acoustic HMM
+trained for other feature, you should give the input in HTK parameter
+file of the same feature type.</para>
+</refsect3>
+
+<refsect3><title>Language model: word N-gram</title>
+<para>Word N-gram language model, up to 10-gram, is supported.
+Julius uses different N-gram for each pass: left-to-right 2-gram
+on 1st pass, and right-to-left N-gram on 2nd pass.  It is
+recommended to use both LR 2-gram and RL N-gram for Julius.
+However, you can use only single LR N-gram or RL N-gram.  In
+such case, approximated LR 2-gram computed from the given N-gram
+will be applied at the first pass.
+</para>
+<para>The Standard ARPA format is supported.  In addition, a
+binary format is also supported for efficiency.  The tool
+<citerefentry><refentrytitle>mkbingram</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+can convert ARPA format
+N-gram to binary format.</para>
+</refsect3>
+
+<refsect3><title>Language model: grammar</title>
+<para>The grammar format is an original one, and tools to create a
+recognirion grammar are included in the distribution.  A grammar
+consists of two files: one is a 'grammar' file that describes sentence
+structures in a BNF style, using word 'category' name as terminate
+symbols.  Another is a 'voca' file that defines words with its
+pronunciations (i.e. phoneme sequences) for each category.  They
+should be converted by
+<citerefentry><refentrytitle>mkdfa.pl</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+to a deterministic finite automaton file (.dfa) and a dictionary file
+(.dict), respectively.
+You can also use multiple grammars.</para>
+</refsect3>
+
+<refsect3><title>Language model: isolated word</title>
+<para>You can perform isolated word recognition using only word
+dictionary.  With this model type, Julius will perform rapid one pass
+recognition with static context handling.  Silence models will be
+added at both head and tail of each word.  You can also use multiple
+dictionaries in a process.</para>
+</refsect3>
+</refsect2>
+
+<refsect2 id='search_algorithm_overview'><title>Search Algorithm</title>
+<para>Recognition algorithm of
+<command>julius</command>
+is based on a two-pass strategy.  Word 2-gram and reverse word 3-gram
+is used on the respective passes.  The entire input is processed on
+the first pass, and again the final searching process is performed
+again for the input, using the result of the first pass to narrow the
+search space.  Specifically, the recognition algorithm is based on a
+tree-trellis heuristic search combined with left-to-right
+frame-synchronous beam search and right-to-left stack decoding search.</para>
+
+<para>When using context dependent phones (triphones), interword contexts
+are taken into consideration.  For tied-mixture and phonetic
+tied-mixture models, high-speed acoustic likelihood calculation is
+possible using gaussian pruning.</para>
+
+<para>For more details, see the related documents.</para>
+</refsect2>
+</refsect1>
+
+<refsect1 id='options'><title>Options</title>
+<para>
+  These options specify the models, system behaviors and various
+  search parameters.  These option can be set at the command line, but
+  it is recommended that you write them in a text file as a "jconf
+  file", and specify it by "-C" option.
+</para>
+&opt_app;
+&opt_global;
+&opt_instance;
+&opt_lm;
+&opt_am;
+&opt_search;
+</refsect1>
+
+<refsect1 id='examples'><title>EXAMPLES</title>
+<para>For examples of system usage, refer to the tutorial section in the
+Julius documents.</para>
+</refsect1>
+
+<refsect1 id='notice'><title>NOTICE</title>
+<para>Note about jconf files: relative paths in a jconf file are interpreted
+as relative to the jconf file itself, not to the current directory.</para>
+</refsect1>
+
+<refsect1 id='see_also'><title>SEE ALSO</title>
+<para><citerefentry><refentrytitle>julian</refentrytitle><manvolnum>1</manvolnum></citerefentry>, <citerefentry><refentrytitle>jcontrol</refentrytitle><manvolnum>1</manvolnum></citerefentry>, <citerefentry><refentrytitle>adinrec</refentrytitle><manvolnum>1</manvolnum></citerefentry>, <citerefentry><refentrytitle>adintool</refentrytitle><manvolnum>1</manvolnum></citerefentry>, <citerefentry><refentrytitle>mkbingram</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
+<citerefentry><refentrytitle>mkbinhmm</refentrytitle><manvolnum>1</manvolnum></citerefentry>, <citerefentry><refentrytitle>mkgsmm</refentrytitle><manvolnum>1</manvolnum></citerefentry>, wav2<citerefentry><refentrytitle>mfcc</refentrytitle><manvolnum>1</manvolnum></citerefentry>, <citerefentry><refentrytitle>mkss</refentrytitle><manvolnum>1</manvolnum></citerefentry></para>
+
+<para><ulink url='http://julius.sourceforge.jp/en/'>http://julius.sourceforge.jp/en/</ulink></para>
+</refsect1>
+
+<refsect1 id='diagnostics'><title>DIAGNOSTICS</title>
+<para>Julius normally will return the exit status 0.  If an error occurs,
+Julius exits abnormally with exit status 1.  If an input file cannot be
+found or cannot be loaded for some reason then Julius will skip
+processing for that file.</para>
+</refsect1>
+
+<refsect1 id='bugs'><title>BUGS</title>
+<para>There are some restrictions to the type and size of the models Julius
+can use.  For a detailed explanation refer to the Julius documentation.
+For bug-reports, inquires and comments please contact
+julius-info at lists.sourceforge.jp.</para>
+</refsect1>
+
+<refsect1 id='copyright'><title>COPYRIGHT</title>
+<para>Copyright (c) 1991-2007 Kawahara Lab., Kyoto University
+<!-- .br -->
+Copyright (c) 1997-2000 Information-technology Promotion Agency, Japan
+<!-- .br -->
+Copyright (c) 2000-2007 Shikano Lab., Nara Institute of Science and Technology
+<!-- .br -->
+Copyright (c) 2005-2007 Julius project team, Nagoya Institute of Technology</para>
+</refsect1>
+
+<refsect1 id='authors'><title>AUTHORS</title>
+<variablelist remap='IP'>
+  <varlistentry>
+  <term>Rev.1.0 (1998/02/20)</term>
+  <listitem>
+<para>Designed by Tatsuya KAWAHARA and Akinobu LEE (Kyoto University)</para>
+
+<para>Development by Akinobu LEE (Kyoto University)</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>Rev.1.1 (1998/04/14)</term>
+  <term>Rev.1.2 (1998/10/31)</term>
+  <term>Rev.2.0 (1999/02/20)</term>
+  <term>Rev.2.1 (1999/04/20)</term>
+  <term>Rev.2.2 (1999/10/04)</term>
+  <term>Rev.3.0 (2000/02/14)</term>
+  <term>Rev.3.1 (2000/05/11)</term>
+  <listitem>
+<para>Development of above versions by Akinobu LEE (Kyoto University)</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>Rev.3.2 (2001/08/15)</term>
+  <term>Rev.3.3 (2002/09/11)</term>
+  <term>Rev.3.4 (2003/10/01)</term>
+  <term>Rev.3.4.1 (2004/02/25)</term>
+  <term>Rev.3.4.2 (2004/04/30)</term>
+  <listitem>
+<para>Development of above versions by Akinobu LEE (Nara Institute of
+Science and Technology)</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>Rev.3.5 (2005/11/11)</term>
+  <term>Rev.3.5.1 (2006/03/31)</term>
+  <term>Rev.3.5.2 (2006/07/31)</term>
+  <term>Rev.3.5.3 (2006/12/29)</term>
+  <term>Rev.4.0 (2007/12/19)</term>
+  <listitem>
+<para>Development of above versions by Akinobu LEE (Nagoya Institute of
+Technology)</para>
+  </listitem>
+  </varlistentry>
+</variablelist>
+</refsect1>
+
+<refsect1 id='thanks_to'><title>THANKS TO</title>
+<para>From rev.3.2, Julius is released by the "Information Processing
+Society, Continuous Speech Consortium".</para>
+
+<para>The Windows DLL version was developed and released by Hideki BANNO
+(Nagoya University).</para>
+
+<para>The Windows Microsoft Speech API compatible version was developed by
+Takashi SUMIYOSHI (Kyoto University).</para>
+</refsect1>
+
+</refentry>

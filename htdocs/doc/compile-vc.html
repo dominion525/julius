@@ -1,0 +1,244 @@
+<h2>Visual C++ でのコンパイルの手引き</h2>
+
+本文書は，Julius-3.5 Windows コンソール版を
+Microsoft Visual C++ でコンパイルする方法について解説します．
+
+なお，テストしたコンパイル環境は以下の通りです．
+
+<pre>
+  Microsoft Windows XP Professional SP1 日本語版
+  Microsoft Visual C++ 6.0
+</pre>
+
+<h3>1. 準備</h3>
+
+Julius/Julian をソースからコンパイルするには，win32用の zlibライブラリが必要
+です．以下を入手して，そのなかのヘッダファイルと zlibstat.lib を
+適当なディレクトリに置いておいてください．
+
+<pre>
+    http://www.gzip.org/zlib/contrib/zlib113-win32.zip
+</pre>
+
+また，文法コンパイラ mkfa を作るために，Win32 用の flex ライブラリが
+必要です．Win32用flexライブラリの作成方法は下記を参考にしてください．
+
+<pre>
+    http://www.geocities.com/ymotiwala/flex.html
+</pre>
+
+ライブラリの準備が出来たら，julius/julian のソースを展開してください．
+
+<pre>
+    % unzip julius-3.4.2p1-win32-src.zip
+</pre>
+
+<h3>2. ワークスペースの作成</h3>
+
+Visual C++ を起動し，新規ワークスペースを作成します．
+
+<pre>
+    「ファイル」→「新規作成」→「ワークスペース」
+</pre>
+
+ワークスペース名は "Julius"，ディレクトリは適当な場所を指定してください．
+
+
+<h3>3. juliuslibのコンパイル</h3>
+
+<h4>3.1  新規プロジェクトを作成する</h4>
+
+  画面左のペインの「ワークスペース Julius:」を右クリックして，
+  「ワークスペースへ新規プロジェクトを追加」します．
+  タイプは「Win32 static library」を選択し，プロジェクト名を juliuslib
+  にします．ディレクトリはデフォルトのままでよいでしょう．
+  「…以下の機能を使用しますか？」のダイアログが出る場合は，どちらも使
+  用しませんのでチェックをすべて外して「終了」を押してください．
+
+<h4>3.2  ソースファイルをプロジェクトに追加する</h4>
+
+julius-3.4.2p1-win32/libsent/src 以下にあるソースファイルを追加します．
+左のペインの下の「FileView」を選択し，「juliuslib ファイル」を
+右クリックして「フォルダの新規作成」を選び，以下のフォルダを新規作成します．
+
+<pre>
+    adin
+    anlz
+    dfa
+    hmminfo
+    libjcode
+    net
+    ngram
+    phmm
+    util
+    voca
+    wav2mfcc
+</pre>
+	
+次に，それぞれのフォルダを右クリックして「ファイルをフォルダへ追加」
+を選び，libsent/src 内の対応するフォルダ内のソースを入れていきます．
+
+<p>adin については，以下のファイルのみを追加してください．</p>
+<pre>
+    adin.c
+    adin_file.c
+    adin_portaudio.c
+    adin_tcpip.c
+    adin-cut.c
+    zc-e.c
+    zmean.c
+    pa/* (pa_unix_oss以外)
+</pre>
+
+<p>libjcode については，以下のファイルのみを追加してください．</p>
+<pre>
+    libjcode.c
+    detect.c
+</pre>
+
+それ以外のディレクトリは，全ての .c, .h ファイルを追加します．
+
+<h4>3.3  プロジェクトを設定する</h4>
+
+プロジェクトのコンパイルの設定を行います．「プロジェクト」→「設定...」
+で，「C/C++」タブの「カテゴリ(Y)」を「プリプロセッサ」にして，
+「インクルードファイルのパス」として，
+
+<pre>
+    julius-3.4.2p1-win32\libsent/include
+    zlibのヘッダファイルへのパス
+</pre>
+  
+の2つを，コンマで区切って指定してください．
+例えば，julius-3.4.2-win32 が C:\temp に展開されていて，zlib が
+C:\temp\zlib に展開されている場合，以下のように指定します．
+
+<pre>
+    "C:\temp\julius-3.4.2p1-win32\libsent\include,c:\temp\zlib"
+</pre>
+
+設定が終わったら，メニューの「ビルド」→「アクティブな構成の設定...」
+から，Win32 Release ビルドを選択しておいてください．
+
+
+<h4>3.4  ビルド実行</h4>
+
+「ビルド」→「ビルド」を実行してください．
+2.1で指定したディレクトリのReleaseの下に，juliuslib.lib が作成されます．
+
+<h3>4. julius のコンパイル</h3>
+
+<h4>4.1  新規プロジェクトを作成する</h4>
+
+画面左のペインにある「ワークスペース Julius:」を右クリックし，
+メニューから「ワークスペースへ新規プロジェクトを追加」します．
+タイプは「Win32 console application」を選択し，
+プロジェクト名を julius にします．
+続くダイアログでは「空のプロジェクト」を指定してください．
+
+<h4>4.2  ソースファイルをプロジェクトに追加する</h4>
+
+julius-3.4.2-win32/julius 以下にあるソースファイルとヘッダを
+追加します．
+
+左の pane の下の「FileView」を選び，「julius ファイル」を右クリック
+して「ファイルをフォルダへ追加」から，
+julius-3.4.2p1-win32/julius/ 以下の .c と .h ファイルを指定します．
+ただし，以下は省いてください．
+
+<pre>
+    acconfig.h
+</pre>	
+
+<h4>4.3 プロジェクトを設定する</h4>
+
+juliuslibのときと同様にインクルードファイルのパスを設定します．
+今度は，julius のソースディレクトリもパスに指定します．すなわち，
+「プリプロセッサ」の「インクルードファイルのパス」として，
+
+<pre>
+    julius-3.4.2p1-win32\julius
+    julius-3.4.2p1-win32\libsent\include
+    zlibのヘッダファイルへのパス
+</pre>
+
+<p>の3つを，上記の順でコンマで区切って指定してください．</p>
+
+前節でコンパイルした juliuslib.lib と zlibstat.lib が存在する場所
+をそれぞれライブラリのパスに追加してください．
+「リンク」→「カテゴリ(Y)：インプット」→「追加ライブラリのパス」
+
+<pre>
+    例："C:\temp\Julius\juliuslib\Release, C:\temp\zlib, C:\temp\flexlib"
+</pre>
+
+リンクするライブラリとして，以下の４つを追加します．
+
+<pre>
+    juliuslib.lib zlibstat.lib winmm.lib wsock32.lib
+</pre>
+
+「リンク」タブの「カテゴリ(Y)」を「一般」にして，
+「オブジェクト/ライブラリ モジュール」欄の末尾に上記を追加してください．
+
+<p>上記が終了したら，メニューの「ビルド」→「アクティブな構成の設定...」
+を選び，「julius - Win32 Release」を選択してください．</p>
+
+
+<h4>4.4 ビルド実行</h4>
+
+プロジェクトを作成したディレクトリの Release/ 以下に
+julius.exe が作成されます．
+
+<h3>5. julian のコンパイル</h3>
+
+Julian の作成は，前節の Julius と同様に行います．
+プロジェクト名「julian」で新規プロジェクトを作成し，
+同様に設定を行っていきます．
+Juliusと異なるのは，「プロジェクト」→「設定」で「C/C++」タブの
+「プリプロセッサ」の設定で，
+「プリプロセッサの定義」に「BUILD_JULIAN」を追加する点のみです．
+あとは Julius と同一のソースや設定でビルドをすれば，julian が
+コンパイルできます．
+
+<h3>6. その他のツールのコンパイル</h3>
+
+Julius/Julian のときと同様に，Win32 console application のプロジェクト
+を新規作成してソースを加え，設定を行いビルドしてください．
+
+<p>以下はツール名と，それに対応するソースファイルの置き場所です．</p>
+
+<pre>
+    adinrec	    julius-3.4.2p1-win32/adinrec/
+    adintool	    julius-3.4.2p1-win32/adintool/
+    jcontrol	    julius-3.4.2p1-win32/jcontrol/
+    mkbingram	    julius-3.4.2p1-win32/mkbingram/
+    mkbinhmm	    julius-3.4.2p1-win32/mkbinhmm/
+    mkss	    julius-3.4.2p1-win32/mkss/
+    mkfa	    julius-3.4.2p1-win32/gramtools/mkdfa/mkfa-1.44-flex
+    generate	    julius-3.4.2p1-win32/gramtools/generate/
+    accept_check    julius-3.4.2p1-win32/gramtools/accept_check/
+</pre>
+
+<p>以下は，各ツールごとの留意点です．</p>
+
+<ul>
+  <li> jcontrol
+  <ul>
+    <li> リンクのオブジェクトには wsock32.lib のみで OK です．
+  </ul>
+
+  <li> mkfa
+  <ul>
+    <li> flex ライブラリをコンパイルして flexlib.lib を作る必要があります．
+    <a href="http://www.geocities.com/ymotiwala/flex.html">http://www.geocities.com/ymotiwala/flex.html</a>を参照してください．
+    <li>lex.yy.c 以外のファイルをプロジェクトに追加します．
+    <li>ライブラリには flexlib.lib のみを追加します．
+  </ul>
+</ul>
+
+<hr>
+<div align="right">
+$Id: compile-vc.html,v 1.1.1.1 2007/01/10 08:01:57 kudravka_ Exp $
+</div>
+

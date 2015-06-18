@@ -1,0 +1,22 @@
+	<Julius for SAPI を SALTから使う場合の注意事項>
+
+SALTには、.NET Speech SDKのインストール時にインストールされるものと、SALT単体でインストールされるものがあります。これらはSpeechTagsオブジェクトのCLASSIDが異なる為、どちらをインストールしたかによってSALTを使用するHTML文書を変更する必要があります。
+
+具体的には、(Julius for SAPI付属のSALTサンプルなどの)HTML文書中の
+
+<object id="SpeechTags" CLASSID="clsid:********-****-****-****-************">
+
+となっている箇所(*は任意の数字)を下の様にそれぞれ正しく書き換えてください。
+
+  (1).NET Speech SDKをインストールした場合
+  <object id="SpeechTags" CLASSID="clsid:DCF68E5B-84A1-4047-98A4-0A72276D19CC">
+
+  (2)SALT単体でインストールした場合
+  <object id="SpeechTags" CLASSID="clsid:33cbfc53-a7de-491a-90f3-0e782a7e347a">
+
+
+SpeechTagsオブジェクトのCLASSIDは、レジストリを調べることによって確認することも出来ます。regedit.exeを使用して、"ClientBehaviorsU.ElementBehaviorFactory"というキーを検索すれば、SpeechTagsオブジェクトのCLASSIDが記してあるレジストリを見つけることが出来るようです。
+
+.NET Speech SDK 1.0 beta2 は.NET Framework v1.1がインストールされているマシンにはそのままではインストールできないようです。特にSDKをインストールする必要がなければ、SALT単体をインストールされることをお勧めします。
+(参考)
+http://www.microsoft.com/speech/docs/SpeechSDK_Beta2_EverettCompatibility.doc

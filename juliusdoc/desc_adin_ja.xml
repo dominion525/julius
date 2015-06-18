@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<chapter id='desc_adin'><title>音声データ入力</title>
+<epigraph>
+<para>
+Julius は機器によって取り込まれた音声波形データに対して認識を行う．ま
+た，あらかじめ抽出した特徴ベクトル列ファイルを入力とすることもできる．
+オーディオ入力の選択は <option>-input</option> オプションで行う．本
+章では認識対象である音声データの入力について述べる．
+</para>
+</epigraph>
+
+<sect1><title>フォーマット</title>
+<para>
+音声波形入力は，あらかじめ録音された音声波形ファイルを入力として与える
+方法のほか，録音デバイスからの直接音声入力やネットワーク経由の音声受信
+を行うことができる．以下に与えることのできる音声
+波形データに共通の仕様について述べた後，各入力方法について詳しく述べる．
+</para>
+
+<sect2><title>チャンネル数</title>
+<para>
+チャンネル数は，1チャンネル（モノラル）のみサポートする．
+</para>
+</sect2>
+
+<sect2><title>サンプリングレート</title>
+<para>
+入力
+のサンプリングレートは，オプション <option>-smpFreq</option> あるいは 
+<option>-smpPeriod</option> で指定する．
+<option>-htkconf</option> でHTK Config ファイルを与えた場合，その中の 
+<literal>SOURCERATE</literal> の値からセットされる．デフォルトは 16,000 (Hz) である．
+</para>
+<para>
+サンプリングレートは，使用する音響モデルの学習時の条件と一致させる必要
+がある．すなわち，音響モデルが16kHzのデータで学習されたものである場合，
+与える音声入力も 16kHz でサンプリングされている必要がある点に注意されたい．
+</para>
+<para>
+複数の音響モデルを用いる場合は，サンプリングレートを音響モデルごとに
+(オプション<option>-AM</option>ごと) に指定する．また GMM については
+<option>-AM_GMM</option>で音響モデルとは異なる値を指定できる．
+ただし，これらは同一のサンプリングレートを指定する必要がある．Juliusは起動時にパラメータをチェックし，使用される音響モデル（およびGMM）が同じサンプリングレートを指定されていない場合エラーとなる．
+また，<option>-fshift</option> お
+よび<option>-fsize</option>についても同様である．詳しくは特徴量
+抽出の項を参照のこと．
+</para>
+<para>
+音声ファイル入力では，読み込み時に，上記で指定したサンプリングレートと
+ファイルのサンプリングレートが一致するかチェックされ，一致していな
+い場合はエラーとなる．デバイスからの直接入力では，上記で指定されたサン
+プリングレートが録音デバイスにセットされる．ただし，仕様上 RAW ファイ
+ル入力やネットワーク入力ではこのチェックが機能しないので注意すること．
+</para>
+<para>
+なお Julius は 48kHzから16kHzへのダウンサンプラーを内蔵しており，
+16kHz の音声入力が必要な場合に限り，<option>-48</option> オプションを
+指定することで 48kHz を入力として Julius内部で 16kHz に
+ダウンサンプリングすることができる．
+</para>
+</sect2>
+</sect1>
+
+<sect1><title>ファイル入力</title>
+<para>
+<option>-input rawfile</option>を指定すると，音声波形ファイルを入力とする．
+</para>
+<sect2><title>ファイル名の与え方</title>
+<para>
+起動後にファイル名入力のプロンプトが標準出力に出力されるので，
+音声波形ファイル名を与えるとそのファイルの認識を行う．
+複数のファイルを連続して認識させるには，標準入力からファイル名を連続して
+与えるか，ファイルのリストを用意してオプション <option>-filelist</option>
+で与える．詳しくはマニュアルを参照のこと．
+</para>
+</sect2>
+<sect2><title>サポートするファイル形式</title>
+<para>
+サポートするファイル形式はデフォルトでは以下のとおりである．
+<itemizedlist>
+  <listitem><para>Microsoft WAVE形式 <acronym>WAV</acronym>ファイル（オーディオ形式は16bit, 無圧縮PCM, monoral のみ）</para></listitem>
+  <listitem><para>ヘッダ無し<acronym>RAW</acronym>ファイル, short (16bit)，signed, Big Endian, monoral</para></listitem>
+</itemizedlist>
+</para>
+<para>
+libsndfile を組み込むことで，上記に加えて AU,
+AND, NIST, ADPCM などの他の形式のファイルを読めるようになる．
+libsndfile は Juliusコンパイル時に libsndfile のライブラリおよびヘッダ
+があれば自動的に組み込まれる．
+</para>
+<para>
+RAWファイル形式はいくつか注意が必要である．Julius では RAW 形式に対して
+Big Endian バイトオーダを前提としており，Little Endian のデータは正しく
+読み込むことができない．16bit,monoのRAWファイルのLittle Endian から Big Endian への変換は，たとえば
+<command>sox</command>を用いて以下のように行うことができる．
+<informalexample>
+<synopsis>
+<prompt>%</prompt> <command>sox</command> -t .raw -s -w -c 1 <replaceable>infile</replaceable> -t .raw -s -w -c 1 -x <replaceable>outfile</replaceable>
+</synopsis>
+</informalexample>
+また，通常のファイル入力では，ファイルのヘッダがチェックされ，
+そのデータのサンプリングレートが Julius が要求するレートと
+一致しなければエラーとなる．これに対して RAWファイル形式では，
+ファイルにヘッダが存在しないためこのチェックが機能しない．
+RAW入力ファイルを用いる場合はこの点も注意すること．
+</para>
+</sect2>
+
+<sect2><title>認識単位と発話区間検出</title>
+<para>
+ファイル入力では，基本的に1ファイルを1発話として認識が行われる．ただし，
+オプションを指定することで，複数の発話を含むような音声ファイルを，無音区間
+で区切りながら認識を行うことができる．
+</para>
+<para>
+オプション <option>-cutsilence</option> で，マイクロフォン等の直接入力と
+同一のアルゴリズムを用いた発話区間検出をファイル入力に対しても有効にできる．
+このオプションが指定された場合，Julius はファイル内の音声データに対して
+レベルと零交叉に基づく発話区間検出を行い，切り出された発話区間
+ごとに認識を行う．
+</para>
+<para>
+GMM による VAD が有効化されている場合，ファイル入力はマイクロフォン等の直接
+入力と同様に GMM によるVADが行われる．ただし，ファイル入力では
+先にファイル全体（<option>-cutsilence</option>を指定した場合はレベルと
+零交叉に基づき検出された区間ごと）に対して特徴量抽出を先に行い，その後
+GMM によるVAD が行われる．
+</para>
+<para>
+オプション <option>-spsegment</option> で，上記の区間検出のあと，
+さらに文中で細かく区切って逐次的に認識する「逐次デコーディング」を行える．
+文中の息継ぎや小休止などの短い無音で入力を細かく区切りながら認識する．
+</para>
+<para>
+なお，Julius はアルゴリズム上，発話区間の開始部と終了部に無音区間が
+存在するという前提で認識を行う．このため，一般的には各発話区間
+（入力ファイル）の先頭と末尾には数百ミリ秒程度の無音区間を含むことが望ましい．
+</para>
+</sect2>
+</sect1>
+
+
+<sect1><title>録音デバイスからの直接入力</title>
+<para>
+<option>-input mic</option>で，マイクロフォンやライン入力などの録音デバ
+イスから音を直接キャプチャしながら認識できる．Linux, Windows, MacOSX,
+FreeBSD およびSolaris でサポートされている．
+</para>
+<para>
+直接入力では，入力ストリームに対して音声区間の切り出しが行われ（デフォルトでは
+レベルと零交叉に基づく検出が行われる），検出された音声区間ごとに
+認識処理を行う．また，特徴量抽出および第1パスの認識処理は入力と並行して
+リアルタイムに行われる．
+リアルタイム処理のための特徴量抽出や音声区間検出の調整，
+リアルタイム認識の注意事項については，別章を参照のこと．
+</para>
+<sect2><title>録音デバイスの設定</title>
+<para>
+動作には，16bit, モノラル
+で，かつ必要なサンプリングレートでの録音がサポートされている必要がある．
+また，Julius はミキサー設定などのシステム設定を行わないので，
+録音ボリュームの調整や録音端子の選択といった諸処のシステム設定は
+別途行う必要がある．
+</para>
+<para>
+録音デバイスからの音入力では，周囲の雑音や背景音などの入力音の状態だけでなく，
+使用するマイクやOS，デバイスドライバ等による歪みも認識精度に大きな影響を
+与えることが知られている．新しい環境で動かすときには，正しく録音できているか，
+録音された音声が使用する音響モデルの前提とマッチしているか，
+録音品質についてテストすることが望ましい．
+Julius はオプション <option>-record</option> で，
+認識対象となった音声データを認識後にファイルに保存できる．また付属の
+<command>adinrec</command>や <command>adintool</command> は
+音声の録音を行えるツールであり，Julius と同一のライブラリを使用しているので，
+これでファイルに録音するなどして，正しく録音できているかチェックする
+ことが望ましい．
+</para>
+</sect2>
+
+<sect2><title>OSごとの対応状況</title>
+<sect3><title>Linux</title>
+<para>
+Linux では以下のサウンドインタフェースに対応している．
+  <itemizedlist>
+    <listitem><para>ALSA ドライバ</para></listitem>
+    <listitem><para>OSS 準拠ドライバ</para></listitem>
+  </itemizedlist>
+標準では ALSA インタフェースを使用する．OSS インタフェースを
+使う場合は，ソースアーカイブから<literal>configure</literal>に
+<literal>--with-mictype=oss</literal>をつけてコンパイルする必要がある．
+</para>
+<para>
+基本的に，16bit, モノラルでの録音がサポートされている必要があ
+る．<footnote><para>ただし，Linux/OSS では，ステレオ録音しかサポートさ
+れていない場合，左チャンネルを認識するよう動作する．</para></footnote>
+また，USB オーディオでも動作する．<footnote><para> ただし，音声認識で
+用いるサンプリング周波数（16kHz であることが多い）での録音がデバイス側
+でサポートされている必要がある．44.1kHzや48kHz等の録音のみサポートする
+デバイスの場合，うまく動作しないことがある．</para></footnote>
+</para>
+<para>
+オープンする録音デバイス名は，ALSAの場合 <literal>"default"</literal>
+である．録音デバイス名を環境変数<literal>ALSADEV</literal>に指定すること
+で変更することができる．たとえば，複数のサウンドカードがあるときに，
+2枚目のサウンドカードの録音デバイスを指定する場合は，
+<literal>ALSADEV="plughw:1,0"</literal>のように指定する．
+また，OSSの場合デフォルトは <literal>/dev/dsp</literal> であり，環境変数
+<literal>AUDIODEV</literal>で変更できる．
+</para>
+</sect3>
+
+<sect3><title>Windows</title> 
+<para>
+Windows では，DirectSound API を使用する．PortAudio ライブラリを使用している．
+</para>
+</sect3>
+
+<sect3><title>Mac OS</title>
+<para>
+Mac OS X v10.3.9 および v10.4.1 で動作確認されている．CoreAudio API を
+使用している．
+</para>
+</sect3>
+
+<sect3><title>FreeBSD</title>
+<para>
+FreeBSD 3.2-RELEASEにおいて，<literal>snd</literal>ドライバで動作確認
+されている．コンパイル時に自動判別がうまく動かない場合は
+<literal>--with-mictype=oss</literal>を指定すること．
+</para>
+</sect3>
+
+<sect3><title>Sun Solaris</title>
+<para>
+デフォルトのデバイス名は <literal>/dev/audio</literal> である．環境変
+数 <literal>AUDIODEV</literal> で変更できる．Solarisでは例外的に
+Julius はミキサー設定を変更し，録音デバイスがマイクに自動的に切り替わる．
+</para>
+</sect3>
+</sect2>
+
+<sect2><title>入力遅延の調整</title>
+<para>
+デバイスからの直接認識では，入力遅延について注意が必要である．通常，PC 
+のオーディオ入力では適度な大きさのデータ片 (chunk / fragment) ごとに処
+理が行われるため，そのバッファ長分の処理遅延が発生する．
+Linux (ALSA/OSS) および Windows 
+では，このデータ片の大きさ（＝遅延幅）を環境変数
+<literal>LATENCY_MSEC</literal> で指定できる（単位：ミリ秒）．短い値を
+設定することで入力遅延を小さくできるが，CPU の負荷が大きくなり，また環
+境によってはプロセスやOSの挙動が不安定になることがあるので注意が必要で
+ある．また，最適な値はOS やデバイスに大きく依存するため一概には言えな
+い．初期値は，Linux では 50 (ミリ秒) であり，Windows では動作環境によっ
+て変わる．環境によってはデフォルトの遅延が数百ミリ秒になることもある．
+</para>
+</sect2>
+</sect1>
+
+<sect1><title>その他の入力</title>
+<sect2><title>ネットワーク経由</title>
+<para>
+<option>-input adinnet</option>で，他のプロセスからネットワーク経由で
+音声データを受け取ることができる．例えば，<command>adintool</command> 
+を用いて以下のようにネットワーク入力が行える．
+<informalexample>
+<synopsis>
+認識サーバ側：
+<prompt>%</prompt> <command>julius</command> .... -input adinnet -freq <replaceable>srate</replaceable>
+音声入力クライアント側：
+<prompt>%</prompt> <command>adintool</command> -in mic -out adinnet -server <replaceable>server_hostname</replaceable> -freq <replaceable>srate</replaceable>
+</synopsis>
+</informalexample>
+</para>
+<para>
+Julius への音声送信では，接続したソケットに音声ストリームを小単位に分割して
+送信し，発話終了時に ack を送る．詳しくはadintool のソース，および libsent/src/adin/adin_tcpip.c を参照いただきたい．なお，Julius 側で
+サンプリングレートおよびチャンネル数のチェックが行えないため，
+クライアント側とJulius側でサンプリングレートを一致させ
+る必要がある点に注意が必要である．
+</para>
+</sect2>
+
+<sect2><title>esd</title>
+<para>
+Linux では，esd (EsounD daemon) を介して音声を取り込むことができる．
+esd は，多くのLinux デスクトップ環境で利用されている音声デバイス共有用の
+オーディオサーバである．この機能を使うには，
+<literal>configure</literal>に<literal>--with-mictype=esd</literal>を
+つけてコンパイルし，起動時に <option>-input mic</option>を指定する．
+</para>
+</sect2>
+
+<sect2><title>標準入力</title>
+<para>
+標準入力からRAW形式の音声入力を受け取ることもできる．これには<option>-input
+stdin</option>を指定する．RAWファイルと同様，
+サンプリングレートが考慮されないので注意すること．
+</para>
+</sect2>
+
+<sect2><title>DATLINK/NetAudio</title>
+<para>
+また，DATLINK サーバから音声を受け取り認識することができる．これには，
+コンパイル時に DATLINK/Netaudio のライブラリを組み込んだ上で，
+<option>-input netaudio</option>を指定する．
+</para>
+</sect2>
+</sect1>
+
+<sect1><title>特徴量ベクトル入力</title>
+<para>
+特徴抽出済みの HTK 形式の特徴量ファイルを入力とすることができる．
+<option>-input htkparam</option> あるいは <option>-input mfcfile</option> 
+を指定する．ファイル名の与え方は，音声波形ファイル入力のときと同様である．
+オプション <option>-filelist</option> も使用できる．
+</para>
+<para>
+入力ごとに，特徴量の型が音響モデルが要求する特徴量の型と一致するか
+チェックが行われる．型が完全一致する場合，そのまま認識を行う．
+一致しない場合，ベースフォームが同じでかつ以下のいずれかの処理を入力に行えば
+一致させられる場合は，その処理を行ってから認識を行う．
+<itemizedlist>
+  <listitem><para>一次差分 (_D) の追加あるいは削除</para></listitem>
+  <listitem><para>二次差分 (_A) の追加あるいは削除</para></listitem>
+  <listitem><para>エネルギー項の抑圧 (_N) </para></listitem>
+</itemizedlist>
+上記の処理によっても一致させられない場合，あるいはベースフォームが
+異なる場合は，エラーを出力してそのファイルの処理をスキップする．
+</para>
+<para>
+なお，このパラメータチェックは，オプション <option>-notypecheck</option> を
+指定すれば無効化できる．
+</para>
+</sect1>
+</chapter>

@@ -1,0 +1,282 @@
+<HTML>
+	<HEAD>
+		<TITLE>JavaScript Recognition</TITLE>
+		<SCRIPT LANGUAGE="JavaScript">
+<!--
+var Recog = new ActiveXObject("Sapi.SpSharedRecognizer");
+var Ctxt = Recog.CreateRecoContext();
+Ctxt.EventInterests = 2+4+16+32+512;	// SRESoundStart SRESoundEnd SRERecognition SREHypothesis SREFalseRecognition
+var GramDict = Ctxt.CreateGrammar(0);
+var GramCommand = Ctxt.CreateGrammar(1);
+GramDict.DictationLoad();
+GramDict.DictationSetState(0);
+var DQ = "\"";
+var dictation_text = "";
+//-->
+		</SCRIPT>
+		<script id="clientEventHandlersJS" language="javascript">
+<!--
+
+function Checkbox_Dictation_onclick() {
+	if (document.mainform.Checkbox_Dictation.checked)
+	{
+		document.mainform.Checkbox_Command.disabled = true;
+		document.mainform.File_Command.disabled = true;
+		document.mainform.Text_Rule_Command.disabled = true;
+		document.mainform.File_Command.style.background = "#cccccc";
+		document.mainform.Text_Rule_Command.style.background = "#cccccc";
+
+		GramDict.DictationSetState(1);
+	} else {
+		document.mainform.Checkbox_Command.disabled = false;
+		document.mainform.File_Command.disabled = false;
+		document.mainform.Text_Rule_Command.disabled = false;
+		document.mainform.File_Command.style.background = "#ffffff";
+		document.mainform.Text_Rule_Command.style.background = "#ffffff";
+
+		GramDict.DictationSetState(0);
+	}
+}
+
+function Checkbox_Command_onclick() {
+	if (document.mainform.Checkbox_Command.checked)
+	{
+		try
+		{
+			GramCommand.CmdLoadFromFile(document.mainform.File_Command.value, 1);
+		}
+		catch(e)
+		{
+			alert(e.valueOf() + "\n有効なコマンド文法ファイルではありません。");
+			document.mainform.Checkbox_Command.checked = false;
+			return;
+		}
+
+		document.mainform.Checkbox_Dictation.disabled = true;
+		document.mainform.File_Command.disabled = true;
+		document.mainform.Text_Rule_Command.disabled = true;
+		document.mainform.File_Command.style.background = "#cccccc";
+		document.mainform.Text_Rule_Command.style.background = "#cccccc";
+		
+		GramCommand.CmdSetRuleState(document.mainform.Text_Rule_Command.value, 1);
+	} else {
+		document.mainform.Checkbox_Dictation.disabled = false;
+		document.mainform.File_Command.disabled = false;
+		document.mainform.Text_Rule_Command.disabled = false;
+		document.mainform.File_Command.style.background = "#ffffff";
+		document.mainform.Text_Rule_Command.style.background = "#ffffff";
+
+		GramCommand.CmdSetRuleState(document.mainform.Text_Rule_Command.value, 0);
+	}
+}
+
+function Select_Output_onchange()
+{
+	document.mainform.Textarea_Detail.value = "";
+	document.mainform.Textarea_Detail.value = document.mainform.Select_Output.options[document.mainform.Select_Output.selectedIndex].value;
+}
+
+//-->
+		</script>
+	</HEAD>
+	<BODY onload="MyOnload()">
+		<H1>JavaScript による音声認識</H1>
+		<div class="tekitou" id="Main">
+			<FORM NAME="mainform">
+				<P><FONT face="MS UI Gothic">状態: <INPUT id="Text_State" type="text" readOnly></FONT></P>
+				<P>
+					<INPUT id="Checkbox_Dictation" type="checkbox" onclick="return Checkbox_Dictation_onclick()">
+					ディクテーション:<BR>
+					<TEXTAREA id="Textarea_Dictation" rows="5" cols="55" readOnly="true" NAME="Textarea_Dictation"></TEXTAREA>
+				</P>
+				</INPUT>
+				<P>
+					<INPUT id="Checkbox_Command" type="checkbox" onclick="return Checkbox_Command_onclick()">
+					コマンド文法ファイル:
+					<br>
+					<INPUT id="File_Command" type="file" size="58" name="File1"><BR>
+					アクティブにするルール: <INPUT id="Text_Rule_Command" type="text" size="23"><BR>
+					<INPUT id="Text_Command" size="71" DESIGNTIMEDRAGDROP="340" readOnly="true"><FONT face="MS UI Gothic"><BR>
+					</FONT><FONT face="MS UI Gothic">出力:<BR>
+					</FONT>
+					<select id="Select_Output" size="5" onchange="return Select_Output_onchange()">
+					</select><br>
+					<FONT face="MS UI Gothic">詳細:<BR>
+					</FONT><TEXTAREA id="Textarea_Detail" rows="10" cols="55" readOnly="true"></TEXTAREA>
+				</P>
+			</FORM>
+		</div>
+		<div class="tekitou" id="NoJSMessage">
+			<H2>!!!!JavaScriptを有効にしてください!!!!</H2>
+			<br>
+		</div>
+		<SCRIPT>
+
+function DispProp(P, pre, TA)
+{
+	if (P != null)
+	{
+		for (var i=0;i<P.Count;i++)
+		{
+			TA.value += pre + P.Item(i).Name + ":" + P.Item(i).Value + "\n";
+//			if (P.Item(i).Children != null)
+				DispProp(P.Item(i).Children, pre + "  ", TA);
+		}
+	}
+}
+
+function Ctxt::SoundStart(StreamNum, StreamPos)
+{
+	document.mainform.Text_State.value = "音声開始";
+}
+
+function Ctxt::SoundEnd(StreamNum, StreamPos)
+{
+	document.mainform.Text_State.value = "音声終了";
+}
+
+function Ctxt::FalseRecognition(StreamNum, StreamPos, Result)
+{
+	document.mainform.Text_State.value = "認識失敗";
+}
+
+// プロパティツリーを取得する
+function PropToStr(props, pre)
+{
+	if(props == null) return "";
+	
+	var str = "";
+	
+	for(var i = 0; i < props.Count; i++)
+	{
+		var prop = props.Item(i);
+		str += pre + DQ + prop.Name + DQ + " = " + DQ + prop.Value + DQ + "\n";
+		
+		str += PropToStr(prop.Children, pre + "  ");
+	}
+	
+	return str;
+}
+
+// パースツリーを取得する
+function ParseTreeToStr(pr, pre)
+{
+	if(pr == null) return "";
+	var str = "";
+	
+	str += pre + pr.FirstElement + " - " + (pr.FirstElement + pr.NumberOfElements) + " " + DQ + pr.Name + DQ + " (" + pr.Confidence + ")"  + "\n";
+
+	if(pr.Children != null)
+	{
+		for(var i = 0; i < pr.Children.Count; i++)
+		{
+			var child = pr.Children.Item(i);
+			str += ParseTreeToStr(child, pre + "  ");
+		}
+	}	
+	return str;
+}
+
+// PhraseInfoの内容を取得する
+function PhraseInfoToStr(pi)
+{
+	var text = "";
+	var rule = pi.Rule;
+	text += "RULE=" + DQ + rule.Name + DQ + "\n";
+	text += pi.GetText() + "\n";
+
+	if(pi.Properties != null)
+	{
+		text += "\nPROPATIES:\n";
+		text += PropToStr(pi.Properties, "");
+	}
+	
+	text += "\nPARSE TREE:\n";
+	text += ParseTreeToStr(pi.Rule, "");
+	
+	text += "\nELEMENTS:\n";
+	for(var i = 0; i < pi.Elements.Count; i++)
+	{
+		var element = pi.Elements.Item(i);
+		text += element.AudioStreamOffset + " - " + (element.AudioStreamOffset + element.AudioSizeBytes) + " " +
+			DQ + element.DisplayText + DQ + " (" + element.EngineConfidence + ")" + "\n";
+	}
+	
+	return text;
+}
+
+/*
+// Alternatesの内容を取得する
+function AlternatesToStr(alts)
+{
+	var text = "";
+	for(var i = 0; i < alt.Count; i++)
+	{
+		var alt = alts.Item(i);
+		text += alt.PhraseInfo.GetText() + "(" + alt.NumberOfElementsInResult + ")\n";
+	}
+
+	return text;
+}
+*/
+// 共通部分
+function ShowResult(Pre, StreamNum, StreamPos, Result)
+{
+	var len = mainform.Select_Output.length;
+	var ph_text = PhraseInfoToStr(Result.PhraseInfo);
+	mainform.Select_Output.options[len] = new Option(Pre + Result.PhraseInfo.GetText(), ph_text);
+	mainform.Select_Output.selectedIndex = len;
+	mainform.Textarea_Detail.value = "";
+	mainform.Textarea_Detail.value = mainform.Select_Output.options[len].value;
+}
+
+// 認識完了時のイベントハンドラ
+function Ctxt::Recognition(StreamNum, StreamPos, RecogType, Result)
+{
+	ShowResult("Result:", StreamNum, StreamPos, Result);
+	
+	if (Result.PhraseInfo.GrammarId == 0) // 文法によって表示場所を変える
+	{
+		dictation_text += Result.PhraseInfo.GetText();
+		mainform.Textarea_Dictation.value = dictation_text;
+	}
+	else
+	{
+		mainform.Text_Command.value = "Result:" + Result.PhraseInfo.GetText();
+	}
+}
+
+// 仮説生成時のイベントハンドラ
+function Ctxt::Hypothesis(StreamNum, StreamPos, Result)
+{
+	ShowResult("Hypo:", StreamNum, StreamPos, Result);
+
+	if (Result.PhraseInfo.GrammarId == 0) // 文法によって表示場所を変える
+	{
+		mainform.Textarea_Dictation.value = dictation_text + "(" + Result.PhraseInfo.GetText() + ")";
+	}
+	else
+	{
+		mainform.Text_Command.value = "Hypo:" + Result.PhraseInfo.GetText();
+	}
+}
+
+function MyOnload()
+{
+	var idNameMessage = "NoJSMessage";
+	if ( document.getElementById )
+	{
+		document.getElementById( idNameMessage ).style.visibility = 'hidden';
+	}
+	else if ( document.all )
+	{
+		document.all( idNameMessage ).style.visibility = 'hidden';
+	}
+	else if ( document.layers )
+	{
+		document.layers[ idNameMessage ].visibility = 'hide';
+	}	
+}
+		</SCRIPT>
+	</BODY>
+</HTML>

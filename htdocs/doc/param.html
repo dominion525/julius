@@ -1,0 +1,250 @@
+<h2>MFCCパラメータの設定</h2>
+
+<p>音声波形入力をJuliusで直接認識するには，Juliusのサンプリングレートや窓幅などの特徴量抽出パラメータを，音響モデル学習時の設定と正確に一致させる必要があります．これらの値が学習時とずれていると正しく認識されません．</p>
+
+<p>以下は，HTKの設定ファイルでの指定方法と対応づけられた，Juliusの特徴量抽出パラメータのデフォルト値および設定方法の一覧です．なお，色付きの項目は 3.5.1 以降で対応しています．以下を参考にして，学習時に使用したHTKの config ファイルと同じ設定になるよう Julius のオプションを適切に設定してください．</p>
+
+<p>
+<table border="1">
+<tr bgcolor="#ddddff">
+<th>HTK Option</th>
+<th>Description</th>
+<th>HTK default</th>
+<th>Julius default</th>
+<th>How to set</th>
+</tr>
+
+<tr><td>
+TARGETKIND
+</td><td>
+Parameter kind
+</td><td>
+ANON
+</td><td>
+MFCC<br>
+</td><td bgcolor="#FFcccc">
+Only MFCC, qualifiers (_E, _N, etc.) automatically set from AM header
+</td></tr>
+
+<tr><td>
+NUMCEPS
+</td><td>
+Number of cepstral parameters
+</td><td>
+12
+</td><td>
+-
+</td><td bgcolor="#FFcccc">
+automatically set from AM header
+</td></tr>
+
+<tr><td>
+SOURCERATE
+</td><td>
+Sample rate of source waveform in 100ns units
+</td><td>
+0.0
+</td><td>
+625
+</td><td>
+"-smpPeriod value"
+</td></tr>
+
+<tr><td>
+TARGETRATE
+</td><td>
+Sample rate of target vector (= window shift) in 100ns units
+</td><td>
+0.0
+</td><td>
+160
+</td><td>
+"-fshift samples" (*)
+</td></tr>
+
+<tr><td>
+WINDOWSIZE
+</td><td>
+Analysis window size in 100ns units
+</td><td>
+256000.0
+</td><td>
+400
+</td><td>
+"-fsize samples" (*)
+</td></tr>
+
+<tr><td>
+ZMEANSOURCE
+</td><td>
+Zero mean source waveform before analysis (frame-wise)
+</td><td>
+F
+</td><td>
+F
+</td><td bgcolor="#FFcccc">
+"-zmeanframe" to enable, "-nozmeanframe" to disable.
+</td></tr>
+
+<tr><td>
+PREEMCOEF
+</td><td>
+Set pre-emphasis coefficient
+</td><td>
+0.97
+</td><td>
+0.97
+</td><td bgcolor="#FFcccc">
+"-preemph value"
+</td></tr>
+
+<tr><td>
+USEHAMMING
+</td><td>
+Use a Hamming window
+</td><td>
+T
+</td><td>
+T
+</td><td>
+Fixed
+</td></tr>
+
+<tr><td>
+NUMCHANS
+</td><td>
+Number of filerbank channels
+</td><td>
+20
+</td><td>
+24
+</td><td bgcolor="#FFcccc">
+"-fbank value"
+</td></tr>
+
+<tr><td>
+CEPLIFTER
+</td><td>
+Cepstral liftering coefficient
+</td><td>
+22
+</td><td>
+22
+</td><td bgcolor="#FFcccc">
+"-ceplif value"
+</td></tr>
+
+<tr><td>
+DELTAWINDOW
+</td><td>
+Delta window size in frame
+</td><td>
+2
+</td><td>
+2
+</td><td>
+"-delwin value"
+</td></tr>
+
+<tr><td>
+ACCWINDOW
+</td><td>
+Acceleration window size in frame
+</td><td>
+2
+</td><td>
+2
+</td><td bgcolor="#FFcccc">
+"-accwin value"
+</td></tr>
+
+<tr><td>
+LOFREQ
+</td><td>
+Low frequency cut-off in fbank analysis
+</td><td>
+-1.0
+</td><td>
+-1.0
+</td><td>
+"-lofreq value", or -1 to disable
+</td></tr>
+
+<tr><td>
+HIFREQ
+</td><td>
+High frequency cut-off in fbank analysis
+</td><td>
+-1.0
+</td><td>
+-1.0
+</td><td>
+"-hifreq value", or -1 to disable
+</td></tr>
+
+<tr><td>
+RAWENERGY
+</td><td>
+Use raw energy
+</td><td>
+T
+</td><td>
+F
+</td><td bgcolor="#FFcccc">
+"-rawe" / "-norawe"
+</td></tr>
+
+<tr><td>
+ENORMALISE
+</td><td>
+Normalise log energy
+</td><td>
+T
+</td><td>
+F
+</td><td bgcolor="#FFcccc">
+"-enormal" / "-noenormal" (**)
+</td></tr>
+
+<tr><td>
+ESCALE
+</td><td>
+Scale log energy
+</td><td>
+0.1
+</td><td>
+1.0
+</td><td bgcolor="#FFcccc">
+"-escale value"
+</td></tr>
+
+<tr><td>
+SILFLOOR
+</td><td>
+Energy silence floor in Dbs
+</td><td>
+50.0
+</td><td>
+50.0
+</td><td bgcolor="#FFcccc">
+"-silfloor value"
+</td></tr>
+</table>
+(*) samples = HTK value (in 100ns units) / smpPeriod<br>
+(**) Normalise log energy should not be specified on live input, at both training and recognition (see sec. 5.9 "Direct Audio Input/Output" in HTKBook)
+<p>
+
+以下，注意事項です．
+<ul>
+<li>パラメータ型(TARGETKIND)およびケプストラム次元数(NUMCEPS)は，音響モデルのヘッダ情報から自動的に得られますので，Juliusに対してオプションで明示的に指定する必要はありません．
+<li>表中「Fixed」のパラメータ値は変更できません．
+<li>NUMCHANS, RAWENERGY, ENORMALISE, ESCALE はデフォルト値が HTK と Julius で異なります．注意してください．
+<li>
+マイク入力/ネットワーク入力では ENORMALISE (-enormal) は使えません．マイク入力の直接認識を行いたい場合は，音響モデルを ENORMALISE=F で学習する必要があります．これは HTK と同じ制限です．（HTKBook 5.9節「Direct Audio Input/Output」をご覧下さい）
+</ul>
+
+<hr>
+<div align="right">
+$Id: param.html,v 1.1 2007/03/08 04:41:40 kudravka_ Exp $
+</div>
+

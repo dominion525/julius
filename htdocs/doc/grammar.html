@@ -1,0 +1,252 @@
+<TITLE>Julian用認識文法の書き方</TITLE>
+
+
+<h2>認識用文法とJulian</h2>
+
+Julian は Julius の別形態であり，有限状態文法(DFA)に基づいて，与えられた文法規則の元で入力音声に対して最尤の単語系列を探しだす音声認識エンジンです．その動作には，そのタスクにおいて認識の対象とする文のパターンを記述した「認識用文法」（あるいはタスク文法）が必要です．
+<p>
+ここではJulian用の音声認識用文法の書き方を解説します．なお Julian は Julius のソースアーカイブから configure オプション <code>--enable-julian</code> をつけることでコンパイル可能です．
+
+<h2>資料ダウンロード</h2>
+
+<h3>実行キット</h3>
+
+Julian およびサンプル文法を含むキット一式が用意されています．
+こちらをダウンロードすれば，とりあえずJulianを動かしてみることができます．
+<p>
+<a href="../juliankit.html">Julian記述文法音声認識キット</a>のページからダウンロードしてください．
+
+<h3>サンプル文法</h3>
+
+サンプルの認識用文法ファイルを以下からダウンロードできます．
+参考にしてください．
+<ul>
+<li><a
+href="http://prdownloads.sourceforge.jp/julius/16212/sample_grammars.tar.gz"
+target="_blank">Unix用 (EUC)</a>
+<li><a
+href="http://prdownloads.sourceforge.jp/julius/16212/sample_grammars_sjis.zip"
+target="_blank">Windows用 (SJIS)</a>
+</ul>
+なお，これらのサンプル文法は，上記の実行キット内の "SampleGrammars" フォルダに含まれているものと同じです．キットをダウンロードされた方はこちらを追加ダウンロードする必要はありません．
+<p>
+以下のサンプル文法は，上記のアーカイブに含まれていますが，個別にダウンロードすることもできます．
+<ul>
+<li><a href="../archive/grammar/fruit.tar.gz">fruit.tar.gz</a><br>
+上で例として挙げた「ぶどう３個」「りんごにしてください」などの認識を行う簡単な文法．単語数は20単語．
+<li><a href="../archive/grammar/railroad.tar.gz">railroad.tar.gz</a><br>
+全国の新幹線の駅名について「〜駅から〜駅まで」の認識を行う文法．
+単語数は89単語．
+<li><a href="../archive/grammar/vfr.tar.gz">vfr.tar.gz</a><br>
+「服装選択システム」用の文法．「上着を赤にしてください」「シャツを派手にしてください」などの文章を認識する文法．単語数は99単語．
+</ul>
+<p>下記のファイルは全て漢字コードは SJIS，改行コードは Unix (LF) です．</p>
+<p>参考：漢字コード/改行コードを上記の形式（SJIS/Unix）に変換す
+るには，たとえば<a
+href="http://hp.vector.co.jp/authors/VA000501/"
+target="_top">qkc</a>で以下のようにします．</p>
+
+<pre>
+% qkc -s -u ファイル名
+</pre>
+
+<h2>Julian用認識文法の作成</h2>
+
+Julian では，タスク文法を以下の２つのファイルに分けて記述します．
+<ol>
+<li><b>grammar ファイル</b>：構文制約を単語のカテゴリを終端規則として記述する 
+<li><b>voca ファイル</b>：カテゴリごとに単語の表記と読み（音素列）を登録する 
+</ol>
+それぞれの書き方を以下に説明します．なお，例としてここでは『りんご３個です』『蜜柑8個をください』などの発話を受理する「果物注文システム」用の文法を取り上げます．
+
+<h3>grammarファイル</h3>
+grammar ファイルでは，単語のカテゴリ間の構文制約（単語間の接続に関する制約）をBNF 風に形式的に記述します．"<code>S</code>" を開始記号として，1行につき1つの書き換え規則を記述します．具体的には，左辺に書き換え元のシンボルを表記し， セミコロン "<code>:</code>" で区切って右辺に書き換え後のシンボル列を列挙します．
+<p>
+この文法における終端記号，すなわち左辺に現れなかったシンボル群が，実際の単語（のカテゴリ）を表す「単語カテゴリ」となります．これらの各単語カテゴリに認識時に実際に展開される単語群は，あとで voca ファイルで記述します．
+<p>
+例として，前述の「果物注文システム」のための grammar ファイル
+"<code>fruit.grammar</code>" を以下に示します．
+<pre>
+S       :  NS_B FRUIT_N PLEASE NS_E
+# 果物名(+数量)
+FRUIT_N :  FRUIT
+FRUIT_N :  FRUIT NUM KO
+# ください/にしてください/です
+PLEASE  :  WO KUDASAI
+PLEASE  :  NISHITE KUDASAI
+PLEASE  :  DESU
+</pre>
+この例では，"<code>FRUIT</code>"，"<code>NUM</code>"，"<code>KO</code>"，"<code>WO</code>"，"<code>KUDASAI</code>"，"<code>NISHITE</code>"，"<code>DESU</code>"，が終端記号（単語カテゴリ）であり，これらに属する単語を voca ファイルで定義することになります．
+<p>
+以下，grammarファイルの記述に関する注意点です．
+<ul>
+<li>"<code>#</code>" で始まる行はコメント行で，任意のコメントを書くことができます．
+<li>英数字とアンダースコアが使用でき，大文字・小文字は区別されます． 
+<li>"<code>NS_B</code>" と "<code>NS_E</code>" はそれぞれ実際の発声における文頭および文末の「無音区間」に対応する単語カテゴリです．文の最初と最後に必ず挿入してください．
+<li>改行コードは Unix 形式 (LF) としてください．
+</ul>
+なおこの構文制約は形式上CFGのクラスまで記述可能ですが，Julian はオートマトン，すなわち正規文法のクラスまでしか扱えません．この制限はコンパイル時に自動チェックされます．
+<p>
+また，再帰性は左再帰性のみ扱えます．ループを書きたいときは以下のように記述してください．
+<pre>
+WORD_LOOP: WORD_LOOP WORD
+WORD_LOOP: WORD
+</pre>
+
+
+<h3>vocaファイル</h3>
+
+voca ファイルでは，grammar ファイルで記述した終端記号（＝単語カテゴリ）ごとに単語を登録します．1行に1単語ずつ，その単語の表記と発音音素列を登録します．
+以下に，前述の "<code>fruit.grammar</code>" に対応する voca ファイル "<code>fruit.voca</code>" を示します．改行コードは grammar ファイルと同様に Unix形式(LF)を使用してください．
+<pre>
+% FRUIT
+蜜柑           m i k a N
+リンゴ         r i N g o
+ぶどう         b u d o:
+% NUM
+0         z e r o
+1         i ch i
+2         n i:
+3         s a N
+4         y o N
+5         g o:
+6         r o k u
+7         n a n a
+7         sh i ch i
+8         h a ch i
+9         ky u:
+% KO
+個             k o
+% WO
+を             o
+% KUDASAI
+ください       k u d a s a i
+% NISHITE
+にして         n i sh i t e
+% DESU
+です           d e s u
+% NS_B
+&lt;s&gt;            silB
+% NS_E
+&lt;/s&gt;           silE
+</pre>
+行頭が"<code>%</code>" で始まる行はカテゴリの定義です．定義するカテゴリは 対応するgrammar ファイルと一対一の対応がとれている必要があります．<code>NS_B</code>，<code>NS_E</code>には，それぞれ文頭・文末の無音に対応する無音音響モデル "<code>silB</code>", "<code>silE</code>"を割り当てます．なおこれらの音素体系は使用する音響モデルに依存します．
+<p>
+発音音素列の書き方は，使用する音響モデルに依存します．標準モデルの場合は，
+この<a href="../archive/grammar/phonelist.txt">音素リスト</a>にある43個の音素で
+表記します．以下にルールを簡単に紹介します．
+<ul>
+<li>小さい「っ」は「<code>q</code>」，「ん」は「<code>N</code>」（大文字のN）
+<li>長音は "<code>a:</code>" のように「母音＋"<code>:</code>"」で表記
+<li>「きょ」は「<code>ky o</code>」等
+<li>「じゃ」は「j a」，「ふ」は「f u」，「つ」は「ts u」
+<li>表記ではなく，音に忠実に書く
+<ul>
+<li>格助詞の「へ」「は」はそれぞれ「e」「w a」
+<li>「光景」は「k o: k e:」
+</ul>
+</ul>
+なお，ひらがなから音素列表記へ変換する perl スクリプト "<code>yomi2voca.pl</code>" がアーカイブに含まれていますので，そちらも活用してください．
+
+<h3>Julian形式への変換</h3>
+
+grammar ファイルと voca ファイルを，専用コンパイラ "<code>mkdfa.pl</code>" を用いて Julian 形式へ変換します．これまでの "<code>fruit.grammar</code>", "<code>fruit.voca</code>" に対する <code>mkdfa.pl</code> の実行例を以下に示します．
+<pre>
+% mkdfa.pl fruit
+ruit.grammar has 6 rules
+fruit.voca    has 9 categories and 20 words
+---
+Now parsing grammar file
+Now modifying grammar to minimize states[0]
+Now parsing vocabulary file
+Now making nondeterministic finite automaton[8/8]
+Now making deterministic finite automaton[8/8]
+Now making triplet list[8/8]
+---
+-rw-r--r--    1 foo      users         112 May  9 21:31 fruit.dfa
+-rw-r--r--    1 foo      users         351 May  9 21:31 fruit.dict
+-rw-r--r--    1 foo      users          65 May  9 21:31 fruit.term
+</pre>
+このように，<code>mkdfa.pl</code>は，与えられた文法を Julian用の DFA ネットワークファイル(<code>.dfa</code>)と辞書ファイル(<code>.dict</code>)に変換します．
+
+<h2>文法の妥当性のチェック</h2>
+
+作成した文法がどの程度正しく作れているかをチェックする方法として，作成した文法にしたがって文をランダムに生成してみる，という方法があります．生成させた文章をチェックすることで，その文法のカバーする文パターンをある程度掴むことができますので，意図に反するような文章が生成されないかどうか，あるいは認識して欲しい文章がきちんと出力されるかどうかをチェックする事ができます．
+<p>
+コマンド "<code>generate</code>" で文法からの文のランダム生成が行えます．オプション "<code>-n</code>" で生成数を指定できます．また "<code>-t</code>" でカテ
+ゴリ名での出力もできます (<code>.term</code>ファイル必要)．以下は，前節で生成した "<code>fruit.dfa</code>", "<code>fruit.dict</code>" からの文生成例です．
+<pre>
+% generate fruit
+Reading in dictionary...13 words...done
+Reading in DFA grammar...done
+Mapping dict item <-> DFA terminal (category)...done
+Reading in term file (optional)...done
+9 categories, 13 words
+DFA has 8 nodes and 10 arcs
+----- 
+ &lt;s&lt; 蜜柑 1 個 です &lt;/s&lt;
+ &lt;s&lt; リンゴ 9 個 です &lt;/s&lt;
+ &lt;s&lt; ぶどう 9 個 です &lt;/s&lt;
+ &lt;s&lt; リンゴ です &lt;/s&lt;
+ &lt;s&lt; ぶどう 4 個 です &lt;/s&lt;
+ &lt;s&lt; ぶどう にして ください &lt;/s&lt;
+ &lt;s&lt; ぶどう です &lt;/s&lt;
+ &lt;s&lt; 蜜柑 9 個 です &lt;/s&lt;
+ &lt;s&lt; 蜜柑 です &lt;/s&lt;
+ &lt;s&lt; 蜜柑 を ください &lt;/s&lt;
+</pre>
+
+<h2>Julianの起動</h2>
+
+以下の要領で Julian を起動できます． "<code>-dfa</code>" で
+dfa ファイル，"<code>-v</code>" で dict ファイルを指定します．
+その他のオプションは Julius と同一です．
+<p>
+Julian の全機能やオプション詳細については，付属のドキュメントをご覧下さい．
+
+<h2>その他</h2>
+
+上記で紹介したツールを含め，文法作成を支援する以下のツールが Julius のアーカイブに含まれています．詳細は，それぞれのマニュアルをご覧ください．
+<ul>
+<li><code>mkdfa.pl</code> … 文法コンパイラ
+<li><code>generate</code> … 文ランダム生成ツール
+<li><code>accept_check</code> … 単語列の受理/非受理チェックツール
+<li><code>nextword</code> … 次単語予測チェックツール（accept_checkの高機能版）
+<li><code>gram2sapixml</code> … Julian 形式の文法を SAPI XML 文法に変換するスクリプト
+</ul>
+
+
+<h2>文法作成 Tips</h2>
+
+<h3>NOISE単語</h3>
+
+ある程度の長さの文章を発声しようとするとき，多くの場合，途中で息継ぎなどによる短時間の「発声の休止」が起こります．Julian では，こうした発声休止の<b>出現しうる場所</b>を文法上で指定することで，この発声休止を考慮した認識を行うことができます．
+<p>
+Julian で発声の休止位置を記述する方法は以下の通りです．まず，grammarファイルで，休止の出現しうる単語間に，カテゴリ名「<CODE>NOISE</CODE>」を挿入します．さらに，vocaファイルでこの「<CODE>NOISE</CODE>」に対応する<b>無音単語</b>を定義します．無音単語は，無音音響モデル（ここで配布している標準モデルでは "<code>sp</code>"）のみを読みとする単語です．
+<p>
+以下に fruit での例を示します．この場合，果物名の直後と，「〜を」と「ください」の間に休止が入りうるとして <code>NOISE</code> を挿入しています．コツとしては，「、（読点）」が入りうる場所に入れるのがよいでしょう．
+<pre>
+# fruit.grammar (NOISE対応版)
+S       :  NS_B FRUIT_N <font color="red">NOISE</font> PLEASE NS_E
+# 果物名(+数量)
+FRUIT_N :  FRUIT
+FRUIT_N :  FRUIT NUM KO
+# ください/にしてください/です
+PLEASE  :  WO <font color="red">NOISE</font> KUDASAI
+PLEASE  :  NISHITE KUDASAI
+PLEASE  :  DESU
+</pre>
+これに対応する voca ファイルでは，最後に次の2行を追加します．sp単語の第1欄は無音が挿入されたときに出力される文字列で，何を指定してもOKです．
+<pre>
+% NOISE
+&lt;sp&gt;	sp
+</pre>
+実際に音声認識が行われるとき，入力中のその位置に休止が無ければJulianは<code>NOISE</code> をスキップして処理されます．このように，休止が登場しうる場所に <code>NOISE</code>単語を指定しておくことで，休止を考慮したより柔軟な認識を行うことができます．
+<p>
+なお，無音を表す無音音響モデルの名前のデフォルトは sp です．標準の日本語モデルを用いる場合はデフォルトのままでOKですが，他の音響モデルを用いる場合は，"<code>-spmodel</code>" で変更できます．
+
+<hr>
+
+<div align="right">
+$Id: grammar.html,v 1.2 2007/04/05 06:43:44 kudravka_ Exp $
+</div>

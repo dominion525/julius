@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="euc-jp"?>
+<chapter id='desc_feature'><title>フロントエンド処理・特徴量抽出</title>
+
+<epigraph>
+<para>
+Juliusは入力音声から音声特徴量を抽出し，その特徴量に基づいて認識を行う．
+音声特徴量は，短時間ごとに切り出された音声信号から抽出される特徴ベクト
+ルの時系列である．また，Julius はフロントエンド処理として直流成分除去
+およびスペクトルサブトラクションを実装している．これらは特徴量抽出の前
+段階として処理される．以下，Julius の特徴量抽出を含むフロントエンド処
+理の内容，および設定方法について説明する．
+</para>
+</epigraph>
+
+<sect1><title>フロントエンド処理</title>
+<para>
+フロントエンド処理は，デバイスやファイルからの音声波形入力に対して，
+特徴量抽出前に施される信号処理である．以下に設定可能な内容を列挙する．
+</para>
+
+<sect2><title>直流成分除去</title>
+<para>
+特徴量抽出の前段階として，直流成分除去を行うことができる．方式として，
+オプション<option>-zmean</option>による方法，および
+<option>-zmeansource</option>による方法の２とおりが用意されている．オ
+プション<option>-zmean</option>を指定すると，入力の開始から 48,000 サ
+ンプル分の振幅平均を算出し，それを直流成分（オフセット）として以降の入
+力の直流成分除去を行う．また，オプション <option>-zmeansource</option> 
+は，特徴抽出の直前において，切り出された短時間フレームごとにオフセット
+推定と除去を行う．<option>-zmean</option> は全ての処理の前段として入力
+直後に処理されるため，1回指定すれば全ての音響モデルに影響がある点に注
+意されたい．
+</para>
+</sect2>
+
+<sect2><title>スペクトルサブトラクション</title>
+<para>
+  Julius は音声入力に対してスペクトルサブトラクションを行うことが出来
+  る．これは入力に含まれる定常雑音の除去に一定の効果を持つ．雑音スペク
+  トルの推定方法としては，各入力において，最初の数百ミリ秒を雑音区間と
+  してその平均を用いる方法と，あらかじめ <command>mkss</command> で作
+  成したノイズスペクトルファイルを読み込んで各入力に適用する方法がある．
+  音声ファイルでは両手法が使えるが，オンライン入力では後者のみが使える．
+  また，この処理はモデルごとに指定できるため，音響モデルごとに個々に指
+  定する必要がある．
+</para>
+</sect2>
+</sect1>
+
+<sect1><title>特徴量抽出</title>
+
+<sect2><title>サポートする特徴量</title>
+<para>
+Julius は特徴量としてメル周波数ケプストラム (mel-frequency cepstral
+coefficient; MFCC) に基づく特徴量の抽出をサポートしている．HTK で抽出
+できるMFCCのバリエーションを網羅している．具体的には，MFCCおよびその派
+生パラメータ（パワーや0次ケプストラム，およびそれらの一次差分や二次差
+分）の抽出，および正規化法として直流成分除去，ケプストラム平均正規化 
+(cepstral mean normalization; CMN) およびパワー項正規化をサポートして
+いる．
+また，ケプストラム分散正規化 (cepstral variance normalization; CVN) および
+声道長正規化 (vocal tract length normalization; VTLN) もサポートする．
+</para>
+<para>
+Julius が入力の音声信号から抽出できる特徴量は，上記の MFCC に基づく特
+徴量のみである．このため，音声波形データをJuliusで直接認識するには，音
+響モデルが MFCC に基づく特徴量で学習されたものであることが必要である．
+なお，特徴量抽出済みのHTK 形式のパラメータファイルを入力として認識する
+場合は (<option>-input mfcfile</option>)この限りではなく，入力と音響モ
+デルのパラメータ型が合っていれば認識を行うことができる．
+</para>
+<para>
+音声波形入力を直接認識する場合，入力のサンプリングレートや窓幅，正規化
+の有無などの抽出条件を，音響モデル学習時の条件と正確に一致させる必要が
+ある．HTK形式の音響モデル定義ファイルは学習元のMFCC の抽出条件の情報を
+ほとんど含まない．このため，音声データを直接認識する場合は，モデルの学
+習時の特徴抽出条件と一致するようJuliusの特徴抽出パラメータを設定する必
+要がある．特徴量パラメータの設定方法としては，オプションで値を
+直接指定する方法の他に，HTKの設定ファイルを読み込む方法や，あらかじめ
+バイナリ音響モデルのヘッダに埋め込む方法などが用意されている（以下で詳解する）．
+</para>
+<para>
+複数の音響モデルを用いる場合，特徴量抽出の設定は使用する音響モデルごと
+に独立して行う必要がある．同一の特徴量を用いる場合でも，それぞれの音響
+モデルごとに繰り返し指定する必要がある点に注意されたい．なお，複数の音
+響モデルを使用する場合，サンプリングレート・窓幅・窓シフト長については，
+全ての音響モデルで値が一致している必要がある（一致していなければエ
+ラーとなる）．
+</para>
+</sect2>
+
+<sect2><title>パラメータ指定方法</title>
+<para>
+音声波形を認識する場合，Julius での抽出条件やサンプリング条件と，音響
+モデルを学習したときの条件が一致させる必要がある．これらの値が学習時と
+ずれていると，正しく認識されない．
+</para>
+<para>
+Julius はいくつかのパラメータ指定方法を提供している．以下に列挙する．
+</para>
+
+<sect3><title>指定方法１：直接指定</title>
+<para>
+<xref linkend='table_feature_options'/>に，特徴量抽出のための設定内容
+内容と値を指定するためのオプション，およびデフォルト値の一覧を示す．ま
+た，参考までにHTKの設定オプションとの対応も示す．なお，Julius のデフォ
+ルト値は，標準で配布されている音響モデルの音響分析条件に合わせて決定さ
+れている．
+</para>
+<table id='table_feature_options' frame='all'>
+<title>特徴量抽出条件の設定オプションとデフォルト値</title>
+<tgroup cols='4' align='left' colsep='1' rowsep='1'>
+<thead>
+<row>
+  <entry>オプション</entry>
+  <entry>内容</entry>
+  <entry>デフォルト値</entry>
+  <entry>対応するHTKオプション</entry>
+</row>
+</thead>
+<tbody>
+<row>
+  <entry>(音響モデルよりセット)<!-- auto-set from AM --></entry>
+  <entry>パラメータ種<!-- Parameter kind --></entry>
+  <entry>"MFCC"</entry>
+  <entry>TARGETKIND</entry>
+</row>
+<row>
+  <entry>(音響モデルよりセット)<!-- auto-set from AM --></entry>
+  <entry>ケプストラム次数<!-- Number of cepstral parameters --></entry>
+  <entry>-</entry>
+  <entry>NUMCEPS</entry>
+</row>
+<row>
+  <entry><option>-smpFreq Hz</option></entry>
+  <entry>入力波形のサンプリングレート<!-- Sample rate of input waveform --></entry>
+  <entry>16000</entry>
+  <entry>SOURCERATE*</entry>
+</row>
+<row>
+  <entry><option>-fsize samples</option></entry>
+  <entry>ウィンドウ幅<!-- Window size --></entry>
+  <entry>400 (=25ms in 16kHz)</entry>
+  <entry>WINDOWSIZE*</entry>
+</row>
+<row>
+  <entry><option>-fshift samples</option></entry>
+  <entry>ウィンドウシフト長<!-- Window shift --></entry>
+  <entry>160 (=10ms in 16kHz)</entry>
+  <entry>TARGETRATE*</entry>
+</row>
+<row>
+  <entry><option>-zmeanframe</option></entry>
+  <entry>フレーム単位の直流成分除去<!-- Frame-wise DC offset removal --></entry>
+  <entry>no</entry>
+  <entry>ZMEANSOURCE</entry>
+</row>
+<row>
+  <entry><option>-preemph value</option></entry>
+  <entry>高域強調係数<!-- Pre-emphasis coefficient--></entry>
+  <entry>0.97</entry>
+  <entry>PREEMCOEF</entry>
+</row>
+<row>
+  <entry><option>-fbank value</option></entry>
+  <entry>フィルタバンクチャンネル数<!-- Number of filterbank channels --></entry>
+  <entry>24</entry>
+  <entry>NUMCHANS</entry>
+</row>
+<row>
+  <entry><option>-ceplif value</option></entry>
+  <entry>ケプストラムのリフタリング係数<!-- Cepstral liftering coefficient --></entry>
+  <entry>22</entry>
+  <entry>CEPLIFTER</entry>
+</row>
+<row>
+  <entry><option>-delwin frames</option></entry>
+  <entry>一次差分計算用窓幅<!-- Delta window size --></entry>
+  <entry>2</entry>
+  <entry>DELTAWINDOW</entry>
+</row>
+<row>
+  <entry><option>-accwin frames</option></entry>
+  <entry>二次差分計算用窓幅<!-- Acceleration window size --></entry>
+  <entry>2</entry>
+  <entry>ACCWINDOW</entry>
+</row>
+<row>
+  <entry><option>-lofreq Hz</option></entry>
+  <entry>周波数カットオフの下限<!-- Low frequency cut-off in fbank analysis--></entry>
+  <entry>no (-1)</entry>
+  <entry>LOFREQ</entry>
+</row>
+<row>
+  <entry><option>-hifreq Hz</option></entry>
+  <entry>周波数カットオフの上限<!-- High frequency cut-off in fbank analysis --></entry>
+  <entry>no (-1)</entry>
+  <entry>HIFREQ</entry>
+</row>
+<row>
+  <entry><option>-rawe</option> / <option>-norawe</option></entry>
+  <entry>高域強調前のエネルギーを使用<!-- Use raw energy before emphasis --></entry>
+  <entry>no</entry>
+  <entry>RAWENERGY</entry>
+</row>
+<row>
+  <entry><option>-enormal</option> / <option>-noenormal</option></entry>
+  <entry>対数エネルギー項を正規化<!-- Normalize log energy --></entry>
+  <entry>no</entry>
+  <entry>ENORMALISE</entry>
+</row>
+<row>
+  <entry><option>-escale value</option></entry>
+  <entry>対数エネルギー正規化のスケーリング係数<!-- Scale log energy on normalization--></entry>
+  <entry>1.0</entry>
+  <entry>ESCALE</entry>
+</row>
+<row>
+  <entry><option>-silfloor dB</option></entry>
+  <entry>対数エネルギー正規化のフロアリング係数<!-- Energy silence floor on normalization --></entry>
+  <entry>50.0</entry>
+  <entry>SILFLOOR</entry>
+</row>
+<row>
+  <entry><option>-usepower</option></entry>
+  <entry>フィルタバンク解析で振幅の代わりにパワーを使う<!-- Use power instead of magnitude on filterbank analysis --> (rev.4.0.2)</entry>
+  <entry>no</entry>
+  <entry>USEPOWER</entry>
+</row>
+<row>
+  <entry><option>-cvn</option></entry>
+  <entry>ケプストラム分散正規化<!-- Cepstral variance normalization --> (rev.4.0.2)</entry>
+  <entry>no</entry>
+  <entry>-</entry>
+</row>
+<row>
+  <entry><option>-vtln alpha flo fhi</option></entry>
+  <entry>声道長正規化<!-- Vocal tract length normalization --> (rev.4.0.2)</entry>
+  <entry>1.0 any any (disable)</entry>
+  <entry>WARPFREQ,WARPLCUTOFF,WARPHCUTOFF</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<para>
+パラメータ型 (paramenter kind) およびケプストラム次数 (Number of
+cepstral parameters) は，与えられた音響モデルのヘッダ情報にあるパラメー
+タ型およびベクトル次数から読み取って自動的に設定される．また，窓関数は
+ハミング窓に固定されている．フィルタバンクチャンネル数およびエネルギー
+項に関するいくつかの設定 (<option>-fbank</option>,
+<option>-rawe</option>, <option>-enormal</option>,
+<option>-escale</option>) は，デフォルト値が HTK のデフォルト (それぞ
+れ 20, enable, enable, 0.1) と異なる．また，表中の "*" の項目に
+ついては，Julius と HTK で指定する値の単位が異なるので注意が必要である
+</para>
+</sect3>
+
+<sect3><title>指定方法２：HTK Configの読み込み</title>
+<para>
+HTKで音響モデルを学習する際の特徴抽出に用いた HTK の Config ファイルを，
+オプション <option>-htkconf</option> でJuliusに与えて読み込ませること
+ができる．Julius は与えられた HTK Config ファイルを解析し，対応する特
+徴量パラメータをセットする（特徴量に関するもの以外の設定は無視される）．
+この際，値を指定していない項目のデフォルト値は，Julius のデフォルト値
+ではなく HTK のデフォルト値となる．なお，窓関数はハミング窓で固定であ
+る．
+</para>
+</sect3>
+
+<sect3><title>指定方法３：バイナリHMMファイルへ埋め込む</title>
+<para>
+Juliusバイナリ形式の音響モデルのヘッダに，特徴量の設定情報をあらかじめ
+埋め込んでおくことができる．Juliusの付属ツール 
+<command>mkbinhmm</command> を用いて，HTK ascii 形式から Julius バイナ
+リ形式へ変換することができるが，その際に， <command>mkbinhmm</command> 
+に対して特徴量の設定を与えることができる．<command>mkbinhmm</command> 
+は，与えられた設定内容を出力するバイナリファイルのヘッダに埋め込む．こ
+の埋め込まれた設定情報は，Juliusで読み込む際に判別され，Juliusにロード
+される．設定の与え方は，前述の１あるいは２の方法と同一のオプションで
+行える．
+</para>
+<para>
+この方法は，バージョン 3.5.3 以降でサポートされている．この方法を用い
+ることで，音響モデルの作成者は，そのモデルを用いた認識の際に必要な特徴
+量情報をモデル内に埋め込んでおくことができ，利用者側で設定する必要がな
+くなる．特に音響モデルを配布する場合などに推奨される方法である．
+</para>
+<para>
+なお，複数の方法でパラメータが指定された場合，(1) オプション指定 (2)
+<option>-htkconf</option> の指定 (3) バイナリ音響モデルに埋め込まれた
+設定 (4)デフォルト値，の順で値が評価され，最初に見つかった値が用いられ
+る．すなわち，バイナリ音響モデルの値は <option>-htkconf</option> の値
+によって上書きでき，さらにオプションの直接指定は他の全ての方法による設
+定を上書きできる．
+</para>
+</sect3>
+</sect2>
+</sect1>
+
+<sect1><title>正規化処理</title>
+<para>
+算出後の特徴量に対して，正規化処理を行うことができる．以下に可能な処理を
+述べる．
+</para>
+<sect2><title>ケプストラム平均正規化 (CMN)</title>
+<para>
+長時間のケプストラム平均を差し引いて 0 にすることで特徴量の正規化を行う
+ケプストラム平均正規化 (cepstral mean normalization; CMN) を
+行うことができる．使用する音響モデルが CMN 付きのMFCCで学習されている場合
+（すなわちMFCC型定義に "<literal>_Z</literal>" が含まれているとき），
+CMN が有効となる．
+</para>
+<para>
+CMNは発話単位で行われる．すなわち，その入力発話自身のケプストラム平均
+を求めたあと CMN が実行され，認識処理が行われる．なお，マイクなどの実
+時間入力ではあらかじめ発話全体の特徴量が得られないため，後述の実時間入
+力のための MAP-CMN が用いられる．このため，マイクなどの直接認識時とファ
+イル入力時では CMN の結果が異なる点に注意されたい．
+</para>
+</sect2>
+<sect2><title>ケプストラム分散正規化 (CVN)</title>
+<para>
+（以下は 4.0.1 では未実装である）ケプストラムの分散について 1 になるよ
+う正規化を行うケプストラム分散正規化(cepstral variance normalization;
+CVN) を行うことができる．オプション<option>-cvn</option> を指定すると
+有効化される．処理単位や直接認識時の注意点は CMN と同じである．
+HTK の CVN の実装とは分散推定の単位などが異なるので注意すること．
+</para>
+</sect2>
+<sect2><title>声道長正規化 (VTLN)</title>
+<para>
+（4.0.1 では未実装）オプション <option>-vtln</option> で声道長正規化 
+(vocal tract length normalization; VTLN) を行える．あるいは，
+HTK Config ファイルで VTLN に関する設定がある場合にも有効化される．
+パラメータ推定は実装されておらず，ワーピング係数や上端・下端周波数はあらかじめ与える必要がある．
+</para>
+</sect2>
+</sect1>
+
+<sect1><title>実時間認識処理における正規化</title>
+<para>
+マイクやネットワーク入力では，入力と認識処理が並行して行われるため，発
+話単位全体を考慮するような特徴正規化がそのままでは行えない．このような
+実時間認識処理では，Julius は前発話の情報から近似的に特徴量正規化を行う．
+以下，正規化手法とその実時間認識処理について説明する．
+</para>
+<sect2><title>実時間エネルギー正規化</title>
+<para>
+特徴量のうちエネルギーの値として，発話全体の平均で正規化した正規化エネ
+ルギーを用いることがある．Juliusでは，オプション 
+<option>-enormal</option> を指定することでこのエネルギー項正規化を行える．
+</para>
+<para>
+実時間認識処理の場合，直前の発話のエネルギー平均から正規化が行われる．
+このため，起動して最初の発話は正規化が行われず，また直前の入力から入力
+環境が大きく変化すると追従できないことがある．
+</para>
+</sect2>
+      
+<sect2><title>実時間ケプストラム平均正規化</title>
+<para>
+  Julius は入力に対してケプストラム平均正規化（Cepstral Mean
+  Normalization; CMN）を行える．CMN は，音響モデルが CMN つきで学習さ
+  れている場合 (型識別子に <literal>_Z</literal> を含む場合) に ON となる．
+  CMN では，発話全体の特徴量の平均を減算する．
+</para>
+<para>
+  実時間認識処理では，MAP-CMN が行われる．MAP-CMN では，入力開始時は
+  あらかじめ与えられた初期値から CMN をスタートし，入力が進むにつれて
+  徐々にその発話自身のケプストラム平均を使う．なお，オプションでこの 
+  MAP-CMN の振る舞いを制御したり，初期値をあらかじめ与えることができる．
+  通常，初期値として直前の発話の平均が用いられる．
+</para>
+<para>
+  また，分散正規化（CVN）が有効化されているときは，CVNに対しても上記と
+  同様の方法で処理が行われる．
+</para>
+</sect2>
+</sect1>
+
+</chapter>

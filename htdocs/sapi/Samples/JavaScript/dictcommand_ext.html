@@ -1,0 +1,168 @@
+<HTML>
+	<HEAD>
+		<TITLE>JavaScript Recognition</TITLE>
+		<SCRIPT LANGUAGE="JavaScript">
+<!--
+var Recog = new ActiveXObject("Sapi.SpSharedRecognizer");
+var Ctxt = Recog.CreateRecoContext();
+var dict_loaded = 0;
+var GramDict;
+
+if (Ctxt == null) {
+	alert("オブジェクトが作成できませんでした");
+} else {
+	Ctxt.EventInterests = 2+4+16+32+512;	// SRESoundStart SRESoundEnd SRERecognition SREHypothesis SREFalseRecognition
+	var GramCommand = Ctxt.CreateGrammar(1);
+}
+//-->
+		</SCRIPT>
+		<script id="clientEventHandlersJS" language="javascript">
+<!--
+
+function Checkbox_Dictation_onclick() {
+	if (document.mainform.Checkbox_Dictation.checked)
+	{
+		if (dict_loaded != 1) {
+			GramDict = Ctxt.CreateGrammar(0);
+			GramDict.DictationLoad();
+			dict_loaded = 1;
+		}
+		GramDict.DictationSetState(1);
+	} else {
+		GramDict.DictationSetState(0);
+	}
+}
+
+function Checkbox_Command_onclick() {
+	if (document.mainform.Checkbox_Command.checked)
+	{
+		if (document.mainform.File_Command.value == "") {
+			alert("文法ファイル名を設定してください");
+			document.mainform.Checkbox_Command.checked = false;
+                } else if (document.mainform.Text_Rule_Command.value == "") {
+			alert("アクティブにするルール名を設定してください");
+			document.mainform.Checkbox_Command.checked = false;
+                } else {
+			GramCommand.CmdLoadFromFile(document.mainform.File_Command.value, 1);
+			GramCommand.CmdSetRuleState(document.mainform.Text_Rule_Command.value, 1);
+		}
+	} else {
+		GramCommand.CmdSetRuleState(document.mainform.Text_Rule_Command.value, 0);
+	}
+}
+//-->
+		</script>
+	</HEAD>
+	<BODY>
+		<H1>JavaScript による音声認識サンプル</H1>
+		<FORM NAME="mainform">
+			<P><FONT face="MS UI Gothic">状態: <INPUT id="Text_State" type="text"></FONT></P>
+			<P>
+				<INPUT id="Checkbox_Dictation" type="checkbox" onclick="return Checkbox_Dictation_onclick()">
+				ディクテーション:<BR>
+				<INPUT ID="Text_Dictation" size="71">
+				<INPUT ID="Confidence" size="11"></P>
+				<TEXTAREA id="AltText" rows="10" cols="41"></TEXTAREA>
+			</INPUT>
+			<P>
+				<INPUT id="Checkbox_Command" type="checkbox" onclick="return Checkbox_Command_onclick()">
+				コマンド文法ファイル: <INPUT id="File_Command" type="file" size="9" name="File1"><BR>
+				アクティブにするルール: <INPUT id="Text_Rule_Command" type="text"><BR>
+				<INPUT id="Text_Command" size="69" DESIGNTIMEDRAGDROP="340"><FONT face="MS UI Gothic"><BR>
+				</FONT><FONT face="MS UI Gothic">プロパティ一覧:<BR>
+				</FONT><TEXTAREA id="Textarea_Prop_Command" rows="5" cols="41">
+				</TEXTAREA>
+			</P>
+		</FORM>
+		<SCRIPT>
+
+function DispProp(P, pre, TA)
+{
+	if (P != null)
+	{
+		for (var i=0;i<P.Count;i++)
+		{
+			TA.value += pre + P.Item(i).Name + ":" + P.Item(i).Value + "\n";
+			if (P.Item(i).Children != null)
+				DispProp(P.Item(i).Children, pre + "  ", TA);
+		}
+	}
+}
+
+function Ctxt::SoundStart(StreamNum, StreamPos)
+{
+	document.mainform.Text_State.value = "音声開始";
+}
+
+function Ctxt::SoundEnd(StreamNum, StreamPos)
+{
+	document.mainform.Text_State.value = "音声終了";
+}
+
+function Ctxt::FalseRecognition(StreamNum, StreamPos, Result)
+{
+	document.mainform.Text_State.value = "認識失敗";
+}
+
+// 認識完了時のイベントハンドラ
+function Ctxt::Recognition(StreamNum, StreamPos, RecogType, Result)
+{
+	if (Result.PhraseInfo.GrammarId == 0) // 文法によって表示場所を変える
+	{
+//		mainform.Text_Dictation.value = Result.PhraseInfo.GetText();
+		s = "";
+		for (i=0;i<Result.PhraseInfo.Elements.Count;i++) {
+			s += Result.PhraseInfo.Elements(i).LexicalForm;
+		}
+		mainform.Text_Dictation.value = s;
+
+		// エンジンの信頼度(Julius for SAPI ではビタビスコア) を取得し表示
+		mainform.Confidence.value = Result.PhraseInfo.Rule.EngineConfidence;
+
+		// Alternate (10-best) を表示
+		mainform.AltText.value = "";
+		Alt = Result.Alternates(30);	// 30 個要求してみる
+		for (i=0;i<Alt.Count;i++) {	// Alt.Count は実際に得られた数 (10-best なら 9個得られる)
+			// 文字列と信頼度を表示
+			str = Alt.Item(i).PhraseInfo.GetText();
+			cm = Alt.Item(i).PhraseInfo.Rule.EngineConfidence;
+			mainform.AltText.value = mainform.AltText.value + "Alt#" + i + ":" + str +":"+ cm +"\n";
+		}
+	} else {
+		mainform.Text_Command.value = Result.PhraseInfo.GetText();
+		// プロパティの表示
+		mainform.Textarea_Prop_Command.value = "";
+		DispProp(Result.PhraseInfo.Properties, "", mainform.Textarea_Prop_Command);
+
+
+		// エンジンの信頼度(Julius for SAPI ではビタビスコア) を取得し表示
+		mainform.Confidence.value = Result.PhraseInfo.Rule.EngineConfidence;
+
+		// Alternate (10-best) を表示
+		mainform.AltText.value = "";
+		Alt = Result.Alternates(30);	// 30 個要求してみる
+		if (Alt != null) {
+			for (i=0;i<Alt.Count;i++) {	// Alt.Count は実際に得られた数 (10-best なら 9個得られる)
+				// 文字列と信頼度を表示
+				str = Alt.Item(i).PhraseInfo.GetText();
+				cm = Alt.Item(i).PhraseInfo.Rule.EngineConfidence;
+				mainform.AltText.value = mainform.AltText.value + "Alt#" + i + ":" + str +":"+ cm +"\n";
+			}
+		}
+
+	}
+}
+
+// 仮説生成時のイベントハンドラ
+function Ctxt::Hypothesis(StreamNum, StreamPos, Result)
+{
+	if (Result.PhraseInfo.GrammarId == 0) // 文法によって表示場所を変える
+	{
+		mainform.Text_Dictation.value = "Hypo:" + Result.PhraseInfo.GetText();
+	} else {
+		mainform.Text_Command.value = "Hypo:" +  Result.PhraseInfo.GetText();
+	}
+}
+		</SCRIPT>
+	</BODY>
+</HTML>

@@ -1,0 +1,116 @@
+<HTML>
+	<HEAD>
+		<TITLE>受付タスク</TITLE>
+		<SCRIPT LANGUAGE="JavaScript">
+
+// 認識オブジェクトの作成
+var Recog = new ActiveXObject("Sapi.SpSharedRecognizer");
+// コンテキストの作成
+var Ctxt = Recog.CreateRecoContext();
+Ctxt.EventInterests = 18; // SRESoundStart + SRERecognition
+
+var GramCommand_Attendant;
+var GramCommand_YesNo;
+var DialogState = 0;
+var NameString = "";
+
+		</SCRIPT>
+	</HEAD>
+	<BODY>
+		<H1>対話システムサンプル:受付タスク</H1>
+		<FORM NAME="mainform" ID="Form1">
+			<P>
+				メイン文法ファイル: <INPUT id="FileMain" type="file" name="FileMain"><BR>
+				はいいいえ文法ファイル: <INPUT id="FileYesNo" type="file" name="FileYesNo"><br>
+				<INPUT type="button" value="開始" onclick="StartDialog()" ID="Button1" NAME="Button1">
+				<BR>
+				オペレータのメッセージ: <input ID="mes" size="40"><br>
+				あなたの発話: <input ID="yourspeech" size="40">
+			</P>
+		</FORM>
+		<SCRIPT LANGUAGE="JavaScript">
+function StartDialog()
+{
+	// コマンド文法の読み込み
+	GramCommand_Attendant = Ctxt.CreateGrammar(0);
+	GramCommand_Attendant.CmdLoadFromFile(document.mainform.FileMain.value, 0);
+
+	GramCommand_YesNo = Ctxt.CreateGrammar(1);
+	GramCommand_YesNo.CmdLoadFromFile(document.mainform.FileYesNo.value, 0);
+
+	// 対話状態
+	SetDialogState(0);
+}
+
+function SetDialogState(s)
+{
+	DialogState = s;
+	if (s == 0)
+	{
+		GramCommand_Attendant.CmdSetRuleState("S", 1);
+		GramCommand_YesNo.CmdSetRuleState("S", 0);
+		document.mainform.mes.value = "誰をおよびいたしましょうか";
+	} else
+	{
+		GramCommand_Attendant.CmdSetRuleState("S", 0);
+		GramCommand_YesNo.CmdSetRuleState("S", 1);
+		document.mainform.mes.value = NameString + "でよろしいですか？";
+	}
+}
+
+function Ctxt::Recognition(StreamNum, StreamPos, RecogType, Result)
+{
+	mainform.yourspeech.value = Result.PhraseInfo.GetText();
+	var prop = Result.PhraseInfo.Properties;
+	
+	if (Result.PhraseInfo.GrammarId == 0)
+	{
+		if (prop != null)
+		{
+			for (i=0;i<prop.Count;i++)
+			{
+				if (prop.Item(i).Name == "NAMESTRING")
+				{
+					NameString = prop.Item(i).Value;
+					SetDialogState(1);
+					return;
+				}
+			}
+			document.mainform.mes.value = i + prop.Count + "もう一度おねがいします";
+		} else {
+			document.mainform.mes.value = "もう一度おねがいします";
+		}
+	} else if (Result.PhraseInfo.GrammarId == 1)
+	{
+		if (prop != null)
+		{
+			for (var i=0;i<prop.Count;i++)
+			{
+				if (prop.Item(i).Name == "YESNO")
+				{
+					if (prop.Item(i).Value == 0)
+					{
+						// yes!
+						alert(NameString + "さーん!");
+					}
+					SetDialogState(0);
+					return;
+				}
+			}
+		} else
+		{
+			document.mainform.mes.value = "もう一度おねがいします";
+		}
+	}
+}
+		</SCRIPT>
+		<hr>
+		<P><FONT face="MS UI Gothic">複数文法の切り替えによる対話システムのサンプルです。</FONT></P>
+		<P><FONT face="MS UI Gothic">メイン文法ファイルとはいいいえ文法ファイルに、このディレクトリにある attendant.xml と 
+				yesno.xml をそれぞれ絶対パスで設定し、開始ボタンをクリックします。</FONT></P>
+		<P><FONT face="MS UI Gothic">最初、オペレータは「誰をおよびしましょうか？」と聞いてきます。このとき、attendant.xml 
+				のルールのみがアクティブになっています。「○○さん」と発話すると、「○○でよろしいでしょうか？」と確認してきます。このときは、yesno.xml 
+				のルールのみがアクティブになっていますので、「はい」または「いいえ」と発話します。</FONT></P>
+		<P><FONT face="MS UI Gothic"></FONT>&nbsp;</P>
+	</BODY>
+</HTML>

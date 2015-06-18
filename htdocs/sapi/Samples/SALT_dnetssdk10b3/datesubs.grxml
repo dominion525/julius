@@ -1,0 +1,57 @@
+<grammar xmlns:sapi="http://schemas.microsoft.com/Speech/2002/06/SRGSExtensions" xml:lang="ja" tag-format="semantics-ms/1.0" version="1.0" mode="voice" xmlns="http://www.w3.org/2001/06/grammar">
+	<rule id="month" scope="public">
+		<one-of>
+			<item> いちがつ       <tag>$._value = 1 </tag> </item>
+			<item> にがつ         <tag>$._value = 2 </tag> </item>
+			<item> さんがつ       <tag>$._value = 3 </tag> </item>
+			<item> しがつ         <tag>$._value = 4 </tag> </item>
+			<item> ごがつ         <tag>$._value = 5 </tag> </item>
+			<item> ろくがつ       <tag>$._value = 6 </tag> </item>
+			<item> しちがつ       <tag>$._value = 7 </tag> </item>
+			<item> はつがつ       <tag>$._value = 8 </tag> </item>
+			<item> くがつ         <tag>$._value = 9 </tag> </item>
+			<item> じゅーがつ     <tag>$._value = 10</tag> </item>
+			<item> じゅーいちがつ <tag>$._value = 11</tag> </item>
+			<item> じゅーにがつ   <tag>$._value = 12</tag> </item>
+		</one-of>
+	</rule>
+	<rule id="day" scope="public">
+		<one-of>
+			<item> ついたち           <tag>$._value = 1 </tag> </item>
+			<item> ふつか             <tag>$._value = 2 </tag> </item>
+			<item> みっか             <tag>$._value = 3 </tag> </item>
+			<item> よっか             <tag>$._value = 4 </tag> </item>
+			<item> いつか             <tag>$._value = 5 </tag> </item>
+			<item> むいか             <tag>$._value = 6 </tag> </item>
+			<item> なのか             <tag>$._value = 7 </tag> </item>
+			<item> よーか             <tag>$._value = 8 </tag> </item>
+			<item> ここのか           <tag>$._value = 9 </tag> </item>
+			<item> とーか             <tag>$._value = 10</tag> </item>
+			<item> じゅーいちにち     <tag>$._value = 11</tag> </item>
+			<item> じゅーににち       <tag>$._value = 12</tag> </item>
+			<item> じゅーさんにち     <tag>$._value = 13</tag> </item>
+			<item> じゅーよっか       <tag>$._value = 14</tag> </item>
+			<item> じゅーごにち       <tag>$._value = 15</tag> </item>
+			<item> じゅーろくにち     <tag>$._value = 16</tag> </item>
+			<item> じゅーしちにち     <tag>$._value = 17</tag> </item>
+			<item> じゅーななにち     <tag>$._value = 17</tag> </item>
+			<item> じゅーはちにち     <tag>$._value = 18</tag> </item>
+			<item> じゅーくにち       <tag>$._value = 19</tag> </item>
+			<item> じゅーきゅーにち   <tag>$._value = 19</tag> </item>
+			<item> はつか             <tag>$._value = 20</tag> </item>
+			<item> にじゅーいちにち   <tag>$._value = 21</tag> </item>
+			<item> にじゅーににち     <tag>$._value = 22</tag> </item>
+			<item> にじゅーさんにち   <tag>$._value = 23</tag> </item>
+			<item> にじゅーよっか     <tag>$._value = 24</tag> </item>
+			<item> にじゅーごにち     <tag>$._value = 25</tag> </item>
+			<item> にじゅーろくにち   <tag>$._value = 26</tag> </item>
+			<item> にじゅーしちにち   <tag>$._value = 27</tag> </item>
+			<item> にじゅーななにち   <tag>$._value = 27</tag> </item>
+			<item> にじゅーはちにち   <tag>$._value = 28</tag> </item>
+			<item> にじゅーくにち     <tag>$._value = 29</tag> </item>
+			<item> にじゅーきゅーにち <tag>$._value = 29</tag> </item>
+			<item> さんじゅーにち     <tag>$._value = 30</tag> </item>
+			<item> さんじゅーいちにち <tag>$._value = 31</tag> </item>
+		</one-of>
+	</rule>
+</grammar>

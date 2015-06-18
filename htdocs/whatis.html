@@ -1,0 +1,137 @@
+<h2>Julius/Julianとは</h2>
+
+<p>Julius/Julianは<font color="#ff0000">フリー</font>の高性能音声認識ソフトウェアです．<font color="#ff0000">数万語</font>の語彙を対象とした文章発声の認識を行う能力を持ちます．</p>
+
+<p>Juliusは高速な音声認識を一般的なスペックのPC上で実現します．
+認識率は，20,000語彙の読み上げ音声で<font color="#ff0000">90%</font>以上です．</p>
+
+<p>
+Juliusは，統計言語モデルである単語N-gramを用いた認識を行います．テキストコーパスから学習された単語3-gramを用いて，大語彙の汎用音声認識（書き下し／ディクテーション）を行うことができます．
+</p>
+<p>
+また，記述文法に基づく認識を行うこともできます．文のパターンを人手で記述した認識用文法（有限状態文法）を用いることで，小語彙の音声対話システムや音声コマンド入力など比較的小規模な音声認識システムを容易に構築できます．この機能を持つJuliusは「Julian」と呼ばれ，単語N-gramを用いるJuliusとソースレベルで統合されています．なお本サイトでは，このJuliusとJulianを両方含んだパッケージ全体を，まとめて「Julius」と表記しています．Julius に関する表記の多くは Julian にもあてはまります．
+</p>
+ <p>
+Julius/Julianの最大の特徴はその<font color="#ff0000">可搬性</font>にあります．発音辞書や言語モデル・音響モデルなどの音声認識の各モジュールを組み替えることで，様々な幅広い用途に応用できます．また数語〜数万語までの辞書に１つの実行バイナリでスケーラブルに対応できます．
+</p>
+<p>
+Juliusはオープンソースソフトウェアです．プログラムのソース(C言語)を完全公開しているので，他プラットフォームへの移植や改造も容易です．またライセンスは<A href="license.html">オープンライセンス</A>で，商用利用への制限もありません．バグ報告，要望などの議論，そして開発参加者も随時募集しています．
+</p>
+
+<a name="variations"><h2>3つの派生版</h2></a>
+Julius には，オリジナルを含めて３つのバージョンが存在します．また，研究者・開発者の方の手によって独自に改良・改造された Julius も<a href="contrib/index.html">公開</a>されています．以下に，ここで公開しているメインの３バージョンの違いを説明します．
+
+<h3>a) Julius オリジナル版  --- スタンドアロン/サーバー</h3>
+オリジナルの Julius です．Unix および Windows コンソールモードで動作する，スタンドアロンの音声認識器として動作します．また，認識サーバーとしてネットワーク(TCP/IP)経由で音声を受信し認識結果を送信することが可能です．サンプルクライアント（adintool, jcontrol）も同梱されています．左のリンクの<a href="download.html">ダウンロード</a>から入手できます．
+
+<h3>b) Julius for Windows SAPI --- Microsoft SAPI 用バックエンド</h3>
+Unix版を元に，Windows用の音声認識バックエンドエンジンとしてオリジナルの拡張・改善を加えた Julius です．Microsoft SAPI-5.1 にほぼ完全に準拠しています．アプリケーションはこのJuliusを Microsoft SAPI 経由で制御できます．またSALTもサポートしています．SAPI/SALT を用いた音声アプリケーションのサンプルも提供されています．左のリンクの<a href="/sapi/index.html">Julius for Microsoft SAPI</a>から入手できます．
+
+<h3>c) JuliusLib/JuliusGUI --- ライブラリ版</h3>
+
+Unix版の3.3p4から移植されたクロスプラットフォーム版です．Julius/Julian がライブラリ(DLL)化されていますので，これを用いることで Julius/Julian をアプリケーション内部に組み込むことができます．コンソールアプリ，および GUI版の Julius も含まれています．左のリンクの<a href="http://www.itakura.nuee.nagoya-u.ac.jp/people/banno/julius.html">Julius for Windows</a>から入手できます．
+<p>
+
+
+<h2>Juliusの動作に必要なもの</h2>
+
+<u>Julius単体では音声認識は動きません</u>．Juliusを使って音声認識を行うには，以下のものが必要です．
+
+<ul>
+  <li>音響モデル（音素HMM）…音素ごとの音声波形パターンのモデル．
+  <li>単語辞書…各単語の読みを定義する．
+  <li>言語モデル（単語3-gram）…どのような単語列が出しやすいか，その
+      単語間の接続制約を決定する．
+</ul>
+
+標準的な日本語のモデルは本サイトや以下から入手できます．
+また HTK や palmkit 等のツールを使って自作することもできます．
+
+<ul>
+  <li>本サイトから標準モデルをダウンロードする<br>
+      本サイトで提供している<a href="juliuskit.html">Juliusディクテーション
+      実行キット</a>には，60,000語の連続音声認識を行うための最小限の
+      言語モデル・辞書および音響モデルが含まれています．
+      また<a href="juliankit.html">Julian記述文法音声認識キット</a>にも
+      標準音響モデルとサンプルの文法が含まれています．これらは全てフリーです．
+  <li>教科書「音声認識システム」を入手する<br>
+      オーム社 IT Text<a href="http://ssl.ohmsha.co.jp/cgi-bin/menu.cgi?ISBN=4-274-13228-5">「音声認識システム」</a> の付属CD-ROMに，
+      様々な音声認識用のモデルやツールが含まれています．
+      また，モデル作成や音声認識システムに関する基礎知識も得られます．
+  <li><a href="http://www.lang.astem.or.jp/CSRC/" target="_top">連続音声認識コンソーシアム</a>に加入する<br>
+      CSRCは2000年度から2003年度まで活動したコンソーシアムです．
+	本コンソーシアムの成果である様々な音響モデルや言語モデル，
+	ツール等がCD-ROMの形態で入手可能です．
+</ul>
+
+<a name="spec"><h2>動作環境</h2></a>
+
+以下のOSでの動作を確認しています．
+<ul>
+  <li>PC Linux 2.4.18 with ALSA driver       
+  <li>PC Linux 2.2.18 with OSS driver
+  <li>Sun SPARC/Solaris 2.6 
+</ul>
+
+以下は Rev.3.1 で動作確認済みのOSです．以降のバージョンであれば
+      動作すると思われます．
+
+<ul>
+<li>FreeBSD 3.2-RELEASE       
+<li>Sun Solaris 2.5.1
+<li>Sun Solaris 2.6
+<li>SGIIRIX 6.3
+<li>DEC Digital UNIX 3.2
+<li>Digital UNIX 4.0
+<li>Sun SunOS 4.1.3
+<li>PC Linux 2.2.x, 2.0.x      
+<li>FreeBSD 3.2-RELEASE
+<li>Sun Solaris 2.5.1 以降       
+<li>SGI IRIX 6.3       
+<li>DEC Digital UNIX
+<li>Sun SunOS 4.1.3
+</ul>
+
+<p>Windows 版に関しては，Julius for Windows，または Julius SAPI
+版のページをご覧下さい．</p>
+<p>必要なハードウェアスペックの目安：</p>
+
+<UL>
+  <li>推奨：Pentium 700MHz，メモリ192MB程度     
+  <li>最低限：Pentium 300MHz，メモリ96MB程度     
+</ul>
+
+マイク入力を使用するには，<font color="red">16kHz,16bit</font>で
+録音できるサウンドカード・ドライバが必要です．
+
+<h2>Julius 解説ドキュメント</h2>
+
+<ul>
+<li><a href="book/Julius-book-3.3-ja.pdf">Julius-book 
+  for rev.3.3 日本語版<br> 
+</a>(Julius の全マニュアルと仕様書(PDF形式，88ページ))</li>    
+</ul>
+
+<p>より詳細なドキュメントに関しては <a href="documents.html"> こちら </a> を参
+照してください．</p>
+
+<a name="notification"><h2>お知らせ</h2></a>
+
+Julius の研究・開発には，以下の機関のメンバーが主に関わっていま
+す．音声認識の研究や Julius を用いた音声認識システム開発に興味がある方
+は，是非下記までコンタクトしてください．
+
+<ul>[
+<li><a href="http://www.sp.nitech.ac.jp/" target="_top">名古
+屋工業
+大学 徳田・李研究室</a>
+<li><a href="http://www.ar.media.kyoto-u.ac.jp/" target="_top">
+京都大学
+河原研究室</a>
+</ul>
+
+
+<hr>
+<div align="right">
+$Id: whatis.html,v 1.4 2007/04/30 04:56:14 kudravka_ Exp $
+</div>

@@ -1,0 +1,197 @@
+<!-- 本文開始 -->
+
+<h2>configure オプションの一覧</h2>
+
+Julius/Julian をコンパイルする際の <code>configure</code> オプションの一覧です．
+<p>以下は Julius rev.3.5 について書かれています．「(3.5より)」のオプションは バージョン 3.5 以降でのみ指定できます．</p>
+
+<h3>Julian</h3>
+
+Julian をコンパイルしたい場合には以下を指定します．
+
+<pre>
+--enable-julian			Julian をコンパイルする
+</pre>
+指定しない場合は Julius がコンパイルされます．
+
+
+<h3>環境設定</h3>
+
+音声入力用のマイクドライバや使用ライブラリなどを指定します．たいていは<code>configure</code>が自動的に設定しますが，設定がうまくいかない場合やデフォルト以外を用いたい場合は，以下で指定してください．
+
+<pre>
+--prefix=dir			インストール先の指定
+</pre>
+インストール先のディレクトリを指定します．実行バイナリは ${dir}/bin, マニュアルは ${dir}/man/man1 にインストールされます．デフォルトは /usr/local です．
+
+<pre>
+--with-mictype={oss|alsa|esd|portaudio|sp|freebsd|sol2|sun4|irix}
+</pre>
+マイクデバイスのドライバを指定します．指定しない場合はOS環境から
+自動判別します．各オプションの意味は以下の通りです．
+<ul>
+<li><code>oss</code> --- Open Sound System compatible
+<li><code>alsa</code> --- Advanced Linux Sound Architecture
+<li><code>esd</code> --- EsoundD - The Enlightened Sound Daemon
+<li><code>portaudio</code> --- PortAudio cross platform library
+<li><code>sp</code> --- spAudio
+<li><code>freebsd</code> --- FreeBSD snd driver
+<li><code>sol2</code> --- Solaris2.x audio interface
+<li><code>sun4</code> --- SunOS4.x audio interface
+<li><code>irix</code> --- IRIX6.x audio interface
+</ul>
+なおデフォルトでは Linux では <code>oss</code>, Windows では <code>portaudio</code> が使用されます．esd は 3.5 以降でサポートされます．
+
+<pre>
+--with-netaudio-dir=dir		DatLink ライブラリの場所の指定
+</pre>
+DatLink からの音声入力を使用する場合に，DatLink付属のNetAudioライブラリの include と lib があるディレクトリを指定します．
+
+<pre>
+--disable-pthread		pthread を使用しない
+</pre>
+音声取り込み部のスレッド化を行うのを禁止します．デフォルトでは，
+システムに pthread ライブラリがあれば，音声取り込み部を pthread を用いて
+スレッド化します．
+
+<pre>
+--disable-zlib			zlib を使用しない
+</pre>
+(3.5より)圧縮ファイルの読み込みに zlib を使用するのを禁止します．デフォルトでは，zlib があれば使用し，なければ gzip コマンドを用います．
+
+<pre>
+--enable-charconv={auto|iconv|win|libjcode|no}	文字セット変換
+</pre>
+(3.5より)出OA力テキストの文字セット（文字コード）を変換する方法を指定します．
+<code>iconv</code> は iconv ライブラリを，<code>libjcode</code> は
+（Julius本体に埋め込まれた）libjcode
+ライブラリを使用します．libjcode を使用する場合は，日本語の文字セット変換のみサポートされます．<code>win</code> は Windows の API と libjcode を併用します (Windows用)．<code>no</code> を指定すると文字コード変換そのものを無効にします．デフォルトは "<code>auto</code>" で，Linux では iconv があればそれを使用し，無ければ libjcode を使います．Windows (minGW) 環境ではデフォルトで <code>win</code> が選択されます．
+
+
+<h3>機能拡張</h3>
+
+入出力やアルゴリズムに関する拡張機能を指定するオプションです．これらを指定したJulius/Julian は通常とは異なる振る舞いを行います．
+
+<pre>
+--enable-sp-segment		ショートポーズセグメンテーションを行う
+</pre>
+短いポーズで入力に区切りながら認識を行います．通常 Julius は1入力を1文発話として認識を行いますが，このオプションを指定することにより，短いポーズで細かく区切られた入力断片ごとに逐次的に認識処理が行われます．これにより，入力の文の切目を意識する必要がなくなります．応用としては，1文1ファイルになっていない長い音声ファイルを認識する場合などがあります(Julius のみ)．
+
+<pre>
+--enable-graphout		単語グラフ形式で出力する
+</pre>
+(3.5より)単語グラフ形式で認識結果を出力します．認識アルゴリズムも，効率よく単語グラフを生成するために多少変更されます．詳細は，<a href="graphout.html">単語グラフ出力</a> のページをご覧下さい．
+
+<pre>
+--enable-graphout-nbest		単語グラフ形式の出力（N-bestに基づく）
+</pre>
+(3.5より)<code>--enable-graphout</code>と同様に単語グラフを生成しますが，こちらは通常の N-best 文候補を単語共有により圧縮したグラフを出力します（実験用）．
+
+<pre>
+--enable-words-int		単語ID を ushort (16bit) から int (32bit) に
+</pre>
+単語IDの内部形式を unsigned short から int に変更します．語彙サイズが 65,535 以上の言語モデル・辞書を用いることができるようになります．ただし使用メモリ量は増大します．
+
+<pre>
+--enable-visualize		探索空間の可視化
+</pre>
+Julius/Julianの内部で認識処理の過程をグラフィカルに表示します（要 X11 + gtk)．詳しくは「<a href="visualize.html">探索空間の可視化機能について</a>」のページをご覧下さい．
+
+<pre>
+--enable-cmthres		単語信頼度に基づく仮説の枝刈りを行う
+</pre>
+第2パスの探索において，信頼度がしきい値以下の単語を仮説展開しないようにします．しきい値は<code>-cmthres</code>で与えます．
+
+
+<h3>機能削除</h3>
+
+使用しない機能を無効化することで実行時のメモリや計算量を（若干ですが）節約できます．
+
+<pre>
+--disable-cm			単語信頼度計算を無効にする
+</pre>
+単語信頼度の計算を行わないようにします．
+
+<pre>
+--disbale-class-ngram		クラスN-gram対応を無効にする
+</pre>
+クラスN-gramを扱わないようにします．メモリが数十KByte削減できます（Juliusのみ）．
+
+<pre>
+--disable-mfcc-table		MFCC計算用テーブルを無効にする
+</pre>
+特徴量（MFCC）計算のためのテーブルを使用しない．メモリ量を数KByte削減できます．
+
+
+<h3>アルゴリズムチューニング</h3>
+
+認識アルゴリズムを変更します．通常は，<code>--enable-setup=...</code>で3種類のプリセットから選びます．また，アルゴリズムを細かく指定することも可能です．
+
+<pre>
+--enable-setup={standard|fast|v2.1}    エンジンのプリセットを選択する
+</pre>
+認識アルゴリズムの設定を以下の３種類のプリセットから選択できます．
+
+<ol>
+<li> standard: 標準版
+<li> fast: 高速版（デフォルト）
+<li> v2.1  : rev.2.1互換
+</ol>
+
+以下に詳しく説明します．
+
+<h4>標準版：--enable-setup=standard</h4>
+
+精度を特に重視した設定です．triphoneモデル使用時に第2パスで厳密な単語間triphoneを計算するようになります．精度は 1% 弱改善されますが，第2パスの処理速度は大幅に増加します．また TM, PTM モデルにおける Gaussian Pruning はエラーを生じない safe pruning がデフォルトになります．木構造化辞書では二音素以下の長さの短い単語がすべて線形化されます．
+
+<h4>高速版：--enable-setup=fast (default)</h4>
+
+速度と精度のバランスを取った設定です．何も指定しない場合はこれが選択されます．
+Gaussian pruning 法のデフォルトは最も足切り性能の高い beam pruning となります．
+木構造化辞書では上位頻度の単語が線形化されます．
+
+<h4>rev.2.1互換：--enable-setup=v2.1</h4>
+
+Julius Rev.2.1 と同じアルゴリズムに戻します．1-gram factoring, 第1パスでの単語間トライフォンも行いません．このオプションは通常は用いません．後述の詳細な設定ですべてのオプションをいったん OFF にしたい場合に使用します．
+
+上記を表にまとめると以下のようになります．表中の ○ のオプションが実際に configure 内で enable されます．
+
+<pre>
+           |1-gram     1st pass 2nd pass    tree       Gauss. pruning
+           |factoring  IWCD     strict IWCD separation default method
+===========+===========================================================
+ --enable- | factor1    iwcd1   strict-iwcd2  lowmem2
+-----------+-----------------------------------------------------------
+ standard  |  ○        ○         ○          ×       safe
+   fast    |  ○        ○         ×          ○       beam
+   v2.1    |  ×        ×         ×          ×       safe
+-----------------------------------------------------------------------
+              ＊                               ＊
+（「＊」は Julian に関連しない）
+</pre>
+
+<a name="detail"><h3>詳細なアルゴリズムチューニング</h3></a>
+
+以下のオプションを指定することで，個々のアルゴリズムを有効/無効に指定できます．<code>--enable-setup=...</code>でプリセットされる設定を上書き可能です．それぞれ，"--enable-" と指定すると有効になり，"--disable-" で無効になります．
+<pre>
+--enable-factor2	2-gram factoring を行う (--disable-factor1 も可)
+--enable-lowmem		単一木構造を使用
+--enable-lowmem2	高頻度単語線形化を行う
+（以上は Julius のみ）
+--enalbe-wpair		第1パスで単語対近似を行う（default: 1-best 近似）
+--enalbe-wpair-limit	単語対近似で履歴の上限を N に定める（Nは -nlimit で指定）
+--enable-iwcd1		第1パスで単語間トライフォン計算を行う
+--enable-strict-iwcd2	第2パスで単語展開時に厳密な尤度計算を行う
+--disable-score-beam	第2パスでのスコア計算におけるビームを用いない
+--disable-lmfix		rev.3.4 から導入された言語スコア計算の修正を無効にする
+</pre>
+<code>--enable-lowmem</code>, <code>--enable-lowmem2</code> は，どちらも
+指定しなければ，「音素長が 2 以下の短い単語を線形化する」という動作になります．
+処理の速さとメモリ量は「<code>--enable-lowmem</code> < <code>--enable-lowmem2</code> < 指定なし」となり，認識精度はこの逆の傾向となります．
+
+<!-- 本文終了 -->
+<hr>
+<div align="right">
+$Id: configure.html,v 1.1.1.1 2007/01/10 08:01:57 kudravka_ Exp $
+</div>
+

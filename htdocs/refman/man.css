@@ -1,0 +1,21 @@
+body {
+	color: black;
+	background: #fffff8;
+}
+P {
+	line-height: 110%
+}
+H2 {
+	color: #449944;
+	border-width: 0pt 0pt 3pt 10pt;
+	border-color: #006600;
+	border-style: solid;
+	text-indent: 10pt;
+}
+H3 {
+	margin-top: 1.5em;
+	border-width: 0pt 0pt 2pt 0pt;
+	border-color: #999944;
+	border-style: solid;
+	text-indent: 0.4em;
+}

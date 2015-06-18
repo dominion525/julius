@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<GRAMMAR>
+	<RULE name="Sample1" toplevel="ACTIVE">
+		<L>
+			<P>あさがお</P>
+			<P>ひなげし</P>
+		</L>
+		<O>の花</O>
+		<P>が</P>
+		<P>咲いています。</P>
+	</RULE>
+</GRAMMAR>

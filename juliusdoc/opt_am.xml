@@ -1,0 +1,805 @@
+<refsect2 id='opt_am'>
+<title>
+  Acoustic model and speech analysis (<option>-AM</option>) (<option>-AM_GMM</option>)
+</title>
+
+<para>
+After <literal>-AM name</literal>, an acoustic model and related
+specification should be written.  Acoustic analysis parameters should
+be also specified in this section together with the acoustic model,
+since the parameter.  You can use multiple AMs trained with different
+MFCC types.  For GMM, the required parameter condition should be
+specified just as same as AMs after <option>-AM_GMM</option>.
+</para>
+<para>
+When using multiple AMs, the values of <option>-smpPeriod</option>,
+<option>-smpFreq</option>, <option>-fsize</option> and
+<option>-fshift</option> should be the same among all AMs.
+</para>
+
+<refsect3 id='opt_am_model'><title>acoustic HMM and parameters</title>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-h
+      </option>
+      <replaceable>hmmdef_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Acoustic HMM definition file.  It should be in HTK ascii
+	format, or Julius binary format.  You can convert HTK ascii
+	format to Julius binary format using
+	<command>mkbinhmm</command>.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-hlist
+      </option>
+      <replaceable>hmmlist_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	HMMList file for phone mapping.  This file provides mapping
+	between logical triphone names generated in the dictionary and
+	the defined HMM names in hmmdefs.  This option should be
+	specified for context-dependent model.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-tmix
+      </option>
+      <replaceable>number</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Specify the number of top Gaussians to be calculated in a
+	mixture codebook.  Small number will speed up the acoustic
+	computation, but AM accuracy may get worse with too small
+	value. See also <option>-gprune</option>.  (default: 2)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-spmodel
+      </option>
+      <replaceable>name</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Specify HMM model name that corresponds to short-pause in an
+	utterance.  The short-pause model name will be used in
+	recognition: short-pause skipping on grammar recognition,
+	word-end short-pause model insertion with
+	<option>-iwsp</option> on N-gram, or short-pause segmentation
+	(<option>-spsegment</option>). (default: "sp")
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-multipath
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Enable multi-path mode.  To make decoding faster, Julius by
+	default impose a limit on HMM transitions that each model
+	should have only one transition from initial state and to end
+	state.  On multi-path mode, Julius does extra handling on
+	inter-model transition to allows model-skipping transition and
+	multiple output/input transitions.  Note that specifying this
+	option will make Julius a bit slower, and the larger beam
+	width may be required.
+      </para>
+      <para>
+	This function was a compilation-time option on Julius 3.x, and
+	now becomes a run-time option.  By default (without this
+	option), Julius checks the transition type of specified HMMs,
+	and enable the multi-path mode if required.  You can force
+	multi-path mode with this option.  (rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gprune
+      </option>
+      <literal>
+	{safe|heuristic|beam|none|default}
+      </literal>
+    </term>
+    <listitem>
+      <para>
+	Set Gaussian pruning algorithm to use.  For tied-mixture
+	model, Julius performs Gaussian pruning to reduce acoustic
+	computation, by calculating only the top N Gaussians in each
+	codebook at each frame.  The default setting will be set
+	according to the model type and engine setting.
+	<literal>default</literal> will force accepting the default
+	setting.  Set this to <literal>none</literal> to disable
+	pruning and perform full computation. <literal>safe</literal>
+	guarantees the top N Gaussians to be computed.
+	<literal>heuristic</literal> and <literal>beam</literal> do
+	more aggressive computational cost reduction, but may result
+	in small loss of accuracy model (default:
+	<literal>safe</literal> (standard), <literal>beam</literal>
+	(fast) for tied mixture model, <literal>none</literal> for non
+	tied-mixture model).
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-iwcd1
+      </option>
+      <literal>
+	{max|avg|best number}
+      </literal>
+    </term>
+    <listitem>
+      <para>
+	Select method to approximate inter-word triphone on the head
+	and tail of a word in the first pass.
+      </para>
+      <para>
+	<literal>max</literal> will apply the maximum likelihood of
+	the same context triphones.  <literal>avg</literal> will apply
+	the average likelihood of the same context triphones.
+	<literal>best number</literal> will apply the average of top
+	N-best likelihoods of the same context triphone.
+      </para>
+      <para>
+	Default is <literal>best 3</literal> for use with N-gram, and
+	<literal>avg</literal> for grammar and word.  When this AM is
+	shared by LMs of both type, latter one will be chosen.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-iwsppenalty
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Insertion penalty for word-end short pauses appended by
+	<option>-iwsp</option>.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gshmm
+      </option>
+      <replaceable>hmmdef_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	If this option is specified, Julius performs Gaussian Mixture
+	Selection for efficient decoding.  The hmmdefs should be a
+	monophone model generated from an ordinary monophone HMM
+	model, using <command>mkgshmm</command>.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gsnum
+      </option>
+      <replaceable>number</replaceable>
+    </term>
+    <listitem>
+      <para>
+	On GMS, specify number of monophone states to compute
+	corresponding triphones in detail.  (default: 24)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+<refsect3 id='opt_analysis'>
+<title>
+  Speech analysis parameters
+</title>
+<para>
+  Only MFCC feature extraction is supported in current Julius.  Thus
+  when recognizing a waveform input from file or microphone, AM must
+  be trained by MFCC.  The parameter condition should also be set as
+  exactly the same as the training condition by the options below.
+
+  When you give an input in HTK Parameter file, you can use any
+  parameter type for AM.  In this case Julius does not care about the
+  type of input feature and AM, just read them as vector sequence and
+  match them to the given AM.  Julius only checks whether the
+  parameter types are the same.  If it does not work well, you can
+  disable this checking by <option>-notypecheck</option>.
+
+  In Julius, the parameter kind and qualifiers (as
+  <literal>TARGETKIND</literal> in HTK) and the number of cepstral
+  parameters (<literal>NUMCEPS</literal>) will be set automatically
+  from the content of the AM header, so you need not specify them by
+  options.
+
+  Other parameters should be set exactly the same as training
+  condition.  You can also give a HTK Config file which you used to
+  train AM to Julius by <option>-htkconf</option>.  When this option
+  is applied, Julius will parse the Config file and set appropriate
+  parameter.
+
+  You can further embed those analysis parameter settings to a binary
+  HMM file using <command>mkbinhmm</command>.
+
+  If options specified in several ways, they will be evaluated in the
+  order below.  The AM embedded parameter will be loaded first if any.
+  Then, the HTK config file given by <option>-htkconf</option> will be
+  parsed.  If a value already set by AM embedded value, HTK config
+  will override them.  At last, the direct options will be loaded,
+  which will override settings loaded before.  Note that, when the
+  same options are specified several times, later will override
+  previous, except that <option>-htkconf</option> will be evaluated
+  first as described above.
+</para>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-smpPeriod
+      </option>
+      <replaceable>period</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Sampling period of input speech, in unit of 100 nanoseconds.
+	Sampling rate can also be specified by
+	<option>-smpFreq</option>.  Please note that the input
+	frequency should be set equal to the training conditions of
+	AM. (default: 625, corresponds to 16,000Hz)
+      </para>
+      <para>
+	This option corresponds to the HTK Option
+	<literal>SOURCERATE</literal>.  The same value can be given to
+	this option.
+      </para>
+      <para>
+	When using multiple AM, this value should be the same among all
+	AMs.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-smpFreq
+      </option>
+      <replaceable>Hz</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Set sampling frequency of input speech in Hz.  Sampling rate
+	can also be specified using <option>-smpPeriod</option>.
+	Please note that this frequency should be set equal to the
+	training conditions of AM.  (default: 16,000)
+      </para>
+      <para>
+	When using multiple AM, this value should be the same among all
+	AMs.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-fsize
+      </option>
+      <replaceable>sample_num</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Window size in number of samples. (default: 400)
+      </para>
+      <para>
+	This option corresponds to the HTK Option
+	<literal>WINDOWSIZE</literal>, but value should be in samples
+	(HTK value / smpPeriod).
+      </para>
+      <para>
+	When using multiple AM, this value should be the same among all
+	AMs.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-fshift
+      </option>
+      <replaceable>sample_num</replaceable>
+    </term>
+    <listitem>
+      <para>
+      Frame shift in number of samples. (default: 160)
+      </para>
+      <para>
+	This option corresponds to the HTK Option
+	<literal>TARGETRATE</literal>, but value should be in samples
+	(HTK value / smpPeriod).
+      </para>
+      <para>
+	When using multiple AM, this value should be the same among all
+	AMs.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-preemph
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Pre-emphasis coefficient. (default: 0.97)
+      </para>
+      <para>
+	This option corresponds to the HTK Option
+	<literal>PREEMCOEF</literal>.  The same value can be given to
+	this option.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-fbank
+      </option>
+      <replaceable>num</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Number of filterbank channels. (default: 24)
+      </para>
+      <para>
+	This option corresponds to the HTK Option
+	<literal>NUMCHANS</literal>.  The same value can be given to
+	this option.  Be aware that the default value not the same as
+	in HTK (22).
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-ceplif
+      </option>
+      <replaceable>num</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Cepstral liftering coefficient. (default: 22)
+      </para>
+      <para>
+	This option corresponds to the HTK Option
+	<literal>CEPLIFTER</literal>.  The same value can be given to
+	this option.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-rawe
+      </option>
+    </term>
+    <term>
+      <option>
+	-norawe
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Enable/disable using raw energy before pre-emphasis (default: disabled)
+      </para>
+      <para>
+	This option corresponds to the HTK Option
+	<literal>RAWENERGY</literal>.  Be aware that the default value
+	differs from HTK (enabled at HTK, disabled at Julius).
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-enormal
+      </option>
+    </term>
+    <term>
+      <option>
+	-noenormal
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Enable/disable normalizing log energy.  On live input, this
+	normalization will be approximated from the average of last
+	input.  (default: disabled)
+      </para>
+      <para>
+	This option corresponds to the HTK Option
+	<literal>ENORMALISE</literal>.  Be aware that the default
+	value differs from HTK (enabled at HTK, disabled at Julius).
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-escale
+      </option>
+      <replaceable>float_scale</replaceable>
+    </term>
+    <listitem>
+      <para>
+      Scaling factor of log energy when normalizing log
+      energy. (default: 1.0)
+      </para>
+      <para>
+	This option corresponds to the HTK Option
+	<literal>ESCALE</literal>.  Be aware that the default value
+	differs from HTK (0.1).
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-silfloor
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Energy silence floor in dB when normalizing log energy.
+	(default: 50.0)
+      </para>
+      <para>
+	This option corresponds to the HTK Option
+	<literal>SILFLOOR</literal>.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-delwin
+      </option>
+      <replaceable>frame</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Delta window size in number of frames. (default: 2)
+      </para>
+      <para>
+	This option corresponds to the HTK Option
+	<literal>DELTAWINDOW</literal>.  The same value can be given
+	to this option.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-accwin
+      </option>
+      <replaceable>frame</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Acceleration window size in number of frames. (default: 2)
+      </para>
+      <para>
+	This option corresponds to the HTK Option <literal>ACCWINDOW</literal>.
+	The same value can be given to this option.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-hifreq
+      </option>
+      <replaceable>Hz</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Enable band-limiting for MFCC filterbank computation: set
+	upper frequency cut-off.  Value of -1 will disable it.
+	(default: -1)
+      </para>
+      <para>
+	This option corresponds to the HTK Option
+	<literal>HIFREQ</literal>.  The same value can be given to
+	this option.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-lofreq
+      </option>
+      <replaceable>Hz</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Enable band-limiting for MFCC filterbank computation: set
+	lower frequency cut-off.  Value of -1 will disable it.
+	(default: -1)
+      </para>
+      <para>
+	This option corresponds to the HTK Option <literal>LOFREQ</literal>.
+	The same value can be given to this option.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-zmeanframe
+      </option>
+    </term>
+    <term>
+      <option>
+	-nozmeanframe
+      </option>
+    </term>
+    <listitem>
+      <para>
+	With speech input, this option enables/disables frame-wise DC
+	offset removal.  This corresponds to HTK configuration
+	<literal>ZMEANSOURCE</literal>.  This cannot be used together
+	with <option>-zmean</option>.  (default: disabled)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+
+<refsect3 id='opt_cmn'><title>Real-time cepstral mean normalization</title>
+<para>
+  Julius can perform cepstral mean normalization (CMN) for inputs.
+  CMN will be activated when the given AM was trained with CMN
+  (i.e. has "_Z" qualifier in the header).
+</para>
+<para>
+  The cepstral mean will be estimated in different way according to
+  the input type.  On file input, the mean will be computed from the
+  whole input.  On live input such as microphone and network input,
+  the ceptral mean of the input is unknown at the start.  So MAP-CMN
+  will be used.  On MAP-CMN, an initial mean vector will be applied at
+  the beginning, and the mean vector will be smeared to the mean of
+  the incrementing input vector as input goes.  Options below can
+  control the behavior of MAP-CMN.
+</para>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-cmnload
+      </option>
+      <replaceable>file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Load initial cepstral mean vector from file on startup.  The
+	<replaceable>file</replaceable> should be one saved by
+	<option>-cmnsave</option>.  Loading an initial cepstral mean
+	enables Julius to better recognize the first utterance on a
+	real-time input.  When used together with
+	<option>-cmnnoupdate</option>, this initial value will be used
+	for all input.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-cmnsave
+      </option>
+      <replaceable>file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Save the calculated cepstral mean vector into
+	<replaceable>file</replaceable>.  The parameters will be saved
+	at each input end.  If the output file already exists, it will
+	be overridden.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-cmnupdate
+      </option>
+      <option>
+	-cmnnoupdate
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Control whether to update the cepstral mean at each input on
+	real-time input.  Disabling this and specifying
+	<option>-cmnload</option> will make engine to always use the
+	loaded static initial cepstral mean.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-cmnmapweight
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Specify the weight of initial cepstral mean for MAP-CMN.
+	Specify larger value to retain the initial cepstral mean for a
+	longer period, and smaller value to make the cepstral mean rely
+	more on the current input.  (default: 100.0)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+
+<refsect3 id='opt_ss'><title>Spectral subtraction</title>
+<para>
+  Julius can perform spectral subtraction to reduce some stationary
+  noise from audio input.  Though it is not a powerful method, but it
+  may work on some situation.  Julius has two ways to estimate noise
+  spectrum.  One way is to assume that the first short segment of an
+  speech input is noise segment, and estimate the noise spectrum as
+  the average of the segment.  Another way is to calculate average
+  spectrum from noise-only input using other tool
+  <command>mkss</command>, and load it in Julius.  The former one 
+  is popular for speech file input, and latter should be used in 
+  live input.  The options below will switch / control the behavior.
+</para>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-sscalc
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Perform spectral subtraction using head part of each file as
+	silence part.  The head part length should be specified by
+	<option>-sscalclen</option>.  Valid only for file input.
+	Conflict with <option>-ssload</option>.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-sscalclen
+      </option>
+      <replaceable>msec</replaceable>
+    </term>
+    <listitem>
+      <para>
+	With <option>-sscalc</option>, specify the length of head
+	silence for noise spectrum estimation in milliseconds. (default: 300)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-ssload
+      </option>
+      <replaceable>file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Perform spectral subtraction for speech input using
+	pre-estimated noise spectrum loaded from
+	<replaceable>file</replaceable>.  The noise spectrum file can
+	be made by <command>mkss</command>.  Valid for all speech
+	input.  Conflict with <option>-sscalc</option>.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-ssalpha
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Alpha coefficient of spectral subtraction for
+	<command>-sscalc</command> and <command>-ssload</command>.
+	Noise will be subtracted stronger as this value gets larger,
+	but distortion of the resulting signal also becomes
+	remarkable.  (default: 2.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-ssfloor
+      </option>
+      <replaceable>float</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Flooring coefficient of spectral subtraction.  The spectral
+	power that goes below zero after subtraction will be
+	substituted by the source signal with this coefficient
+	multiplied.  (default: 0.5)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+
+<refsect3 id='opt_am_misc'><title>Misc AM options</title>
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-htkconf
+      </option>
+      <replaceable>file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Parse the given HTK Config file, and set corresponding
+	parameters to Julius.  When using this option, the default
+	parameter values are switched from Julius defaults to HTK
+	defaults.
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+</refsect3>
+
+</refsect2>

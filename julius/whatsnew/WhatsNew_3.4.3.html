@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-2022-JP">
+<link rel="stylesheet" type="text/css" href="default.css">
+<html> <head>
+<title>What's New in Rev.3.4.3</title>
+</head>
+<body>
+<h1>Rev.3.4.3 の変更点</h1>
+
+Julius/Julian rev.3.4.3 は主にバグ修正リリースです．
+認識性能は以前のバージョンと同一です．<br>
+使用方法はほとんど変わりませんが，Windows版のみ漢字コード関連で
+設定(<code>-kanji sjis</code>)が必要な場合があります．
+<p>
+前バージョン（3.4.2）からの主な変更点は以下の通りです．
+<ul>
+<!--
+  <ul>
+  <li><a href="#beam">ビームのワークエリア使用メモリ量を削減</a>
+  <li><a href="#lexicon">木構造化辞書のメモリ量を一部削減</a>
+  </ul>
+-->
+<!-- <li><a href="#newfeature">新機能</a> -->
+<li>新機能
+  <ul>
+  <li><a href="#esd">(Linux) EsounD サポート (--with-mictype=esd)</a>
+  <li><a href="#audiodev">(Linux) 音声デバイスを /dev/dsp 以外に指定可能</a>
+  <li><a href="#kanji">(Win32) 出力漢字コード指定の追加</a>
+  </ul>
+<!-- <li><a href="#changes">仕様変更</a> -->
+<li>仕様変更
+  <ul>
+  <li><a href="#kanji">(Win32) 漢字コード変換のデフォルト変換をOFFに</a>
+  <li><a href="#compile">(Win32) コンパイル手順の変更</a>
+  </ul>
+<li><a href="#memory">メモリ使用量の改善</a>
+<li><a href="#bugs">バグ修正</a>
+<li><a href="#comment">ソースにコメントを追加</a>
+</ul>
+
+以下，変更点について解説します．
+
+<h2><a name="memory">メモリ使用量の改善</a></h2>
+  <h3><a name="beam">ビームのワークエリア使用メモリ量を削減</a></h3>
+  <h3><a name="lexicon">木構造化辞書のメモリ量を一部削減</a></h3>
+<h2><a name="newfeature">新機能</a></h2>
+  <h3><a name="esd">(Linux) EsounD オーディオサーバー経由の音声入力をサポート (--with-mictype=esd)</a></h3>
+  <h3><a name="audiodev">(Linux) 音声デバイス名(デフォルト:/dev/dsp)を環境変数 AUDIODEV で指定可能</a></h3>
+  <h3><a name="kanji">(Win32) 出力エンコーディングオプション "-kanji {euc|sjis|jis|noconv}" を追加．</a></h3>
+<h2><a name="changes">仕様変更</a></h2>
+  <h3><a name="kanji">(Win32) 漢字コード変換をデフォルトで変換しないように変更．</a></h3>
+  <h3><a name="compile">(Win32) VC++でのコンパイル方法を変更</a></h3>
+<h2><a name="bugs">バグ修正</a></h2>
+  <h3><a name="ss">スペクトルサブトラクションが動かないバグを修正</a></h3>
+  <h3><a name="shortinput">ごく短い入力（1〜4フレーム）で落ちるバグを修正</a></h3>
+  <h3><a name="maxcodebooksize">maxcodebooksize が表示されないバグを修正</a></h3>
+  <h3><a name="spsegment">逐次デコーディング(--enable-sp-segment)におけるsp単語扱いのバグを修正</a></h3>
+  <h3><a name="winlrcf">(Win32) 改行コード対応 (文法ファイル・-filelist）</a></h3>
+  <h3><a name="winmkdfa">(Win32) cygwin環境で mkdfa.pl がテンポラリを開けないバグを修正</a></h3>
+  <h3><a name="winzlib">(Win32) ZLIB非使用時にfopenに失敗することがあるバグを修正</a></h3>
+  <h3><a name="stack">stack empty で探索失敗時に得られた候補数を表示</a></h3>
+  <h3><a name="testbit">iccでコンパイルしたJuliusが起動時に落ちるバグを修正</a></h3>
+<h2><a name="comment">ソースにコメントを追加</a></h2>
+
+<h2><a name="optsummary">オプション変更一覧</a></h2>
+Julius-3.4.2 で変更された<code>configure</code>オプションおよび起動時オプションの一覧です。
+<br><br>
+<code>configure</code>オプション：<BR><BR>
+<ul>
+<li>変更なし
+</ul>
+起動時オプション：
+<ul>
+<li>新規追加：<code><a href="#iwcdbest">-rejectshort msec</a></code>
+</ul>
+
+<hr>
+<small><i>$Id: WhatsNew_3.4.3.html,v 1.1.1.1 2005/11/17 11:11:49 sumomo Exp $</i></small><br>
+</body> </html>

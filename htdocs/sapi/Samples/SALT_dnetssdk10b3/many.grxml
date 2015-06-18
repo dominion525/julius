@@ -1,0 +1,12 @@
+<grammar xmlns:sapi="http://schemas.microsoft.com/Speech/2002/06/SRGSExtensions" xml:lang="ja" tag-format="semantics-ms/1.0" version="1.0" root="many" mode="voice" xmlns="http://www.w3.org/2001/06/grammar">
+	<rule id="many" scope="public">
+		<one-of>
+			<item> ひとり   <tag>$._value = 1</tag> </item>
+			<item> ふたり   <tag>$._value = 2</tag> </item>
+			<item> さんにん <tag>$._value = 3</tag> </item>
+			<item> よにん   <tag>$._value = 4</tag> </item>
+			<item> ごにん   <tag>$._value = 5</tag> </item>
+			<item> ろくにん <tag>$._value = 6</tag> </item>
+		</one-of>
+	</rule>
+</grammar>

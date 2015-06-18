@@ -1,0 +1,389 @@
+<refsect2 id='opt_lm'>
+<title>
+  Language model (<option>-LM</option>)
+</title>
+
+<para>
+  Only one type of LM can be specified for a LM configuration.  If you
+  want to use multi model, you should define them one as a new LM.
+</para>
+
+<refsect3 id='opt_ngram'><title>N-gram</title>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-d
+      </option>
+      <replaceable>bingram_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Use binary format N-gram.  An ARPA N-gram file can be
+	converted to Julius binary format by
+	<command>mkbingram</command>.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nlr
+      </option>
+      <replaceable>arpa_ngram_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	A forward, left-to-right N-gram language model in standard
+	ARPA format.  When both a forward N-gram and backward N-gram
+	are specified, Julius uses this forward 2-gram for the 1st
+	pass, and the backward N-gram for the 2nd pass.
+      </para>
+      <para>
+	Since ARPA file often gets huge and requires a lot of time to
+	load, it may be better to convert the ARPA file to Julius
+	binary format by <command>mkbingram</command>.  Note that if
+	both forward and backward N-gram is used for recognition, they
+	together will be converted to a single binary.
+      </para>
+      <para>
+	When only a forward N-gram is specified by this option and no
+	backward N-gram specified by <option>-nrl</option>, Julius
+	performs recognition with only the forward N-gram.  The 1st 
+	pass will use the 2-gram entry in the given N-gram, and
+	The 2nd pass will use the given N-gram, with converting
+	forward probabilities to backward probabilities by Bayes rule.
+	(Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nrl
+      </option>
+      <replaceable>arpa_ngram_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	A backward, right-to-left N-gram language model in standard
+	ARPA format.  When both a forward N-gram and backward N-gram
+	are specified, Julius uses the forward 2-gram for the 1st
+	pass, and this backward N-gram for the 2nd pass.
+      </para>
+      <para>
+	Since ARPA file often gets huge and requires a lot of time to
+	load, it may be better to convert the ARPA file to Julius
+	binary format by <command>mkbingram</command>.  Note that if
+	both forward and backward N-gram is used for recognition, they
+	together will be converted to a single binary.
+      </para>
+      <para>
+	When only a backward N-gram is specified by this option and no
+	forward N-gram specified by <option>-nlr</option>, Julius
+	performs recognition with only the backward N-gram.  The 1st
+	pass will use the forward 2-gram probability computed from the
+	backward 2-gram using Bayes rule.  The 2nd pass fully use the
+	given backward N-gram.	(Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-v
+      </option>
+      <replaceable>dict_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Word dictionary file.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-silhead
+      </option>
+      <replaceable>word_string</replaceable>
+      <option>
+	-siltail
+      </option>
+      <replaceable>word_string</replaceable>
+    </term>
+    <listitem>
+      <para> Silence word defined in the dictionary, for silences at
+      the beginning of sentence and end of sentence.  (default:
+      "&lt;s&gt;", "&lt;/s&gt;")
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-iwspword
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Add a word entry to the dictionary that should correspond to
+	inter-word pauses.  This may improve recognition accuracy in
+	some language model that has no explicit inter-word pause
+	modeling.  The word entry to be added can be changed by
+	<option>-iwspentry</option>.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-iwspentry
+      </option>
+      <replaceable>word_entry_string</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Specify the word entry that will be added by
+	<option>-iwspword</option>.  (default: "&lt;UNK&gt; [sp] sp
+	sp")
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-sepnum
+      </option>
+      <replaceable>number</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Number of high frequency words to be isolated from the lexicon
+	tree, to ease approximation error that may be caused by the
+	one-best approximation on 1st pass. (default: 150)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+
+</refsect3>
+
+
+<refsect3 id='opt_grammar'><title>Grammar</title>
+
+<para>
+Multiple grammars can be specified by repeating <option>-gram</option>
+and <option>-gramlist</option>.  Note that this is unusual behavior
+from other options (in normal Julius option, last one will override
+previous ones).  You can use <option>-nogram</option> to reset the
+grammars already specified before the point.
+</para>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-gram
+      </option>
+      <literal>
+	gramprefix1[,gramprefix2[,gramprefix3,...]]	
+      </literal>
+    </term>
+    <listitem>
+      <para>
+	Comma-separated list of grammars to be used.  the argument
+	should be a prefix of a grammar, i.e. if you have
+	<filename>foo.dfa</filename> and
+	<filename>foo.dict</filename>, you should specify them with a
+	single argument <literal>foo</literal>.  Multiple grammars can
+	be specified at a time as a comma-separated list.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-gramlist
+      </option>
+      <replaceable>list_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Specify a grammar list file that contains list of grammars to
+	be used.  The list file should contain the prefixes of
+	grammars, each per line.  A relative path in the list file
+	will be treated as relative to the file, not the current
+	path or configuration file.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-dfa
+      </option>
+      <replaceable>dfa_file</replaceable>
+      <option>
+	-v
+      </option>
+      <replaceable>dict_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	An old way of specifying grammar files separately.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nogram
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Remove the current list of grammars already specified by
+	<option>-gram</option>, <option>-gramlist</option>,
+	<option>-dfa</option> and <option>-v</option>.
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+
+</refsect3>
+
+<refsect3 id='opt_word'><title>Isolated word</title>
+
+<para>
+Dictionary can be specified by using <option>-w</option> and
+<option>-wlist</option>.  When you specify multiple times, all of them
+will be read at startup.  You can use <option>-nogram</option> to
+reset the already specified dictionaries at that point.
+</para>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-w
+      </option>
+      <replaceable>dict_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Word dictionary for isolated word recognition.  File format
+	is the same as other LM.  (Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-wlist
+      </option>
+      <replaceable>list_file</replaceable>
+    </term>
+    <listitem>
+      <para>
+	Specify a dictionary list file that contains list of
+	dictionaries to be used.  The list file should contain the
+	file name of dictionaries, each per line.  A relative path in
+	the list file will be treated as relative to the list file,
+	not the current path or configuration file.  (Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-nogram
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Remove the current list of dictionaries already specified by
+	<option>-w</option> and <option>-wlist</option>.
+      </para>
+    </listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>
+      <option>
+	-wsil
+      </option>
+      <replaceable>head_sil_model_name</replaceable>
+      <replaceable>tail_sil_model_name</replaceable>
+      <replaceable>sil_context_name</replaceable>
+    </term>
+    <listitem>
+      <para>
+	On isolated word recognition, silence models will be appended
+	to the head and tail of each word at recognition.  This option
+	specifies the silence models to be appended.
+	<replaceable>sil_context_name</replaceable> is the name of the
+	head sil model and tail sil model as a context of word head
+	phone and tail phone.  For example, if you specify
+	<literal>-wsil silB silE sp</literal>, a word with phone
+	sequence <literal>b eh t</literal> will be translated as
+	<literal>silB sp-b+eh b-eh+t eh-t+sp silE</literal>.
+	(Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+
+</refsect3>
+
+<refsect3 id='opt_userlm'><title>User-defined LM</title>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-userlm
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Declare to use user LM functions in the program.  This option
+	should be specified if you use user-defined LM functions.
+	(Rev.4.0)
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+
+</refsect3>
+
+<refsect3 id='opt_lm_misc'><title>Misc LM options</title>
+
+<variablelist>
+
+  <varlistentry>
+    <term>
+      <option>
+	-forcedict
+      </option>
+    </term>
+    <listitem>
+      <para>
+	Skip error words in dictionary and force running.
+      </para>
+    </listitem>
+  </varlistentry>
+
+</variablelist>
+
+</refsect3>
+
+</refsect2>

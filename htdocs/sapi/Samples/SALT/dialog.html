@@ -1,0 +1,108 @@
+<html xmlns:SALT="http://www.microsoft.com/speech">
+	<head>
+		<META HTTP-EQUIV="Content-Type" Content="text/html">
+		<title>新幹線切符購入タスク(対話版)</title>
+		<object id="SpeechTags" CLASSID="clsid:33cbfc53-a7de-491a-90f3-0e782a7e347a" VIEWASTEXT>
+		</object>
+	</head>
+	<?import namespace="SALT" implementation="#SpeechTags" />
+	<body onload="NextSpeechReady()">
+		<h1>新幹線切符購入タスク(対話版)</h1>
+		<form id="mainform">
+			出発: <input name="OriginBox" type="text"> 到着:<input name="DestinationBox" type="text"><br>
+			日時: <input name="MonthBox" type="text" size="4">月<input name="DayBox" type="text" size="4">日
+			人数: <input name="NumBox" type="text" size="4">人<br>
+			<hr>
+			現在の状態: <input type="text" size="20" name="StateText">
+			<hr>
+			システムの発話: <input type="text" size="30" name="SystemMessage"><br>
+			ユーザの発話: <input type="text" id="UserSpeech" size="30"><br>
+			<input type="button" onclick="NextSpeechReady();" value="次">
+			<SALT:listen id="TestReco" xml:lang="ja" onreco="Recog()" onspeechdetected="SpeechDetected()" onsilence="Silence()">
+				<SALT:grammar id="gram1" src="gram1.xml" />
+				<SALT:bind targetelement="OriginBox" value="//Origin/StationName" />
+				<SALT:bind targetelement="DestinationBox" value="//Destination/StationName" />
+				<SALT:bind targetelement="MonthBox" value="//Month" />
+				<SALT:bind targetelement="DayBox" value="//Day" />
+				<SALT:bind targetelement="NumBox" value="//Num" />
+			</SALT:listen>
+			<SALT:listen id="Confirm" xml:lang="ja" onreco="Confirming()" onspeechdetected="SpeechDetected()" onsilence="Silence()">
+				<SALT:grammar id="gram_confirm" src="yesno.xml" />
+			</SALT:listen>
+			<script language="javascript">
+		function Recog() {
+			NextSpeechReady();
+		}
+		
+		function Confirming() {
+			// 確認発話の結果をみる
+			smlResult = event.srcElement.recoresult;
+			Node = 	smlResult.selectSingleNode("//YESNO/text()");
+			if (Node != null)
+			{
+				if (Node.text == "0")
+				{
+					alert("情報を送信しました");
+				} else {
+					alert("情報を送信しませんでした");
+				}
+			} else alert("asserion failed");
+			// 情報をクリアする
+			mainform.OriginBox.value="";
+			mainform.DestinationBox.value="";
+			mainform.MonthBox.value="";
+			mainform.DayBox.value="";
+			mainform.NumBox.value="";
+
+			NextSpeechReady();			
+		}
+		
+		function SpeechDetected() {
+			mainform.StateText.value="音声を検出";
+		}
+		
+		function Silence() {
+			mainform.StateText.value="沈黙を検出";
+			NextSpeechReady();
+		}
+		
+			</script>
+		</form>
+		<script>
+		function NextSpeechReady() {
+			mainform.StateText.value = "認識準備中";
+			TestReco.Cancel();
+			Confirm.Cancel();
+			// 次の発話に関するシステムメッセージを表示する
+			mainform.UserSpeech.value = "";
+			if (mainform.OriginBox.value == "")
+			{
+				TestReco.Start();
+				Confirm.Cancel();
+				mainform.SystemMessage.value = "出発駅はどこですか？";
+			} else if (mainform.DestinationBox.value == "") {
+				TestReco.Start();
+				Confirm.Cancel();
+				mainform.SystemMessage.value = "到着駅はどこですか？";
+			} else if (mainform.MonthBox.value == "") {
+				TestReco.Start();
+				Confirm.Cancel();
+				mainform.SystemMessage.value = "何月ですか？";
+			} else if (mainform.DayBox.value == "") {
+				TestReco.Start();
+				Confirm.Cancel();
+				mainform.SystemMessage.value = "何日ですか？";
+			} else if (mainform.NumBox.value == "") {
+				TestReco.Start();
+				Confirm.Cancel();
+				mainform.SystemMessage.value = "何名さまですか？";
+			} else {
+				TestReco.Cancel();
+				Confirm.Start();
+				mainform.SystemMessage.value = "これでよろしいですか？";
+			}
+			mainform.StateText.value = "認識中";
+		}
+		</script>
+	</body>
+</html>

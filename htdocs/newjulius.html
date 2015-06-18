@@ -1,0 +1,479 @@
+<h2>Julius最新版</h2>
+
+<p>Unix版 (オリジナル版) Juliusの最新アーカイブです．</p>
+
+<p>質問等は<a href="http://julius.sourceforge.jp/forum/">ユーザフォーラム</a>へどうぞ.</p>
+
+<p>動作環境は<a href="whatis.html#spec">こちら</a>で確認できます．</p>
+
+
+<!--<p>なお，<a href="http://www.lang.astem.or.jp/CSRC/" target="_top">CSRC</a>が2003年9月をもって活動を終了したことに伴い，rev.3.4 以降の Julius はフリーソフトウェアとしてここで配布されます．</p>-->
+
+<p>Julius/Julianには「通常仕様」と「マルチパス仕様」の 2 つのタ
+イプがあります．
+「マルチパス仕様」は仕様拡張により，複雑な遷移を持つ音響モデルを扱うことが
+できますが，その分処理速度は若干遅くなります．</p>
+
+
+<h2>開発版スナップショット</h2>
+
+<p>開発中のコードを<a href="http://sourceforge.jp/projects/julius/"
+target="_blank">Julius開発サイト</a>上で公開しています．
+最新のバグ修正やテスト中の追加機能など，最新のコードが随時公開されています．</p>
+
+<p>
+開発中のコードはどなたでも入手可能です．アクセス・入手方法は以下の通りです．</p>
+
+<p>
+なお，Julius-4の開発版 CVS レポジトリは新たに <code>julius4</code> と
+なりました．下記のリンクは最新版を指しています．従来の<code>julius</code>
+には 3.x が入っていますのでご注意下さい．</p>
+
+<ul>
+
+<p><li><b>ブラウザで閲覧</b></p>
+
+<p>Web ブラウザで
+<a
+href="http://cvs.sourceforge.jp/cgi-bin/viewcvs.cgi/julius/julius4"
+target="_blank">SourceForge.jp: CVS Repository: julius4</a>
+のページを開いて下さい．コードツリーを直接閲覧できます．リ
+ク先では，ファイルごとの変更履歴の確認や過去のバージョン
+からの差分チェックも行えます．</p>
+
+<p><li><b>アーカイブとして一括ダウンロード</b></p>
+
+<p>コード全体を一括ダウンロードするには，上記と同じ
+<a
+href="http://cvs.sourceforge.jp/cgi-bin/viewcvs.cgi/julius/julius4"
+target="_blank">SourceForge.jp: CVS Repository: julius4</a>
+へ行き，そのページの最下部にある 「<a href="http://cvs.sourceforge.jp/cgi-bin/viewcvs.cgi/julius/julius4.tar.gz?view=tar">Download
+tarball</a>」をクリックしてください．ソースツリー全体が
+tar.gz 形式で圧縮されてダウンロードされます．</p>
+
+</p><li><b>CVS で取得</b></p>
+
+<p>
+Anonymous CVS を用いてソースコードをダウンロードできます．
+CVS を利用することで，サーバ側とローカルでバージョン管理が
+行われるので，あとでJuliusが更新されたときに，サーバから更
+新差分だけをダウンロードするといったことができます．例えば，
+ Linux や cygwin で CVS 経由で取得するには，コマンドライン
+から以下のように cvs を実行します．</p>
+
+<pre>
+% cvs -z3
+      -d:pserver:anonymous@cvs.sourceforge.jp:/cvsroot/julius co
+      julius4
+</pre>
+<p>一度取得したあとは，以下のコマンドで，そのディレクトリより
+下にあるファイルについて，サーバー上の更新をローカルに反映させる
+ことができます．</p>
+
+<pre>
+% cvs update -Pd
+</pre>
+
+※ なお，
+<a
+href="http://lists.sourceforge.jp/mailman/listinfo/julius-cvs">julius-cvs@lists.sourceforge.jp</a>
+に登録することで，CVS上のソースの更新通知をその都度メールで受け
+取ることができ
+ます．どなたでも登録できますので，最新の更新状況に興味のあるかた
+は，<a
+href="http://lists.sourceforge.jp/mailman/listinfo/julius-cvs">julius-cvs@lists.sourceforge.jpの登録ページ</a>からどうぞ．
+
+</ul>
+
+
+<h2>アーカイブ</h2>
+
+最新版は<font color="#cc0000"> 4.0.1 </font>です．
+
+<p>
+新機能やバグ修正の内容については，詳細な更新履歴が
+各アーカイブ内の Release-ja.txt および Release.txt にあります．
+また最新の情報については「ドキュメント」のページより
+ご参照下さい．
+</p>
+
+<p>以下よりダウンロードしてください．また，右カラムの Quick
+Download からも最新版がダウンロードできます．</p>
+
+<h3 class="headers">Rev. 4.0.1 (2008/03/12)</h3>
+
+
+[<a href="http://sourceforge.jp/projects/julius/document/julius_4.0.1_-_Notes/">リリースノート</a>|<a href="http://sourceforge.jp/projects/julius/document/julius_4.0.1_-_Changes/">CangeLog</a>]
+
+<ul>
+<li> 4.0のバグ修正
+<li> Linuxの音声入力でALSAを標準で用いるよう変更
+</ul>
+最新版のページからダウンロードできます．
+
+
+<h3 class="headers">Rev. 4.0 (2007/12/19)</h3>
+
+
+[<a href="http://sourceforge.jp/projects/julius/document/julius_4.0_-_Notes/">リリースノート</a>]
+
+<p>Julius-4.0 は，拡張性や柔軟性の確保を目指し，大幅な刷新が行われました．
+Juliusの内部データ構造の大幅な見直しおよびモジュール化を行った結果，エ
+ンジン本体のライブラリ化やマルチデコーディングなど多くの先進的機能を実
+現しました．主な新機能は以下のとおりです（全てではありません）．</p>
+<ul>
+<li> エンジン本体のライブラリ化 "JuliusLib" 
+<li> 複数モデルを用いたマルチデコーディングの対応
+<li> Julius / Julian の一本化
+<li> 言語モデルや認識処理の動的追加・削除が可能
+<li> 4-gram 以上の長さのN-gramの対応
+<li> ユーザ定義言語関数の組込み
+<li> Confusion network 出力
+<li> 音声区間検出 (VAD) の強化（GMM・デコーダベース）
+<li> ツールの機能追加・新ツール追加・メモリ管理改善等
+</ul>
+
+<p>上位互換性を確保しており，Julius-3.x と同様に使うことが出来ます．
+認識の精度および速度は，現段階では前バージョン (3.5.3) とほぼ
+同じです．以下のドキュメントも合わせて御覧下さい．</p>
+
+<ul>
+<li><a href="WhatsNew-4.0-ja.pdf">Rev.4.0 の新機能</a>
+<li><a href="http://www.sp.nitech.ac.jp/~ri/julius-dev/doxygen/julius/4.0/ja/group__jfunc.html">JuliusLib API リファレンス</a>
+<li><a href="http://www.sp.nitech.ac.jp/~ri/julius-dev/doxygen/julius/4.0/ja/callback_8h.html">JuliusLib コールバック一覧 </a>
+<li><a href="Julius-manual.pdf">Juliusコマンドマニュアル</a>
+<li><a href="Jconf-manual.pdf">jconf設定ファイルマニュアル</a>
+</ul>
+
+<table class="jarc">
+<tr>
+<td>ソースコード</td>
+<td><a href="http://prdownloads.sourceforge.jp/julius/28551/julius-4.0.tar.gz" target="_blank">julius-4.0.tar.gz</a></td>
+<td>1.0MB</td>
+</tr>
+<tr>
+<td>Linux用バイナリパッケージ（実行ファイル・ライブラリ等）</td>
+<td><a href="http://prdownloads.sourceforge.jp/julius/28551/julius-4.0-linuxbin.tar.gz" target="_blank">julius-4.0-linuxbin.tar.gz</a></td>
+
+<td>3.2MB</td>
+</tr>
+<tr>
+<td>Windows用バイナリパッケージ（実行ファイル・ライブラリ等）</td>
+<td><a href="http://prdownloads.sourceforge.jp/julius/28551/julius-4.0-win32bin.tar.gz" target="_blank">julius-4.0-win32bin.zip</a></td>
+<td>4.0MB</td>
+</tr>
+</table>
+
+
+<h3 class="headers">Rev. 3.5.3 (2006/12/29)</h3>
+
+<p>[<a
+      href="http://sourceforge.jp/projects/julius/document/julius_3.5.3_-_Notes/"
+      target="_blank">リリースノート</a>｜<a
+      href="http://sourceforge.jp/projects/julius/document/julius_3.5.3_-_Changes/"
+      target="_blank">ChangeLog</a>]</p>
+
+<p>Julius-3.5.3 では，パフォーマンスの改善，文法関連ツールの追加，
+単語グラフの改善やバグ修正が行われました．主な変更点は以下の通りです．</p>
+
+<ul>
+<li>高速化：コード最適化により処理速度が 1.1倍〜1.5倍に高速化．
+<li>音響分析条件の設定方法を拡張
+<ul>
+<li>HTK Config を直接読み込めるようになった (-htkconf)
+<li>バイナリHMMへ設定を埋め込めるようになった
+</ul>
+<li>新たな文法最適化ツール：dfa_minimize, dfa_determinize
+<li>その他の機能追加：
+<ul>
+<li>単語グラフ生成で左右のコンテキストごとに異なる仮説の生成をサ
+ポート
+<li>オンラインでのエネルギー項正規化の暫定サポート
+</ul>
+<li>バグ修正およびコードの改善
+</ul>
+
+<table class="jarc">
+<tr>
+<td>ソースコード</td>
+<td><a
+href="http://prdownloads.sourceforge.jp/julius/23331/julius-3.5.3.tar.gz" target="_blank">julius-3.5.3.tar.gz</a></td>
+<td>1.3MB</td>
+</tr>
+<tr>
+<td>Linux用実行バイナリ</td>
+<td><a
+href="http://prdownloads.sourceforge.jp/julius/23331/julius-3.5.3-linuxbin.tar.gz"
+target="_blank">julius-3.5.3-linuxbin.tar.gz</a></td>
+<td>1.2MB</td>
+</tr>
+<tr>
+<td>Windows用実行バイナリ</td>
+<td><a
+href="http://prdownloads.sourceforge.jp/julius/23331/julius-3.5.3-win32bin.zip"
+target="_blank">julius-3.5.3-win32bin.zip</a></td>
+<td>2.4MB</td>
+</tr>
+</table>
+
+<h3 class="headers">Rev. 3.5.2 (2006/07/31)</h3>
+
+<p>主にWindows 環境での動作改善と単語グラフ出力の修正が行われました．
+主要な変更点は以下の通りです．詳細は，アーカイブ内の
+00readme-ja.txt と Release-ja.txt (英語は 00readme.txt お
+よび Release.txt) ，<a
+href="http://sourceforge.jp/projects/julius/document/julius_3.5.2_-_Notes/"
+target="_blank">リリースノート</a>および<a
+href="http://sourceforge.jp/projects/julius/document/julius_3.5.2_-_Changes/"
+target="_blank">ChangeLog</a>をご覧下さい．</p>
+
+<ul>
+<li>Windows でのマイク入力認識の速度改善
+<ul>
+<li>DirectSound サポート
+<li>入力のスレッド化
+<li><a href="doc/install-mingw.html">最新の MinGW でコンパイルで
+きないことがあるバグを修正</a>
+</ul>
+<li>単語グラフ出力の精度改善
+<li>第1パスで単語グラフを出力可能に
+<li>その他バグ修正
+</ul>
+
+<table class="jarc">
+      <tr><td>ソースコード</td><td>
+
+      <a
+      href="http://prdownloads.sourceforge.jp/julius/21175/julius-3.5.2.tar.gz"
+      target="_blank">julius-3.5.2.tar.gz</a>
+      </td><td>1.2MB</td></tr>
+      <tr><td>Linux用実行バイナリ</td><td>
+      <a
+      href="http://prdownloads.sourceforge.jp/julius/21175/julius-3.5.2-linuxbin.tar.gz"
+      target="_blank">julius-3.5.2-linuxbin.tar.gz</a>
+      </td><td>1.1MB</td></tr>
+      <tr><td>Windowsコンソール用実行バイナリ</td><td>
+
+      <a
+      href="http://prdownloads.sourceforge.jp/julius/21175/julius-3.5.2-win32bin.zip"
+      target="_blank">julius-3.5.2-win32bin.zip</a>
+      </td><td>2.1MB</td></tr>
+</table>
+
+<h3 class="headers">Rev. 3.5.1 (2006/03/31)</h3>
+
+<p>Julius-3.5.1 では，音響モデルの特徴量サポート拡大とMAP-CMNによる
+マイク入力の改善が行われました．</p>
+
+<ul>
+<li><a
+href="http://sourceforge.jp/projects/julius/document/julius_3.5.1_-_Notes/"
+target="_blank">リリースノート</a>
+<li><a
+href="http://sourceforge.jp/projects/julius/document/julius_3.5.1_-_Changes/"
+target="_blank">ChangeLog</a>
+</ul>
+
+<p>主要な変更点は以下の通りです．</p>
+
+<ul>
+<li>MFCC計算のサポート拡大
+<ul>
+<li>二次差分係数(Accel: _A)，任意の型指定(_0, _E, _N, _D, _A,
+_N)の組み合わせ，任意の次元数の音響モデルでの音声入力認識をサポー
+ト
+<li>特徴量抽出パラメータの指定を詳細に行えるようになった．パラメー
+タ設定方法を「<a href="doc/param.html">MFCCパラメータの設定</a>」
+のページに公開．
+
+</ul>
+<li>MAP-CMN 導入によるリアルタイム入力の精度改善
+<li>モジュールモードのさらなる安定化
+<li>バグ修正：巨大なN-gram，マルチパス版，文法入れ替え，MacOSX関
+連
+</ul>
+
+
+<table class="jarc">
+      <tr><td>ソースコード</td><td>
+      <a
+      href="http://prdownloads.sourceforge.jp/julius/19558/julius-3.5.1.tar.gz" target="_blank">julius-3.5.1.tar.gz</a>
+      </td><td>1.2MB</td></tr>
+      <tr><td>Linux実行バイナリパッケージ</td><td>
+
+      <a
+      href="http://prdownloads.sourceforge.jp/julius/19558/julius-3.5.1-linuxbin.tar.gz"
+      target="_blank">julius-3.5.1-linuxbin.tar.gz</a>
+      </td><td>1.0MB</td></tr>
+      <tr><td>Windowsコンソール版<BR>実行バイナリ</td><td>
+      <a
+      href="http://prdownloads.sourceforge.jp/julius/19558/julius-3.5.1-win32bin.zip"
+      target="_blank">julius-3.5.1-win32bin.zip</a>
+      </td><td>1.9MB</td></tr>
+</table>
+
+
+
+
+<h3 class="headers">Rev. 3.5 (2005/09/30)</h3>
+
+Julius-3.5 は，音声インタフェースのためのいくつかの重要な新機能の追加，
+性能改善，バグ修正およびコードのブラッシュアップ，プログラム中の
+コメントの大幅な追加が行われた，大幅なアップデートです．
+以下のような新たな点が主に実装されました．
+<ul>
+<li>多くのバグ修正
+<li>使用メモリ量の削減
+<li><a href="doc/graphout.html">単語グラフ出力</a>のサポート
+<li><a href="doc/gmm.html">GMM による環境音識別・不要入力棄却</a>のサポート
+<li>Windows コンソール版の改善（<a href="doc/install-mingw.html">mingw対応</a>，ソース統合，文字コード変換等）
+<li><a href="http://www.sp.nitech.ac.jp/~ri/julius-dev/doxygen/julius" target="_blank">ソースのドキュメンテーション</a>
+</ul>
+
+<p>詳細は同梱の Release-ja.txt (<a href="http://sourceforge.jp/projects/julius/document/julius_3.5_-_Changes/" target="_blank">抜粋</a>)および当サイトの<a href="documents.html">ドキュメントのページ</a>をご覧下さい．</p>
+
+<table class="jarc">
+<tr>
+ <td>通常仕様ソース</td>
+ <td><a
+href="http://prdownloads.sourceforge.jp/julius/16697/julius-3.5.tar.gz"
+target="_blank">julius-3.5.tar.gz</a></td>
+ <td>1.1MB</td>
+</tr>
+<tr>
+ <td>マルチパス仕様ソース</td>
+ <td>N/A</td>
+ <td> - </td>
+</tr>
+<tr>
+ <td>Linux実行バイナリ</td>
+ <td>N/A</td>
+ <td> - </td>
+</tr>
+<tr>
+ <td>Windowsコンソール版実行バイナリ</td>
+ <td>N/A</td>
+ <td> - </td>
+</tr>
+</table>
+
+<h3 class="headers">Rev. 3.4.2 (2004/05/07)</h3>
+
+前バージョンからの主な変更点：
+
+<ul>
+<li>数単語の認識でN-best候補が正しく出ないことがある不具合を修正
+<li>指定時間より短い入力を棄却する -rejectshort msec を追加
+<li>ネットワーク経由入出力の安定性向上
+<li>Windowsコンソール版の提供
+</ul>
+
+<p>詳しくは下記の「WhatsNew_3.4.2.html」をご覧ください．</p>
+
+<table class="jarc">
+
+<tr><td>通常仕様ソース</td><td><a href="http://prdownloads.sourceforge.jp/julius/9389/julius-3.4.2.tar.gz" target="_blank">julius-3.4.2.tar.gz</a></td><td>1.1MB</td></tr>
+      <tr><td>マルチパス仕様ソース</td><td><a href="http://prdownloads.sourceforge.jp/julius/9389/julius-3.4.2-multipath.tar.gz" target="_blank">julius-3.4.2-multipath.tar.gz</a></td><td>1.1MB</td></tr>
+      <tr><td>Linux実行バイナリ</td><td><a href="http://prdownloads.sourceforge.jp/julius/9389/julius-3.4.2-linux-bin.tar.gz" target="_blank">julius-3.4.2-linux-bin.tar.gz</a></td><td>1.3MB</td></tr>
+      <tr><td>Windowsコンソール版<BR>ソース</td><td><a href="http://prdownloads.sourceforge.jp/julius/9389/julius-3.4.2-win32-src.zip" target="_blank">julius-3.4.2-win32-src.zip</a></td><td>1.4MB</td></tr>
+      <tr><td>Windowsコンソール版<BR>実行バイナリ</td><td><a
+      href="http://prdownloads.sourceforge.jp/julius/9389/julius-3.4.2-win32-bin.zip"
+      target="_blank">julius-3.4.2-win32-bin.zip</a></td><td>1.4MB</td></tr>
+</table>
+
+<h3 class="headers">Rev. 3.4.1 (2004/02/26)</h3>
+
+前バージョンからの主な変更点：
+
+<ul>
+<li>解探索アルゴリズムの改善
+<li>バイナリHMMのサポート（起動の高速化）
+<li>探索空間の可視化機能の追加
+<li>ネットワーク経由の入出力に関するバグの修正
+<li>逐次デコーディングの大幅修正
+</ul>
+
+
+<p>詳しくは <a
+href="whatsnew/WhatsNew_3.4.1.html">WhatsNew_3.4.1.html</a> をご
+覧ください．</p>
+
+<table class="jarc">
+<tr>
+ <td>通常仕様</td>
+ <td><a href="http://prdownloads.sourceforge.jp/julius/8411/julius-3.4.1.tar.gz"
+target="_blank">julius-3.4.1.tar.gz</a></td>
+ <td>915kB</td>
+</tr>
+<tr>
+ <td>マルチパス仕様</td>
+ <td><a href="http://prdownloads.sourceforge.jp/julius/8411/julius-3.4.1-multipath.tar.gz" target="_blank">julius-3.4.1-multipath.tar.gz</a></td>
+<td>917kB</td>
+</tr>
+<tr>
+ <td>Linux用実行バイナリ</td>
+ <td><a
+ href="http://prdownloads.sourceforge.jp/julius/8411/julius-3.4.1-bin.tar.gz"
+ target="_blank">julius-3.4.1-bin.tar.gz</a></td>
+ <td>1,137kB</td>
+</tr>
+</table>
+
+<h3 class="headers">Rev. 3.4 (2003/10/21)</h3>
+
+前バージョンからの主な変更点：
+
+<ul>
+<li>Julianの統合
+<li>単語信頼度のサポート
+<li>クラスN-gramのサポート
+<li>多くのバグ修正
+</ul>
+
+<p>詳しくは<a href="">こちら</a>をご覧ください．</p>
+
+<table class="jarc">
+<tr>
+ <td>通常仕様</td>
+ <td><a href="http://prdownloads.sourceforge.jp/julius/6510/julius-3.4.tar.gz"
+target="_blank">julius-3.4.tar.gz</a></td>
+ <td>678kB</td>
+</tr>
+<tr>
+ <td>マルチパス仕様</td>
+ <td><a href="http://prdownloads.sourceforge.jp/julius/6510/julius-3.4-multipath.tar.gz" target="_blank">julius-3.4-multipath.tar.gz</a></td>
+ <td>680kB</td>
+</tr>
+<tr>
+ <td>Linux用実行バイナリ</td>
+ <td><a href="http://prdownloads.sourceforge.jp/julius/6510/julius-3.4-bin.tar.gz"
+ target="_blank">julius-3.4-bin.tar.gz</a></td>
+ <td>890kB</td>
+</tr>
+</table>
+ 
+<h3 class="headers">Rev. 3.3p4 (2003/05/06)</h3>
+
+バージョン 3.3 からの主な変更点：
+
+<ul>
+<li>音響モデルの扱いの拡張
+<li>音声入力の遅延を改善
+<li>音声録音機能の追加
+<li>多くのバグ修正
+</ul>
+
+<p>詳しくは<a href="">こちら</a>をご覧ください．</p>
+
+<table class="jarc">
+<tr>
+<td>通常仕様</td>
+<td><a href="http://prdownloads.sourceforge.jp/julius/3948/julius-3.3p4.tar.gz" target="_blank">julius-3.3p4.tar.gz</a></td><td>643kB</td></tr>
+<tr><td>マルチパス仕様</td><td>
+<a href="http://prdownloads.sourceforge.jp/julius/3948/julius-3.3p4-multipath.tar.gz" target="_blank">julius-3.3p4-multipath.tar.gz</a></td><td>647kB</td></tr>
+</table>
+
+<hr>
+<div align="right">
+$Id: newjulius.html,v 1.4 2008/05/13 11:13:04 julius4 Exp $
+</div>

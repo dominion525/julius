@@ -1,0 +1,10 @@
+<grammar xmlns:sapi="http://schemas.microsoft.com/Speech/2002/06/SRGSExtensions" xml:lang="ja" tag-format="semantics-ms/1.0" version="1.0" root="yesno" mode="voice" xmlns="http://www.w3.org/2001/06/grammar">
+	<rule id="yesno" scope="public">
+		<one-of>
+			<item> いいえ <tag>$._value = 0</tag> </item>
+			<item> いーえ <tag>$._value = 0</tag> </item>
+			<item> はい   <tag>$._value = 1</tag> </item>
+			<item> はーい <tag>$._value = 1</tag> </item>
+		</one-of>
+	</rule>
+</grammar>

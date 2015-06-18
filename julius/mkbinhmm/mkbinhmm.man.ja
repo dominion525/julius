@@ -1,0 +1,64 @@
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH MKBINHMM 1 LOCAL
+.UC 6
+.SH NAME
+mkbinhmm - convert HMM definition file to binary format for Julius
+.SH SYNOPSIS
+.B mkbinhmm [-C HTK_Config] hmmdefs_file binhmm_file
+.SH DESCRIPTION
+.I mkbinhmm
+は，HTK形式のアスキー形式のHMM定義ファイルをJulius用のバイナリ形式へ変
+換する．これのバイナリ形式のHMM定義ファイルを使用することにより，
+Juliusの起動を高速化することができる．
+.PP
+.I mkbinhmm
+は gzip 圧縮されたHMM定義ファイルをそのまま読み込めます．
+.PP
+変換時にHMMの学習用パラメータファイルの生成に用いた HTK Config ファイ
+ルを "-C" あるいは "-htkconf" で指定することで，その音響特徴量抽出条件
+を出力ファイルに埋め込むこと
+ができます．Julius は埋め込まれたパラメータを見つけると，その値を
+読み込んで自動的に音声データからの音響特徴量条件として用います．これに
+よって，モデル学習時に使用した特徴量の設定をJuliusで自動的にセットする
+ことができます．
+.PP
+入力としてバイナリ形式に変換済みのHMMを指定することもできます．これを
+使って，既存のバイナリHMMに特徴量抽出条件パラメータを埋め込むことがで
+きます．入力に既にパラメータが埋め込まれてかつ Config ファイルが指定さ
+れている場合は，上書きされて出力されます．
+.SH OPTIONS
+.Ip "-C ConfigFile"
+学習時に特徴量抽出に使用したHTK Configファイルを指定する．指定された場
+合，その値が出力ファイルのヘッダに埋め込まれる．
+.Ip "-htkconf ConfigFile"
+"-C" と同じ．
+.SH USAGE
+バイナリ形式HMM定義モデルをJuliusで使うには，Julius で音響モデル指定時
+に，元の ASCII形式ファイルの代わりにこのファイルを指定するだけでよい．
+ascii/binary の形式はJuliusで自動判別される．パラメータが埋め込まれて
+いる場合は Julius がそれを読み出してセットする．
+.SH "SEE ALSO"
+julius(1)
+.SH BUGS
+バグ報告・問い合わせ・コメントなどは 
+julius-info at lists.sourceforge.jp までお願いします．
+.SH COPYRIGHT
+Copyright (c) 2003-2006 京都大学 河原研究室
+.br
+Copyright (c) 2003-2005 奈良先端科学技術大学院大学 鹿野研究室
+.br
+Copyright (c) 2005-2006 名古屋工業大学 Julius開発チーム
+.SH AUTHORS
+李 晃伸 (名古屋工業大学) が実装しました．
+.SH LICENSE
+.I Julius
+の使用許諾に準じます．

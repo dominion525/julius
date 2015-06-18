@@ -1,0 +1,66 @@
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH MKBINHMM 1 LOCAL
+.UC 6
+.SH NAME
+mkbinhmm - convert HMM definition file to binary format for Julius
+.SH SYNOPSIS
+.B mkbinhmm [-C HTK_Config] hmmdefs_file binhmm_file
+.SH DESCRIPTION
+.I mkbinhmm
+convert an ascii hmmdefs in HTK format to a binary HMM definition
+file for Julius.
+.PP
+.I mkbinhmm
+can read gzipped hmmdefs file.
+.PP
+By specifying the HTK Config file you used for training, you can embed
+the acoustic analysis conditions and variables used for the training
+into the output file.  You can specify the Config file by either "-C"
+or "-htkconf".  The vaules in the Config file will be converted to
+Julius specifications and embedded to the output file.  At run time,
+the values will be loaded into Julius and appropriate acoustic
+analysis parameters for the model will be automatically set.
+This will greatly help ensuring the same acoustic conditions to be
+applied at both training and application time for waveform
+recognition.
+.PP
+You can also specify a binary HMM as input file.  This is for 
+only embedding Config parameters into the already existing binary 
+files.  If the input binhmm already has acoustic analysis parameters
+embedded, they will be overridden by the specified HTK Config values.
+.SH OPTIONS
+.Ip "-C ConfigFile"
+HTK Config file you used at training time.  If specified, the values
+are embedded to the output file.
+.Ip "-htkconf ConfigFile"
+Same as "-C".
+.SH USAGE
+At Julius, this binary hmmdefs can be used in the same way as the
+original ascii format, i.e. "-h".  The ascii/binary format will be
+automaticall detected by Julius.  If Config parameters are embedded, 
+the values are loaded into Julius and acoustic analysis parameters
+will be set to the values.
+.SH "SEE ALSO"
+julius(1)
+.SH COPYRIGHT
+Copyright (c) 2003-2006 Kawahara Lab., Kyoto University 
+.br
+Copyright (c) 2003-2005 Shikano Lab., Nara Institute of Science and Technology
+.br
+Copyright (c) 2005-2006 Julius project team, Nagoya Institute of Technology
+.SH AUTHORS
+LEE Akinobu (Nagoya Institute of Technology, Japan)
+.br
+contact: julius-info at lists.sourceforge.jp
+.SH LICENSE
+Same as 
+.I Julius.

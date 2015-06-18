@@ -1,0 +1,72 @@
+<html xmlns:SALT="http://www.microsoft.com/speech">
+<!-- ■■■ html 要素に xmlns:SALT="http://www.microsoft.com/speech" を追加 ■■■ -->
+	<head>
+		<META HTTP-EQUIV="Content-Type" Content="text/html">
+		<title>新幹線切符購入タスク</title>
+<!-- ■■■ head 要素に object 要素を追加 ■■■ -->
+		<object id="SpeechTags" CLASSID="clsid:33cbfc53-a7de-491a-90f3-0e782a7e347a" VIEWASTEXT>
+		</object>
+	</head>
+<!-- ■■■ head 要素のあとに ?import 要素を追加 ■■■ -->
+	<?import namespace="SALT" implementation="#SpeechTags" />
+	<body>
+		<h1>新幹線切符購入タスク</h1>
+		<form id="mainform">
+			出発: <input name="OriginBox" type="text"> 到着:<input name="DestinationBox" type="text"><br>
+			日時: <input name="MonthBox" type="text" size="4">月<input name="DayBox" type="text" size="4">日 
+			人数: <input name="NumBox" type="text" size="4">人<br>
+			<hr>
+			現在の状態: <input type="text" size="20" name="StateText">
+			<hr>
+			<input type="button" value="認識" id="OnButton" onClick="ReadyGo()">
+			<input type="button" value="中断" id="OffButton" onClick="Break()">
+			<input type="button" value="クリア" id="ClearButton" onClick="ClearAll()">
+<!-- ■■■ form 要素の最後に SALT:listen 要素を追加 ■■■ -->
+			<SALT:listen id="TestReco" xml:lang="ja" onreco="Break()" onspeechdetected="SpeechDetected()" onsilence="Silence()">
+<!-- ■■■ salt:grammar インラインは日本語文字を含む場合使えない ■■■ -->
+<!-- ■■■ SAPI-XMLファイルを src で指定する。文字コードは UTF-16 などを用いる ■■■ -->
+				<SALT:grammar id="gram1" src="gram1.xml" />
+				<SALT:bind targetelement="OriginBox" value="//Origin/StationName" />
+				<SALT:bind targetelement="DestinationBox" value="//Destination/StationName" />
+				<SALT:bind targetelement="MonthBox" value="//Month" />
+				<SALT:bind targetelement="DayBox" value="//Day" />
+				<SALT:bind targetelement="NumBox" value="//Num" />
+			</SALT:listen>
+<!-- ■■■ SALT:listen 要素の後に script 要素を追加 ■■■ -->
+			<script language="javascript">
+<!--
+		function MessageOut(m) {
+			mainform.StateText.value = m;
+		}
+		function ReadyGo() {
+			MessageOut("認識準備中");
+			TestReco.Start();
+			MessageOut("認識中");
+		}
+
+		function Break() {
+			TestReco.Stop();
+			MessageOut("待機中");
+		}
+
+		function ClearAll() {
+			MessageOut("クリア");
+			mainform.OriginBox.value = "";
+			mainform.DestinationBox.value = "";
+			mainform.MonthBox.value = "";
+			mainform.DayBox.value = "";
+			mainform.NumBox.value = "";
+		}
+
+		function SpeechDetected() {
+			MessageOut("音声を検出");
+		}
+		
+		function Silence() {
+			MessageOut("沈黙を検出");
+		}
+-->		
+			</script>
+		</form>
+	</body>
+</html>

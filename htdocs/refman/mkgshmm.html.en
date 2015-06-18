@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>
+Reference manual of 
+mkgshmm
+</title>
+<link rel="stylesheet" href="man.css" type="text/css">
+</head>
+<body>
+[ 
+<a href="mkgshmm.html.ja">Japanese</a> 
+| 
+<a href="mkgshmm.html.en">English</a> 
+| 
+<a href="mkgshmm.html.en">Back to top</a> 
+]
+<div align="right"><font size="-1">
+Last update: "2005/09/29 04:03:21"
+</font></div>
+<pre>
+<h3>MKGSHMM(1)                                             MKGSHMM(1)</h3>
+
+
+
+<h3>NAME</h3>
+       mkgshmm - convert monophone HMM to GS HMM for Julius
+
+<h3>SYNOPSIS</h3>
+       mkgshmm monophone_hmmdefs &gt; outputfile
+
+<h3>DESCRIPTION</h3>
+       mkgshmm  converts  monophone HMM definition file (hmmdefs)
+       in HTK format to a special  format  for  Gaussian  Mixture
+       Selection (GMS) in Julius.
+
+       GMS  is an algorithm to reduce the amount of acoustic com-
+       putation with triphone HMM, by pre-selection of  promising
+       gaussian mixtures using likelihoods of corresponding mono-
+       phone mixtures.
+
+       For more details, please  consult  related  documents  and
+       papers
+
+<h3>EXAMPLE</h3>
+       (1)  Prepare  a  monophone  model which was trained by the
+       same corpus as target triphone model.
+
+       (2) Convert the monophone model using mkgshmm.
+
+           % mkgshmm monophone &gt; gshmmfile
+
+       (3) Specify the output file in Julius with option "-gshmm"
+
+           % julius -C foo.jconf -gshmm gshmmfile
+
+
+<h3>SEE ALSO</h3>
+       julius(1)
+
+<h3>COPYRIGHT</h3>
+       Copyright (c) 1991-2005 Kyoto University, Japan
+       Copyright  (c)  2000-2005  Nara  Institute  of Science and
+       Technology, Japan
+       Copyright (c) 2005      Nagoya  Institute  of  Technology,
+       Japan
+
+<h3>AUTHORS</h3>
+       LEE Akinobu (Nagoya Institute of Technology, Japan)
+       contact: julius@kuis.kyoto-u.ac.jp
+
+<h3>LICENSE</h3>
+       Same as Julius.
+
+
+
+                              LOCAL                    MKGSHMM(1)
+</pre>
+<hr>
+<div align="right">
+$Id: mkgshmm.html.en,v 1.1.1.1 2007/01/10 08:01:57 kudravka_ Exp $
+</div>
+</body></html>

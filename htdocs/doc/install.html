@@ -1,0 +1,120 @@
+<h2>コンパイル・インストール手順 (Unix)</h2>
+
+ここでは，Linux や Soraris などの Unix OS で， Julius/Julian をソースからコンパイルしインストールする手順を説明します．
+<p>
+なお，<a href="install-mingw.html">Windows でのコンパイル手順</a>もほぼ同様です．
+フリーの Windows 用コンパイル環境である <a
+href="http://www.mingw.org/">MinGW</a> でのコンパイルに対応して
+います．
+詳しくは <a href="install-mingw.html">minGWでのJuliusのコンパイル</a>のページをご覧下さい．
+<p>
+Windows SAPI版や JuliusLib など，他の派生バージョンのついては各ホームページ
+をご覧下さい．
+
+<h3>必要環境</h3>
+
+Linux や Solaris などの Unix 環境では，以下のものが必要です．
+<ul>
+<li>gcc, make など C言語のコンパイル環境
+<li>
+</ul>
+
+<h3>クイックスタート (Linux)</h3>
+
+とりあえず，以下の手順で Julius と Julian の通常版をインストールできます．
+<pre>
+% tar xzvf julius-x.x.tar.gz
+% cd julius-x.x
+% ./configure
+% make
+% make install
+% (日本語manをインストールする場合) make install.man.ja
+% make distclean
+% ./configure --enable-julian
+% make
+% make install
+% (日本語manをインストールする場合) make install.man.ja
+</pre>
+以下で各手順について具体的に説明します．
+
+<h3>1. 準備</h3>
+
+Julius/Julian はデフォルトでは RAW ファイルと WAV ファイル(無圧縮)しか読み込めませんが，<a href="http://www.zip.com.au/~erikd/libsndfile/" target="top">libsndfile</a> を用いることで AIFF, AU, NIST, SND, WAV(ADPCM)などの様々なフォーマットの音声ファイルを読み込めるようになります．
+<a href="http://www.zip.com.au/~erikd/libsndfile/" target="top">libsndfile</a> は configure 時に自動検出されますので，使用する場合はあらかじめインストールしておいてください．
+<pre>
+（必要であれば）
+<a href="http://www.zip.com.au/~erikd/libsndfile/" target="top">libsndfile</a> を入手しインストールする
+</pre>
+また，圧縮ファイル (.gz) の展開に zlib を使うことができます．使用する場合は zlibをあらかじめインストールしておいてください．なお zlib を使用しない場合，.gz 
+ファイルを読み込む際には，gzip が内部起動されます．
+<p>
+探索空間可視化機能を用いるには，gtk-1.x もあらかじめインストールしてください．
+<p>
+次にJuliusのソースパッケージを入手して展開し，展開先のディレクトリへ移動します．以下，「<code>julius-x.x.tar.gz</code>」は最新のソースを表すとします．
+<pre>
+% gunzip -c -d julius-x.x.tar.gz | tar xvf -
+% cd julius-x.x
+</pre>
+
+<h3>2. configureの実行</h3>
+
+configureスクリプトは，OSの種別やマイク入力サポートの有無，Cコンパイラや使用ライブラリ，CPUのエンディアンなどの動作環境を自動検出し，適切なMakefile を生成します．まずはこのconfigureを実行してください．
+<pre>
+% ./configure
+</pre>
+オプション指定でさまざまな設定を行えます．たとえば，<code>--enable-julian</code>を指定することで Julian をコンパイルできます．
+<pre>
+% ./configure --enable-julian
+</pre>
+<li>Julius を精度重視でコンパイルする場合
+<pre>
+% ./configure --enable-setup=standard
+</pre>
+<li>インストール先を <code>/home/foobar/julius/</code> 以下に変えたい場合
+<pre>
+% ./configure --prefix=/home/foobar/julius
+</pre>
+実行バイナリは <code>${prefix}/bin</code>, マニュアルは
+<code>${prefix}/man/man1</code>にインストールされます．
+<code>prefix</code> のデフォルトは <code>/usr/local</code> です．
+</ul>
+全オプションの詳細については <a href="configure.html">「configureオプションの解説」</a>をご覧ください．
+<p>
+コンパイラは "<code>gcc</code>", デバッグオプションは "<code>-O2 -g</code>" がデフォルトです．
+Linux では "<code>-O6 -fomit-frame-pointer</code>" がデフォルトとなります．
+configure を行う前に環境変数 "<code>CC</code>" および "<code>CFLAGS</code>" を設定することで，使用するコンパイラとデバッグオプションを変更できます．また，ヘッダファイルのパスは環境変数 "<code>CPPFLAGS</code>" で指定します．
+<h3>3. コンパイル</h3>
+<pre>
+% make
+</pre>
+を実行すると，各ディレクトリ下にそれぞれの実行バイナリが生成されます．
+
+<h3>4. インストール</h3>
+<pre>
+% make install
+</pre>
+を実行すると，実行バイナリが<code>${prefix}/bin</code>, マニュアルが
+<code>${prefix}/man/man1</code>にインストールされます．
+<p>
+以上でインストール作業は完了です．
+
+<h3>インストールされる実行バイナリ一覧</h3>
+
+<table border=1>
+<tr><th><code>julius (あるいは julian)</code></th><td>本体</td></tr>
+<tr><th><code>mkbingram</code></th><td>バイナリN-gram変換ツール</td></tr>
+<tr><th><code>mkbinhmm</code></th><td>バイナリHMM変換ツール</td></tr>
+<tr><th><code>adinrec</code></th><td>音声をファイルに録音</td></tr>
+<tr><th><code>adintool</code></th><td>汎用音声入出力フロントエンド</td></tr>
+<tr><th><code>mkdfa.pl, mkfa, yomi2voca.pl</code></th><td>文法コンパイラ</td></tr>
+<tr><th><code>generate, nextword, accept_check</code></th><td>文法作成支援ツール</td></tr>
+<tr><th><code>jcontrol</code></th><td>モジュールモード用サンプルクライアント</td></tr>
+<tr><th><code>mkss</code></th><td>入力のノイズスペクトル計測ツール</td></tr>
+<tr><th><code>mkgshmm</code></th><td>Gaussian Selection 用音響モデ
+ル変換ツール</td></tr>
+</table>
+<!-- 本文終了 -->
+<hr>
+<div align="right">
+$Id: install.html,v 1.1.1.1 2007/01/10 08:01:57 kudravka_ Exp $
+</div>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+                   "/usr/share/xml/docbook/4.4/docbookx.dtd"
+[
+<!ENTITY opt_app SYSTEM "opt_app.xml">
+<!ENTITY opt_global SYSTEM "opt_global.xml">
+<!ENTITY opt_instance SYSTEM "opt_instance.xml">
+<!ENTITY opt_lm SYSTEM "opt_lm.xml">
+<!ENTITY opt_am SYSTEM "opt_am.xml">
+<!ENTITY opt_search SYSTEM "opt_search.xml">
+]>
+
+<refentry id='jconf'>
+  <refmeta>
+    <refentrytitle>
+      jconf
+    </refentrytitle>
+    <manvolnum>
+      5
+    </manvolnum>
+  </refmeta>
+  <refnamediv>
+    <refname>
+      jconf
+    </refname>
+    <refpurpose>
+      Jconf configuration file specification
+    </refpurpose>
+  </refnamediv>
+  <refsect1><title>Description</title>
+  <para>
+    Jconf is a configuration file for Julius.  The variables to be
+    specified is organized as follows.
+    <itemizedlist>
+      <listitem><para>Global options</para></listitem>
+      <listitem><para>Instance declaration</para></listitem>
+      <listitem><para>Language model instance</para></listitem>
+      <listitem><para>Acoustic model and speech analysis instance</para></listitem>
+      <listitem><para>Recognizer and search instance</para></listitem>
+    </itemizedlist>
+    The details of each variables and options are described in the followings.
+  </para>
+  <para>
+    When an option is specified several times, the later one will
+    override previous one, except for <option>-C</option>,
+    <option>-gram</option>, <option>-gramlist</option>,
+    <option>-w</option>, <option>-wlist</option>, and
+    <option>-htkconf</option>.
+  </para>
+  </refsect1>
+  <refsect1><title>Example</title>
+  <para>
+    These are examples of jconf file.
+  </para>
+  <para>
+    First example is a simple one with no explicit instance
+    declaration.  When no declaration is found, Julius will run with
+    single AM, LM and recognition process instance.  In this case, the
+    default instances will be named "<literal>_default</literal>".
+    Since only one instance will be used for each instance, option
+    order does not matter.  This behavior is equivalent to older
+    versions of Julius, except for GMM handling (see below).
+  </para>
+  <example><title>Example of Jconf file: no instance declaration</title>
+    <programlisting>
+      -C jconffile
+      (<replaceable>Other global options</replaceable>...)
+      (<replaceable>AM and analysis options</replaceable>...)
+      (<replaceable>LM options</replaceable>...)
+      (<replaceable>Search options</replaceable>...)
+    </programlisting>
+  </example>
+  <para>
+    Next one is an example using two acoustic models and three
+    language models of different types.  Three recognition process
+    instance should be defined for each combination of AM and LM.  The
+    LM type (ngram / grammar / word) will be determined automatically
+    by the arguments.  The Global options can be placed anywhere in
+    the file, but putting them at the top will be less confusing.
+  </para>
+  <example><title>Example of Jconf file: multi model decoding</title>
+    <programlisting>
+      -C jconffile
+      (<replaceable>Other global options</replaceable>...)
+      -AM am1
+      (<replaceable>AM and analysis options for am1</replaceable>...)
+      -AM am2
+      (<replaceable>AM and analysis options for am2</replaceable>...)
+      -LM lm_ngram
+      -d ngram -v dictfile
+      (<replaceable>LM options for lm1</replaceable>...)
+      -LM lm_grammar
+      -gram grammarprefix
+      (<replaceable>LM options for lm2</replaceable>...)
+      -LM lm_word
+      -w dictfile
+      (<replaceable>LM options for lm3</replaceable>...)
+      -SR recog_ngram am1 lm_ngram
+      (<replaceable>Search options for recog_ngram</replaceable>...)
+      -SR recog_grammar am1 lm_grammar
+      (<replaceable>Search options for recog_ngram</replaceable>...)
+      -SR recog_word am2 lm_word
+      (<replaceable>Search options for recog_ngram</replaceable>...)
+    </programlisting>
+  </example>
+  <para>
+    Next is an another example using GMM for front-end processing.
+    Note that from Rev.4.0 Julius has independent MFCC calculation
+    scheme for GMM.  This means that you should explicitly specify the
+    acoustic analysis condition for GMM, not only the AM.
+  </para>
+  <para>
+    Option <option>-AM_GMM</option> switch the current AM
+    configuration to that of GMM.  You should place AM configuration
+    about MFCC computation parameter for GMM.
+  </para>
+  <example><title>Example with GMM</title>
+    <programlisting>
+      -C jconffile
+      (<replaceable>Other global options</replaceable>...)
+      -gmm gmmdefs -gmmreject noise
+      -AM_GMM
+      (<replaceable>analysis options for GMM</replaceable>...)
+      -AM am1
+      (<replaceable>AM and analysis options for am1</replaceable>...)
+      -LM lm_ngram
+      -d ngram -v dictfile
+      (<replaceable>LM options for lm1</replaceable>...)
+      -SR recog_ngram am1 lm_ngram
+    </programlisting>
+  </example>
+  </refsect1>
+
+  <refsect1 id='jconf_val'><title>Jconf variables</title>
+  <para>
+    The full list of options and variables that can be specified at a
+    jconf file is listed below.
+  </para>
+  &opt_global;
+  &opt_instance;
+  &opt_lm;
+  &opt_am;
+  &opt_search;
+  </refsect1>
+</refentry>

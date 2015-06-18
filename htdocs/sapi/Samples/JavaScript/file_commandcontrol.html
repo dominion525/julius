@@ -1,0 +1,102 @@
+<HTML>
+	<HEAD>
+		<TITLE>Wavefile Dictation</TITLE>
+		<SCRIPT LANGUAGE="JavaScript">
+<!--
+// AudioInputStream をファイルにするには、InprocRecognizer である必要がある
+var Ctxt = new ActiveXObject("Sapi.SpInprocRecoContext");
+var Recog = Ctxt.Recognizer;
+
+Ctxt.EventInterests = 16;	// SRERecognition
+
+var GramCommand = Ctxt.CreateGrammar(0);
+//-->
+		</SCRIPT>
+	</HEAD>
+	<BODY>
+		<H1>Wavefile C&amp;C</H1>
+		<center>
+			<FORM name="mainform">
+				<P>
+					<TABLE id="Table1" cellSpacing="1" cellPadding="1" border="0">
+						<TR>
+							<TD><FONT face="MS UI Gothic">認識ファイル:</FONT></TD>
+							<TD><FONT face="MS UI Gothic"> <INPUT id="File2" type="file" name="filename"> <INPUT id="Button1" onclick="BeginRecog(filename.value)" type="button" value="認識" name="Button1"></FONT></TD>
+						</TR>
+						<TR>
+							<TD>
+								<INPUT id="Checkbox1" type="checkbox" name="Checkbox1" onclick="Checkbox_Command_onclick(this.checked, ccfilename.value, rulename.value)">C&amp;C 
+								文法:</TD>
+							<TD>
+								<INPUT id="File1" type="file" name="ccfilename"></TD>
+						</TR>
+						<TR>
+							<TD height="26"><FONT face="MS UI Gothic">アクティブルール名:</FONT></TD>
+							<TD height="26"><FONT face="MS UI Gothic"> <INPUT id="rulename" type="text" size="7" name="rulename"></FONT></TD>
+						</TR>
+						<TR>
+							<TD>認識結果:
+							</TD>
+							<TD><FONT face="MS UI Gothic"> <INPUT id="Text2" type="text" size="50" name="output"> </FONT>
+							</TD>
+						</TR>
+						<TR>
+							<TD><FONT face="MS UI Gothic">プロパティ:</FONT></TD>
+							<TD><FONT face="MS UI Gothic"><TEXTAREA id="Textarea1" name="Textarea_Prop_Command" rows="6" cols="39">
+									</TEXTAREA></FONT></TD>
+						</TR>
+					</TABLE>
+				</P>
+			</FORM>
+		</center>
+		<SCRIPT>
+<!--
+function BeginRecog(fn)
+{
+	var FileStream = new ActiveXObject("Sapi.SpFileStream");
+	FileStream.Open(fn);
+	Recog.AudioInputStream = FileStream;
+}
+
+function Checkbox_Command_onclick(c, f, r) {
+	if (c)
+	{
+		GramCommand.CmdLoadFromFile(f, 1);
+		GramCommand.CmdSetRuleState(r, 1);
+	} else {
+		GramCommand.CmdSetRuleState(r, 0);
+	}
+}
+
+function DispProp(P, pre, TA)
+{
+	if (P != null)
+	{
+		for (var i=0;i<P.Count;i++)
+		{
+			TA.value += pre + P.Item(i).Name + ":" + P.Item(i).Value + "\n";
+			if (P.Item(i).Children != null)
+				DispProp(P.Item(i).Children, pre + "  ", TA);
+		}
+	}
+}
+
+
+// 認識完了時のイベントハンドラ
+function Ctxt::Recognition(StreamNum, StreamPos, RecogType, Result)
+{
+	mainform.output.value = Result.PhraseInfo.GetText();
+	mainform.Textarea_Prop_Command.value = "";
+	DispProp(Result.PhraseInfo.Properties, "", mainform.Textarea_Prop_Command);
+}
+-->
+		</SCRIPT>
+		<hr>
+		<P></P>
+		<P>WAVファイルの音声に対して、任意のSAPI XML形式の文法で認識を行い、結果をフォームに出力するサンプルです。</P>
+		<P>認識ファイルに、WAVファイル名を、C&amp;C文法にSAPI 
+			XML形式の文法ファイル名を、アクティブルール名に、アクティブにするルール名を記入し、C&amp;C文法のチェックを押して文法をアクティブにしてから「認識」ボタンをクリックします。</P>
+		<P><FONT face="MS UI Gothic">認識結果には認識された全体の文字列が、プロパティには認識後のプロパティ値がツリー構造で出力されます。</FONT></P>
+		<P><FONT face="MS UI Gothic"></FONT>&nbsp;</P>
+	</BODY>
+</HTML>

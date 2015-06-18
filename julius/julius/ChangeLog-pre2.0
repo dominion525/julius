@@ -1,0 +1,175 @@
+	(many many changes from 1/23 - 2/25 is missing.
+	 see 00Changes for changes from 1.1,1.2 to 2.0)
+
+
+Sat Jan 23 22:39:02 1999  Akinobu Lee  <ri@uffizi>
+
+	* beam.c (init_nodescore): not add lm_penalty on start
+
+Mon Jan 18 00:57:09 1999  Akinobu Lee  <ri@uffizi>
+
+	* global.h: new feature: DISCOUNT_BACKSCORE weights h(n) specified 
+	by option "-discount". default is 1.0.
+
+Sun Jan 17 22:02:28 1999  Akinobu Lee  <ri@uffizi>
+
+	* lib/hmminfo/rdhmmdef_state.c (state_read): when not all mixtures 
+	are found in hmmdefs, insted of error exit, warn and keep going.
+	temporary code for s3000mix16.
+
+Sun Jan 17 03:04:19 1999  LEE Akinobu  <ri@sunlight.kuis.kyoto-u.ac.jp>
+
+	* lib/Makefile (OBJLIB): all output is gathered to "j_printf.c"
+	j_printf() and j_printerr() are newly defined.
+	mapping in <sent/stddefs.h>: P_ERROR and VERMES.
+	vermes in main.c is also eliminated.
+	putlog.c was removed.
+
+	* lib/hmminfo/hmm_lookup.c (htk_hmmdata_lookup_physical_id): 
+	* lib/ngram/ngram_lookup.c:
+	PATNODE root are stored in HTK_HMM_INFO and NGRAM_INFO.
+
+Fri Jan 15 14:52:12 1999  Akinobu Lee  <ri@uffizi>
+
+	* search_bestfirst.c (scan_word): SCAN_BEAM implemented.
+
+	* beam.c (get_back_trellis_proceed): PH_PENALTY_1 on 1st pass.
+	Temporary, (lm_penalty) will be added for normal word, and
+	(lm_penalty + ph_penalty) at word end if the word's
+	length <= 1 phoneme. 
+	-lmp 9.0 8.0  -> -lmp 9.0 8.0 -ph -4.0
+
+	* search_bestfirst.c (cpy_node): PH_PENALTY_2 on 2nd pass.
+	add value of ph_penalty for each CDHMM substitution.
+	normally (lm_penalty2 + ph_penalty * 2) was added for each
+	inter-word transition, and (lm_penalty2 + ph_penalty) for
+	1-phoneme word.
+	-lmp2 11.0 -2.0 -> -lmp2 11.0 0.0 -ph -1.0
+
+Tue Jan 12 14:39:55 1999  Akinobu Lee  <ri@uffizi>
+
+        * LOGTABLE: bweight and tr->a[][] also pre-lognized with this option.
+
+	* lib/hmminfo/check_hmm_restriction.c (check_all_hmm_limit): 
+	* lib/hmminfo/rdhmmdef.c (rdhmmdef): 
+	* lib/voca/voca_load_htkdict.c (voca_load_htkdict): 
+	Changed to check limitation for all HMMs in rdhmmdef().
+
+Mon Jan 11 15:34:19 1999  Akinobu Lee  <ri@uffizi>
+
+	* ngram_decode.c (pick_backtrellis_words): loose expansion on 2nd
+	pass implemented (-DLOOKAROUND).  Look range can be determined by
+	option "-lookuprange framenum", default is 5 (tm-5 <= t < tm+5)
+
+	* search_bestfirst.c: 2-phoneme backscan implemented (*.backscan)
+
+Thu Jan  7 19:40:06 1999  Akinobu Lee  <ri@uffizi>
+
+	* lib/phmm/viterbi.c: Not used --- Deleted.
+
+	* lib/hmminfo/rdhmmdef_state.c (state_read): each mixture weight
+	is converted to log as soon as read.
+
+	* lib/phmm/outprob.c (calc_outprob): experimantal log-table is
+	implemented (-DLOGTABLE in lib/Makefile).
+
+	* factoring_sub.c (max_successor_prob): experimantal 1-gram
+	factoring is implemented (-DUNIGRAM_FACTORING)
+
+Wed Jan  6 14:56:37 1999  Akinobu Lee  <ri@uffizi>
+
+	* main.c (opt_parse): New Feature: "-separatescore" outputs each
+	AM score and LM score separatedly.  Of course it has no effect
+	with DFA.  Output will change like this:
+	    score1: -9266.944336
+	 -> score1: -9266.944336 (AM: -8995.933594 LM: -271.010406)
+	Note that LM is a scaled value.
+
+	* lib/hmminfo/hmm_lookup.c (hmm_make_ptree): Cosmetic changes in
+	startup total HMM nums messages.
+
+	* lib/anlz/rddata.c (strip_zero): strip_zero become selectable in
+	DEFS: -DSTRIP_ZERO.  This may be defined in Julian, but not needed
+	for Julius for some temporary reason.
+
+	* main.c (main): disable experimantal ZMEANSOUCE support.
+
+	* main.c (usage): Avoid naming conflict in "-input".  Now change
+	"mfc"->"mfcfile", "file"->"rawfile", and "-input mfcfile" is
+	default.  The old name "mfc" and "file" still remains valid for
+	backward compatibility.
+
+Mon Jan  4 19:37:09 1999  LEE Akinobu  <ri@sunlight.kuis.kyoto-u.ac.jp>
+
+	* (Total) move include files: include/sent/wchmm.h -> ./wchmm.h
+	all include entries are gathered to one file, "julius.h".
+	Now toplevel sources should include only this header.
+
+	* Introduced experimental implementation of trellis visualization
+ 	on X11.  To experience this feature, define TREVIS_INC and
+ 	TREVIS_LIB in Makefile correctly, and invoke with option "-V".
+ 	New source file has been added: trevis_x11.c
+
+Mon Dec 21 11:06:32 1998  Akinobu Lee  <ri@uffizi>
+
+	* beam.c (bt_current_max_word): Now output temporarily best word
+ 	hypotheses for each frame with "-debug" option.
+
+	* lib/voca/voca_util.c (print_voca_info): Now output total state
+	num at startup time.
+
+Fri Dec 18 15:14:52 1998  Akinobu Lee  <ri@uffizi>
+
+	* search_bestfirst.c (wchmm_fbs): BUGFIX: (DFA) hypotheses whose
+	score <= LOG_ZERO has been expanded on the 2nd pass.
+
+Wed Dec 16 10:59:16 1998  Akinobu Lee  <ri@uffizi>
+
+	* beam.c (get_back_trellis_proceed): BUGFIX: Fix typo for
+ 	WPAIR+DFA
+	(init_nodescore): BUGFIX: the initial node has been created
+ 	multiply for NOT CATEGOTY_TREE on 1st pass DFA.
+
+Sun Dec 13 01:23:36 1998  LEE Akinobu  <ri@sunlight.kuis.kyoto-u.ac.jp>
+	[JULIUS 1.2 patchlevel 1 / JULIAN 1.1 release.]
+
+	* lib/util/endian.c (swap_bytes): add this generic byte-order
+ 	changing function.
+
+	* lib/anlz/rdparam.c (read_param): Now JULIUS/JULIAN assumes big
+	endian MFCC as input when "-input mfc".  The wrong little-endian
+	MFCC, typically generated by "wav2mfcc", can still be read by
+	heuristic auto-detection function in read_param().
+
+Tue Nov 17 09:33:04 1998  Akinobu Lee  <ri@uffizi>
+
+	* main.c (main): make sure stdout is flushed after processing each
+	input. 
+
+	* include/sent/dfa.h: DFA_MAXTERMNUM is now eliminated.
+
+	* lib/dfa/rddfa.c (rddfa): DFA_MAXTERMNUM not needed. Eliminated.
+
+Mon Nov 16 16:48:12 1998  Akinobu Lee  <ri@uffizi>
+
+	* search_bestfirst.c (next_word): (USE_DFA) temporary seek for
+	entire input.
+
+	* lib/hmminfo/hmm_lookup.c (hmm_make_ptree): more fix.
+	physical tree and logical tree are now merged so that search ends
+	in one query.  Now HMMlist don't need all HMMs,
+	only logical->physical mappings will suffice.
+
+Sun Nov 15 19:12:41 1998  Akinobu Lee  <ri@uffizi>
+
+	* Makefile: re-link adin_mic_linux.c -> adin_mic_linux_oss.c
+
+Sat Nov 14 17:12:52 1998  Akinobu Lee  <ri@chip>
+
+	* lib/hmminfo/hmm_lookup.c(htk_hmmdata_lookup_logical()): Fall to
+	htk_hmmdata_lookup_physical() when not found in logical.  Safe in
+	case defined HMMs are not in HMMlist(Warning will be displayed).
+
+	* Makefile: add ALSA target (linux-alsa)
+	* adin_mic_alsa.c: mic interface with ALSA lib
+

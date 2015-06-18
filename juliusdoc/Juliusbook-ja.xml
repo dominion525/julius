@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="EUC-JP" standalone="no"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+                   "/usr/share/xml/docbook/4.4/docbookx.dtd"
+[
+<!ENTITY chap_overview SYSTEM "desc_overview_ja.xml">
+<!ENTITY chap_adin SYSTEM "desc_adin_ja.xml">
+<!ENTITY chap_am SYSTEM "desc_am_ja.xml">
+<!ENTITY chap_feature SYSTEM "desc_feature_ja.xml">
+<!ENTITY chap_instance SYSTEM "desc_instance_ja.xml">
+<!ENTITY chap_lm SYSTEM "desc_lm_ja.xml">
+<!ENTITY chap_module SYSTEM "desc_module_ja.xml">
+<!ENTITY chap_search SYSTEM "desc_search_ja.xml">
+<!ENTITY chap_vad SYSTEM "desc_vad_ja.xml">
+<!ENTITY license SYSTEM "license.xml">
+]>
+<book lang="ja">
+<title>The Julius book</title>
+<titleabbrev>JuliusBook</titleabbrev>
+<bookinfo>
+  <author><firstname>Akinobu</firstname><surname>LEE</surname></author>
+  <copyright><year>2008</year><holder>LEE Akinobu</holder></copyright>
+</bookinfo>
+<preface><title>まえがき</title>
+<para>
+この文書は，2008年5月10日現在のCVSの最新バージョン（4.0.1+）に基づいて
+います．
+<literallayout>
+Copyright (c) 1991-2008 京都大学 河原研究室
+Copyright (c) 1997-2000 情報処理振興事業協会 (IPA)
+Copyright (c) 2000-2005 奈良先端科学技術大学院大学 鹿野研究室
+Copyright (c) 2005-2008 名古屋工業大学 Julius開発チーム
+</literallayout>
+</para>
+</preface>
+&chap_overview;
+&chap_adin;
+&chap_feature;
+&chap_vad;
+&chap_am;
+&chap_lm;
+&chap_search;
+&chap_instance;
+&chap_module;
+</book>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GRAMMAR>
+<RULE name="S" toplevel="ACTIVE">
+  <L PROPNAME="YESNO">
+    <P VAL="0">
+      <RULEREF name="YES"/>
+    </P>
+    <P VAL="1">
+      <RULEREF name="NO"/>
+    </P>
+  </L>
+</RULE>
+<RULE name="YES" toplevel="INACTIVE">
+  <L>
+    <P>はい</P>
+    <P>/はい/はーい;</P>
+  </L>
+</RULE>
+<RULE name="NO" toplevel="INACTIVE">
+  <L>
+    <P>いいえ</P>
+    <P>/いいえ/いーえ;</P>
+  </L>
+</RULE>
+</GRAMMAR>

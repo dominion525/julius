@@ -1,0 +1,272 @@
+<h2>モジュールモードについて</h2>
+
+<h3>はじめに</h3>
+
+オリジナル版の Julius/Julian は，独立した認識サーバとして動作し，
+外部クライアントとソケットを介してデータをやりとりすることができます．
+クライアントは，Julius/Julian から認識結果や音声のトリガ情報などを
+受け取ることができます．またクライアント側からは，認識の開始や一時停止
+などの命令や，Julianに対する文法の追加や削除，一時無効化などが行えます．
+<p>
+ここでは，使用方法およびプロトコルについて簡単に述べます．
+
+<h3>サンプルクライアント jcontrol を用いた動作確認</h3>
+
+Julius にはサンプルのクライアント jcontrol が付属しています．
+以下の要領で動作を試すことができます．
+<pre>
+(1) サーバ：Julius あるいは Julian を，通常の起動方法に "-module" オプションを
+    追加して起動
+
+    % julius -C fast.jconf -module
+
+(2) クライアント：jcontrol を以下のように起動
+
+    % jcontrol (1)を実行しているホスト名
+</pre>
+あとは音声認識を行い，結果が jcontrol 側に出てくることを確認してください．
+また，jcontrol 側で "pause" + enter と押すと認識中断，"resume" + enter で
+認識が再開できることを確かめてください．
+<p>
+以下では，処理の内容や結果の見方，クライアントアプリケーションを作成する
+際にクライアントからJuliusへ送信できるコマンドの一覧や
+送信プロトコルについて解説します．
+
+
+<h3>処理の概要</h3>
+
+"-module ポート番号" をつけて起動することで，
+Julius/Julian をサーバーモードとして起動できます．
+<p>
+サーバーモードで起動した Julius/Julian は，起動直後に
+クライアントからの接続待ち状態に入ります．
+クライアントからの接続要求を受けると，Julius/Julian はその
+接続クライアントに対して自らを fork し，forkされた
+子プロセスは通常の初期化手順（モデル読み込み等）へと進みます．
+<p>
+起動後は認識が開始され，Juliusからは音声検出の状態や認識結果の送付，
+クライアントからは動作停止・再開命令や文法の入れ替え，追加，削除
+などが行えます．
+
+<h3>Julius/Julian からクライアントへ送信される情報</h3>
+
+Julius/Julian からクライアントへは，以下のイベント情報が送信されます．
+<p>
+Julius/Julian から送られてくる認識結果を含む任意のメッセージは，
+最後にピリオドのみの行 ".\n" が付与されます．従って，Julius/Julian からの
+メッセージを受け取る場合，ピリオドのみの行 ".\n" をメッセージ
+の区切りとして処理すればよいことになります．
+<p>
+以下に具体的な送信情報を示します．
+<ul>
+<li>音声検出開始
+<pre>
+  &lt;INPUT STATUS="LISTEN" TIME="システム時間(秒)"/&gt;
+  .
+</pre>
+<li>音声トリガ→録音開始
+<pre>
+  &lt;INPUT STATUS="STARTREC" TIME="システム時間(秒)"/&gt;
+  .
+</pre>
+<li>音声録音終了
+<pre>
+  &lt;INPUT STATUS="ENDREC" TIME="システム時間(秒)"/&gt;
+  .
+</pre>
+<li>入力長の情報
+<pre>
+  &lt;INPUTPARAM FRAMES="入力長（フレーム数）" MSEC="入力長（秒）"/&gt;
+  .
+</pre>
+<li>認識結果
+<pre>
+  &lt;RECOGOUT&gt;
+    &lt;SHYPO RANK="1" SCORE="-7375.335449" GRAM="1"&gt;
+      &lt;WHYPO WORD="silB" CLASSID="23" PHONE="silB" CM="1.000"/&gt;
+      &lt;WHYPO WORD="嵯峨山" CLASSID="2" PHONE="s a g a y a m a" CM="0.786"/&gt;
+      &lt;WHYPO WORD="先生" CLASSID="3" PHONE="s e N s e:" CM="0.257"/&gt;
+      &lt;WHYPO WORD="の" CLASSID="4" PHONE="n o" CM="0.461"/&gt;
+      &lt;WHYPO WORD="電話番号" CLASSID="6" PHONE="d e N w a b a N g o:" CM="0.977"/&gt;
+      &lt;WHYPO WORD="を" CLASSID="8" PHONE="o" CM="1.000"/&gt;
+      &lt;WHYPO WORD="教えて" CLASSID="9" PHONE="o sh i e t e" CM="0.813"/&gt;
+      &lt;WHYPO WORD="下さい" CLASSID="10" PHONE="k u d a s a i" CM="0.729"/&gt;
+      &lt;WHYPO WORD="silE" CLASSID="24" PHONE="silE" CM="1.000"/&gt;
+    &lt;/SHYPO&gt;
+
+  &lt;/RECOGOUT&gt;
+  .
+</pre>
+<li>認識失敗（探索失敗で解が一つも得られなかった場合）
+<pre>
+  &lt;RECOGFAIL/&gt;
+  .
+</pre>
+<li>入力棄却
+<pre>
+  &lt;REJECTED REASON="too short input"/&gt;
+  .
+</pre>
+</ul>
+
+<code>SHYPO</code>は認識結果の文の情報です．
+<code>RANK</code>属性はN-bestの順位を表します．
+例えば "-n 5 -output 5" とすると
+1位から5位までの文候補が出力されます．<code>SCORE</code>は文全体の尤度，
+<code>GRAM</code>はJulianでその文が属する文法のIDを表します．
+<p>
+<code>WHYPO</code>は文内の単語情報を表します．<code>WORD</code>属性は出力
+文字列，<code>CLASSIDM</code>はその単語の言語モデルエントリ
+（JuliusならN-gramエントリ名，Julian ならカテゴリID）を表します．
+<code>PHONE</code>は音素列，そして，<code>CM</code>は単語信頼度を表します．
+<p>
+認識結果の情報を抑制したい，あるいは第1パスの結果も出力したいなどの場合，
+起動時オプション <code>"-outcode string"</code> で出力する
+認識結果情報を指定できます．<code>string</code>p は "WLPSCwlps" のうち
+出力したいものを指定します．各文字の対応は以下の通りです：
+
+	 W: 単語文字列
+	 L: カテゴリID
+	 P: 音素列
+	 S: スコア
+	 C: 単語信頼度
+	 w: 単語文字列（第1パス）
+	 l: カテゴリID（第1パス）
+	 p: 音素列（第1パス）
+	 s: スコア（第1パス）
+
+なおデフォルトは "-outcode WLPSC" となっています．
+
+
+<h3>クライアントからの命令コマンド</h3>
+
+クライアントから Julius/Julian へコマンドを送信できます．
+命令を表すコマンド文字列に続けて，改行コード '\n' を送ることで，
+Julius/Julian はそれを解釈して実行します．
+<p>
+コマンドは，引数を持たないものと引数を持つものに分かれます．
+引数を持つものは，コマンド文字列のあとの改行コード '\n' に続けて，
+引数データを送信します．
+<p>
+コマンド一覧を以下に示します．
+
+<pre>
+コマンド一覧・引数を持たないもの：
+
+	DIE		Julian を強制終了させる．
+	VERSION		エンジンのバージョンを返す
+	STATUS		システムの状態(active/sleep)を返す
+	PAUSE		認識を中断し sleep にする．
+			（認識途中の場合，そこで入力を中断し，
+			  第2パスまで認識が終わってから中断する）
+	TERMINATE	認識を中断し sleep にする．
+			（認識途中の場合，入力を破棄して即時中断）
+	RESUME		認識を再開，sleep から active状態へ移行
+
+コマンド一覧・引数を持つもの：
+
+  コマンド名＋ '\n' に続けて，データを送信：
+
+	INPUTONCHANGE	音声入力中の切り替え方法を指定
+	CHANGEGRAM	文法を切り替える (Julian)
+	ADDGRAM		文法を加える (Julian)
+	DELGRAM		文法を削除する (Julian)
+	DEACTIVATEGRAM	文法を一時的に無効化する (Julian)
+	ACTIVATEGRAM	一時的に無効化された文法を有効化する (Julian)
+</pre>
+
+<h3>音声認識の開始命令と中断命令</h3>
+
+クライアントからJulius/Julianの音声認識を中断・再開できます．
+<p>
+<code>PAUSE</code>コマンドで，Julius/Julian を一時停止します．
+これによってエンジンは sleep モードに入り，音声入力を受け付けなくなります．
+<p>
+エンジンが音声入力中のときに<code>PAUSE</code>コマンドを受け取った場合，
+エンジンは，現在の入力を最後（次の発話休止）まで処理するのを待って
+sleepモードに入ります．<code>PAUSE</code>の代わりに
+<code>TERMINATE</code>を使った場合，現在入力中のデータを破棄して即座に
+sleepモードに入ります．
+<p>
+sleepモードのエンジンは <code>RESUME</code>コマンドによって再び
+動作状態に復帰します．
+<p>
+モジュールモード時の Julius/Julian は以下の2つの状態のどちらかに
+あります．現在どちらの状態にいるかは <code>STATUS</code>コマンドで
+取得できます．
+<pre>
+    active:		音声認識を実行中（音声入力待ち，あるいは認識処理中）
+    sleep:		中断中（音声入力をストップした状態）
+</pre>
+
+<h3>文法関連の命令(Julian)</h3>
+
+Julian では，クライアントからの文法の流し込みと追加（複数文法認識）・
+削除・一時無効化が行えます．Julianはこのようにしてクライアントから
+送られてきた文法を複数保持して，同時に認識することが可能です．
+<p>
+各コマンドの詳細は以下の通りです．
+<ul>
+<li><code>ADDGRAM</code> は使用中の文法群に新たな文法を加える．
+<li><code>CHANGEGRAM</code> は，使用中の文法群を全て破棄し，新たな文法を使用する．
+<li><code>DELGRAM</code> は指定した文法を削除する．文法は ID 番号で指定する．
+  ID番号は，コマンドに続けて削除したい文法のID暗号をスペースで区切って
+  与え，最後に改行で閉じる．例： "コマンド\n1 3 4\n"
+<li><code>DEACTIVATEGRAM</code>, <code>ACTIVATEGRAM</code> は指定した文法を一時的に OFF/ON する．
+  DEACTIVATE された文法は認識に使用されなくなるが global lexicon には
+  残っており，再び ACTIVATE することができる．このため高速な切り替えが
+  可能である．
+</ul>
+
+<code>CHANGEGRAM</code>，<code>ADDGRAM</code>では "コマンド" + "\n" に続けて
+使用したい文法を Julian に転送します．転送の形式は以下の通りです．
+<pre>
+ADDGRAM				<- コマンド文字列
+[.dfa ファイルの中身]
+DFAEND				<- .dfaファイルの終端を示す文字列
+[.dict ファイルの中身]
+DICEND				<- .dictファイルの終端を示す文字列
+</pre>
+<p>
+クライアントから送信された文法は，サーバで受信されたあと，適切なタイミング
+で単語対文法の抽出とサーバ上の文法リストへの組み込み・文法情報の更新が
+行われます．音声認識処理中に受信された場合，文法情報の更新のため，
+現在の入力はその受信時点で強制的に区切られ認識を終了させられます．
+この受信したときのエンジンの動作を変更したい場合は，
+コマンド<code>INPUTONCHANGE</code>で指定しておきます．
+引数の意味は以下の通りです（デフォルト：PAUSE）
+<ul>
+<li>TERMINATE
+<blockquote>
+現在の入力を破棄する．探索を即時中断後，文法を変更し，認識を再開．
+</blockquote>
+<li>PAUSE
+<blockquote>
+現在の入力をそこで強制的に区切って認識を終わらせる．
+認識終了後文法を変更し，認識を再開．
+</blockquote>
+<li>WAIT
+<blockquote>
+現在の入力が（ユーザによって）区切れるまで待つ．
+入力終了後，文法を変更して認識を再開
+<blockquote>
+</ul>
+なお，Julianは文法の送信要求を受けると．たとえ認識中であっても
+認識を中断して文法を受け取ろうとします．よって，
+サイズの大きい文法を送ると受信処理のために認識の遅延が起こるので，
+sleep 状態のときに送るなど配慮するとなおよいでしょう．
+<p>
+Julian においては，文法情報が変更されしだい，下記のタグ形式で送られてきます．
+<pre>
+&lt;GRAMINFO&gt;
+  #01: [ACTIVE     ]   45 words,  22 categories,  547 nodes
+  #02: [INACTIVE   ]  247 words,  14 categories,   30 nodes (new)
+  Total:              292 words,  36 categories,  577 nodes
+&lt;/GRAMINFO&gt;
+</pre>
+
+<hr>
+<div align="right">
+$Id: module.html,v 1.1.1.1 2007/01/10 08:01:57 kudravka_ Exp $
+</div>
+
